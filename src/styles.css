@@ -1,1 +1,178 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    color: inherit; /* blue colors for links too */
+    text-decoration: inherit; /* no underline */
+}
+  
+a:hover {
+  
+}
+
+.ellipsed {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.centered {
+    text-align: center;
+}
+
+.justified {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.bold {
+    font-weight: 500;
+  }
+  
+.bolder {
+    font-weight: 600;
+}
+  
+.italicized {
+    font-style: italic;
+}
+
+.centered-block {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.teal-700 {
+    color: #00BFA5;
+}
+
+.gray-50 {
+    color: #FAFAFA;
+}
+
+.gray-100 {
+    color: #F5F5F5;
+}
+
+.gray-200 {
+    color: #EEEEEE;
+}
+
+.gray-300 {
+    color: #E0E0E0;
+}
+
+.gray-400 {
+    color: #BDBDBD;
+}
+
+.gray-500 {
+    color: #9E9E9E
+}
+
+.gray-600 {
+    color: #757575
+}
+
+.gray-700 {
+    color: #616161
+}
+
+.gray-800 {
+    color: #424242;
+}
+
+.gray-900 {
+    color: #212121;
+}
+
+.font-12 {
+    font-size: 12px !important;
+    line-height: 16px !important;
+}
+  
+.font-13 {
+    font-size: 13px !important;
+    line-height: 17px !important;
+}
+  
+.font-14 {
+    font-size: 14px !important;
+    line-height: 18px !important;
+}
+  
+.font-15 {
+    font-size: 15px !important;
+    line-height: 19px !important;
+}
+  
+.font-16 {
+    font-size: 16px !important;
+    line-height: 20px !important;
+}
+  
+.font-17 {
+    font-size: 17px !important;
+    line-height: 21px !important;
+}
+  
+.font-18 {
+    font-size: 18px !important;
+    line-height: 22px !important;
+}
+  
+.font-19 {
+     font-size: 19px !important;
+     line-height: 23px !important;
+}
+  
+.font-20 {
+    font-size: 20px !important;
+    line-height: 24px !important;
+}
+
+.font-21 {
+    font-size: 21px !important;
+    line-height: 25px !important;
+}
+
+.chip-role {
+    display: inline-block;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 14px;
+    line-height: 30px;
+    height: 30px;
+    border-radius: 30px;
+}
+
+.chip-role.small {
+    font-size: 12px;
+    line-height: 25px;
+    height: 25px;
+}
+
+/* for some reason graph styles must be put here */
+.links line {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.nodes circle {
+    /*fill: #fff;
+    stroke: #000;*/
+    stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+.nodes text {
+    font-size: 11px;
+    fill: #424242;
+}

@@ -1,0 +1,14 @@
+<div style="width: 50%; margin: 40px auto 0; padding: 5px;">
+    
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <mat-form-field style="width: 100%;">
+            <mat-label>Nombre de la simbiocreación</mat-label>
+            <input matInput type="text" required [(ngModel)]="model.name" name="name">
+        </mat-form-field>
+    
+        <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid">
+            <span>Crear</span>
+        </button>
+    </form>
+
+</div>

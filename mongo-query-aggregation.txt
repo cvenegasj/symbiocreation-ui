@@ -1,0 +1,22 @@
+db.symbiocreation.aggregate([
+ {
+   $match: {
+     'participants.user_id' : '5ee2e05e5beee339efc603bc',
+   }
+ },
+ {
+   $project: {
+     'name' : 1,
+     'lastModified' : 1,
+     'enabled' : 1,
+     'visibility' : 1,
+     'pex' : {
+       $filter : {
+         input : '$participants',
+         as : 'participant',
+         cond : { $eq : [ '$$participant.user_id', '5ee2e05e5beee339efc603bc' ] }
+       }
+     }
+   }
+ }
+ ]).pretty();

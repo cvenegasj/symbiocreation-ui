@@ -1,0 +1,50 @@
+<mat-toolbar color="accent">
+    <span class="ellipsed">Idea de {{nameToShow}}</span>
+    <span fxFlex></span>
+    <button mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
+        <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #ideaSidenavMenu="matMenu">
+        <button mat-menu-item (click)="openEditIdeaDialog()">
+            <span>Editar idea</span>
+        </button>
+        <!--<button mat-menu-item>
+            <span>Group padre</span>
+        </button>
+        <button mat-menu-item *ngIf="!node?.user">
+            <span>Cambiar nombre de grupo</span>
+        </button>
+        <button mat-menu-item *ngIf="!node?.user">
+            <span>Eliminar grupo</span>
+        </button>-->
+    </mat-menu>
+
+    <button mat-icon-button (click)="closeIdeaDetail()">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div style="padding: 0 15px;">
+    <div style="margin-top: 30px;" *ngIf="node?.idea">
+        <p class="centered gray-900 font-18 bold">{{node?.idea.title}}</p>
+    </div>
+
+    <div style="margin-top: 30px;" *ngIf="node?.idea">
+        <p class="gray-700 font-15 justified" style="white-space: pre-wrap;">
+            {{node?.idea.description}}
+        </p>
+    </div>
+
+    <div style="margin-top: 30px;" *ngIf="node?.idea?.imgPublicId">
+        <cl-image [public-id]="node.idea.imgPublicId" style="width: 100%;"></cl-image>
+    </div>
+
+    <div style="margin-top: 30px;" *ngIf="!node?.idea">
+        <p class="centered gray-700 font-15">
+            No hay ninguna idea registrada.
+        </p>
+        <div class="centered">
+            <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">Registrar idea</button>
+        </div>
+    </div>
+</div>

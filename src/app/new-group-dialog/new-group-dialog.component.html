@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Nuevo grupo</h1>
+<mat-dialog-content>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Nombre</mat-label>
+      <input matInput cdkFocusInitial [(ngModel)]="groupName">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <span fxFlex></span>
+    <button mat-flat-button [mat-dialog-close]="groupName" color="accent" [disabled]="!groupName">OK</button>
+</mat-dialog-actions>

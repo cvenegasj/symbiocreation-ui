@@ -1,0 +1,185 @@
+ <mat-sidenav-container hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
+
+    <mat-sidenav #sidenav position="end">
+        <router-outlet></router-outlet>
+    </mat-sidenav>
+
+    <section fxLayout="row" style="height: 100%;">
+        <!-- Main area -->
+        <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column">
+            <div class="mat-elevation-z3" style="padding: 7px; background-color: white;" [ngSwitch]="roleOfLoggedIn">
+                <h2 class="mat-subheading-1 centered">{{symbiocreation?.name}}</h2>
+                
+                <!-- Moderator view -->
+                <div *ngSwitchCase="'moderator'">
+                    <div style="text-align: center;" fxLayout="row">
+                        <div fxFlex>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Grupo</mat-label>
+                                <mat-select [(value)]="idGroupSelected" [disabled]="disabledGroupSelector" (selectionChange)="onMyGroupChanged()">
+                                    <mat-option>Ninguno</mat-option>
+                                    <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
+                                </mat-select>
+                                <button mat-icon-button matSuffix matTooltip="Editar grupo" [attr.aria-label]="'Edit group'" (click)="disabledGroupSelector = false" [disabled]="!disabledGroupSelector">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field appearance="fill" style="width: 75%;">
+                                <mat-label>Idea</mat-label>
+                                <input matInput [value]="participant.idea?.title" readonly>
+                                <button mat-icon-button matSuffix matTooltip="Editar idea" [attr.aria-label]="'Edit idea'" (click)="openMyIdeaEditDialog()">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Participant view -->
+                <div *ngSwitchCase="'participant'">
+                    <div style="text-align: center;" fxLayout="row">
+                        <div fxFlex>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Grupo</mat-label>
+                                <mat-select [(value)]="idGroupSelected" [disabled]="disabledGroupSelector" (selectionChange)="onMyGroupChanged()">
+                                    <mat-option>Ninguno</mat-option>
+                                    <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
+                                </mat-select>
+                                <button mat-icon-button matSuffix matTooltip="Editar grupo" [attr.aria-label]="'Edit group'" (click)="disabledGroupSelector = false" [disabled]="!disabledGroupSelector">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex>
+                            <mat-form-field appearance="fill" style="width: 75%;">
+                                <mat-label>Idea</mat-label>
+                                <input matInput [value]="participant.idea?.title" readonly>
+                                <button mat-icon-button matSuffix matTooltip="Editar idea" [attr.aria-label]="'Edit idea'" (click)="openMyIdeaEditDialog()">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngSwitchDefault>
+                    <p class="centered">Participa de esta simbiocreación!</p>
+                    <div style="text-align: center;">
+                        <button mat-raised-button color="accent" (click)="joinSymbiocreation()">
+                            <span>Participar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div fxFlex>
+                <app-graph
+                    [data]="symbiocreation?.graph"
+                    (parentChanged)="onParentChanged($event)"
+                    (nodeDeleted)="onNodeDeleted($event)"
+                    (nodeChangedName)="onNodeChangedName($event)"
+                    (nodeChangedIdea)="onNodeChangedIdea($event)">
+                </app-graph>
+            </div>
+        </div>
+
+        <!-- Side area -->
+        <div fxFlex="23" fxFlex.lt-md="30" class="mat-elevation-z1">
+            <mat-expansion-panel expanded class="mat-elevation-z0">
+                <mat-expansion-panel-header class="accent-bg">
+                    <mat-panel-title>
+                        Grupos
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{groups?.length}}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                
+                <div class="centered">
+                    <button mat-raised-button color="primary" (click)="openNewGroupDialog()">
+                        <span>Nuevo grupo</span>
+                    </button>
+                </div>
+
+                <mat-list dense>
+                    <mat-list-item *ngFor="let g of groups">
+                        <span>{{g.name}}</span>
+                        <span class="gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1? 'hijo' : 'hijos'}}</span>
+                        
+                        <span fxFlex></span>
+                        
+                        <button mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </mat-list-item>
+
+                </mat-list>
+
+                <!-- Mat menu and submenu -->
+                <mat-menu #groupMenu="matMenu">
+                    <ng-template matMenuContent let-node="node">
+                        <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
+                        <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Group padre</button>
+                        <button mat-menu-item (click)="onNodeChangedName(node.id)">Cambiar nombre</button>
+                        <button mat-menu-item (click)="onNodeDeleted(node.id)">Eliminar</button>
+                    </ng-template>
+                </mat-menu>
+
+                <mat-menu #groupsSubMenu="matMenu">
+                    <ng-template matMenuContent let-node="node">
+                        <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="onParentChanged([node.id, g.id])"> <!-- filter because a node cannot be its own parent! -->
+                            <span>{{g.name}}</span>
+                        </button>
+                    </ng-template>
+                </mat-menu>
+                
+            </mat-expansion-panel>
+
+            <mat-expansion-panel expanded class="mat-elevation-z0">
+                <mat-expansion-panel-header class="accent-bg">
+                    <mat-panel-title>
+                        Participantes
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{symbiocreation?.participants.length}}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                
+                <mat-list dense>
+                    <mat-list-item *ngFor="let p of symbiocreation?.participants">
+                        <span>{{p.user.firstName}} {{p.user.lastName}}</span>
+                        <span class="chip-role small" style="margin-left: 6px;" *ngIf="p.role === 'moderator'">Moderador</span>
+                        
+                        <span fxFlex></span>
+                        
+                        <button mat-icon-button [matMenuTriggerFor]="participantMenu" [matMenuTriggerData]="{node: getNodeByUserId(p.u_id)}">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </mat-list-item>
+                </mat-list>
+
+                <!-- Mat menu and submenu -->
+                <mat-menu #participantMenu="matMenu">
+                    <ng-template matMenuContent let-node="node">
+                        <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
+                        <button mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Group</button>
+                    </ng-template>
+                </mat-menu>
+
+                <mat-menu #participantsSubMenu="matMenu">
+                    <ng-template matMenuContent let-node="node">
+                        <button mat-menu-item *ngFor="let g of groups" (click)="onParentChanged([node.id, g.id])">
+                            <span>{{g.name}}</span>
+                        </button>
+                    </ng-template>
+                </mat-menu>
+                
+            </mat-expansion-panel>
+        </div>
+
+    </section>
+
+</mat-sidenav-container>
+

@@ -1,0 +1,30 @@
+<div #container style="height: 100%;">
+    <!--
+    <app-chart 
+        [dimensions]="dimensions">
+
+       <svg:g appCircles
+            [data]="nodes">
+        </svg:g> 
+        
+    </app-chart> 
+-->
+    <mat-menu #nodeContextMenu="matMenu">
+        <ng-template matMenuContent let-node="node">
+            <button mat-menu-item (click)="changeIdeaNode(node)">Editar idea</button>
+            <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Grupo padre</button>
+            <button mat-menu-item (click)="changeNameNode(node)" *ngIf="!node.u_id">Cambiar nombre</button>
+            <button mat-menu-item (click)="deleteNode(node)" *ngIf="!node.u_id">Eliminar</button>
+        </ng-template>
+    </mat-menu>
+
+    <mat-menu #groupsSubMenu="matMenu">
+        <ng-template matMenuContent let-node="node">
+            <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="setParentNode(node.id, g.id)"> <!-- filter because a node cannot be its own parent! -->
+                <span>{{g.name}}</span>
+            </button>
+        </ng-template>
+    </mat-menu>
+
+    <div #nodeMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="nodeContextMenu" [style.position]="'absolute'" [style.left.px]="menuX" [style.top.px]="menuY"></div>
+</div>

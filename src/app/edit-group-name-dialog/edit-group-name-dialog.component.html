@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Nuevo nombre</h1>
+<mat-dialog-content>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Nombre</mat-label>
+      <input matInput cdkFocusInitial [(ngModel)]="name">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <span fxFlex></span>
+    <button mat-flat-button [mat-dialog-close]="name" color="accent" [disabled]="!name">OK</button>
+</mat-dialog-actions>

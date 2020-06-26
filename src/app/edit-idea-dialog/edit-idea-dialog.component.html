@@ -1,0 +1,45 @@
+<h1 mat-dialog-title>Idea de {{data.name}}</h1>
+<mat-dialog-content>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Título</mat-label>
+      <input matInput cdkFocusInitial [(ngModel)]="idea.title" placeholder="Ej. Un robot que limpie la atmósfera.">
+    </mat-form-field>
+    <mat-form-field style="width: 100%;">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput [(ngModel)]="idea.description" placeholder="Descripción larga de mi idea." rows="5"></textarea>
+    </mat-form-field>
+    <div class="centered" style="padding-bottom: 10px;">
+      <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="openCamera()">
+        <mat-icon>camera_alt</mat-icon>
+        <span>Tomar foto</span>
+      </button>
+
+      <button mat-raised-button color="accent" (click)="imageInput.click()">
+        <mat-icon>add_photo_alternate</mat-icon>
+        <span>Seleccionar foto</span>
+      </button>
+      <input #imageInput
+              hidden
+              type="file"
+              accept="image/*"
+              (change)="processFile(imageInput)">
+    </div>
+    
+    <div *ngIf="idea.imgPublicId && !(selectedFile || capturedImg)">
+      <cl-image [public-id]="idea.imgPublicId" style="width: 100%;"></cl-image>
+    </div>
+
+    <div *ngIf="selectedFile">
+      <img [src]="selectedFile.src" style="width: 100%;" />
+    </div>
+
+    <div *ngIf="capturedImg">
+      <img [src]="capturedImg.src" style="width: 100%;" />
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <span fxFlex></span>
+    <button #okButton mat-flat-button color="accent" (click)="onOkClick(okButton)">OK</button>
+</mat-dialog-actions>
