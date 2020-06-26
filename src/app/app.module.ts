@@ -49,13 +49,6 @@ import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-cap
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
     
   ],
-  entryComponents: [
-    NewGroupDialogComponent,
-    EditIdeaDialogComponent,
-    EditGroupNameDialogComponent,
-    CameraCaptureDialogComponent,
-    
-  ],
   providers: [],
   bootstrap: [AppComponent]
 })
