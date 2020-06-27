@@ -22,6 +22,7 @@ import { NewGroupDialogComponent } from './new-group-dialog/new-group-dialog.com
 import { EditIdeaDialogComponent } from './edit-idea-dialog/edit-idea-dialog.component';
 import { EditGroupNameDialogComponent } from './edit-group-name-dialog/edit-group-name-dialog.component';
 import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-capture-dialog.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-cap
     EditIdeaDialogComponent,
     EditGroupNameDialogComponent,
     CameraCaptureDialogComponent,
+    ConfirmationDialogComponent,
     
   ],
   imports: [

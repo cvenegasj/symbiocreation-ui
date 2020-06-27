@@ -30,11 +30,11 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #simbioMenu="matMenu">
-                        <button mat-menu-item>
+                        <button mat-menu-item (click)="changeNameSymbiocreation(s)">
                             <mat-icon>text_fields</mat-icon>
                             <span>Cambiar nombre</span>
                         </button>
-                        <button mat-menu-item>
+                        <button mat-menu-item (click)="deleteSymbiocreation(s.id)">
                             <mat-icon>delete</mat-icon>
                             <span>Eliminar</span>
                         </button>
@@ -43,8 +43,8 @@
                <div matLine style="padding-bottom: 50px;">
                    <mat-form-field fxFlex="50" style="padding-left: 5px;">
                         <mat-label>Link para compartir</mat-label>
-                        <input matInput type="text" value="http://app.simbiocreacion.com/symbiocreation/{{s.id}}" readonly>
-                        <button mat-icon-button matSuffix cdkCopyToClipboard="http://app.simbiocreacion.com/symbiocreation/{{s.id}}">
+                        <input matInput type="text" value="{{environment.localhost}}/symbiocreation/{{s.id}}" readonly>
+                        <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/symbiocreation/{{s.id}}">
                             <mat-icon>content_copy</mat-icon>
                         </button>
                    </mat-form-field>

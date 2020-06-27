@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, concatMap } from 'rxjs/operators';
-import { HttpClient, HttpHeaders, HttpErrorResponse, HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 import { Symbiocreation } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
@@ -11,7 +12,7 @@ import { Node } from '../models/forceGraphTypes';
 })
 export class SymbiocreationService {
 
-    apiUrl: string = 'http://localhost:8080';
+    apiUrl: string = environment.resApiUrl;
     headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     constructor(
@@ -51,6 +52,24 @@ export class SymbiocreationService {
     updateSymbiocreation(data: Symbiocreation): Observable<Symbiocreation> {
         let API_URL = `${this.apiUrl}/symbiocreations`;
         return this.http.put<Symbiocreation>(API_URL, data, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    // update name
+    updateSymbiocreationName(data: Symbiocreation): Observable<void> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${data.id}/updateName`;
+        return this.http.put<void>(API_URL, data, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    // delete
+    deleteSymbiocreation(id: string): Observable<void> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${id}`;
+        return this.http.delete<void>(API_URL)
             .pipe(
                 catchError(this.error)
             );

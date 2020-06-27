@@ -5,6 +5,13 @@ import { AuthService } from '../services/auth.service';
 import { tap, concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+
+import { environment } from '../../environments/environment';
+import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -12,13 +19,16 @@ import { UserService } from '../services/user.service';
 })
 export class DashboardComponent implements OnInit {
 
+  environment = environment;
   symbiocreations: Symbiocreation[];
   isModerator: boolean[];
 
   constructor(
     private symbioService: SymbiocreationService,
     private userService: UserService,
-    private auth: AuthService
+    private auth: AuthService,
+    private _snackBar: MatSnackBar,
+    public dialog: MatDialog
     ) {
     this.symbiocreations = [];
     this.isModerator = [];
@@ -48,6 +58,39 @@ export class DashboardComponent implements OnInit {
             }
           }
         }
+    });
+  }
+
+  deleteSymbiocreation(id: string) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        confirmationColor: 'warn'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.symbioService.deleteSymbiocreation(id).subscribe(
+          res => {
+            this.symbiocreations = this.symbiocreations.filter(s => s.id !== id);
+          });
+      }
+    });
+  }
+
+  changeNameSymbiocreation(symbio: Symbiocreation) {
+    const dialogRef = this.dialog.open(EditGroupNameDialogComponent, {
+      width: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (name) {
+        symbio.name = name;
+        this.symbioService.updateSymbiocreationName(symbio).subscribe();
+      }
     });
   }
 

@@ -121,7 +121,7 @@
                 <mat-menu #groupMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Group padre</button>
+                        <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Grupo padre</button>
                         <button mat-menu-item (click)="onNodeChangedName(node.id)">Cambiar nombre</button>
                         <button mat-menu-item (click)="onNodeDeleted(node.id)">Eliminar</button>
                     </ng-template>
@@ -164,7 +164,7 @@
                 <mat-menu #participantMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Group</button>
+                        <button mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Grupo</button>
                     </ng-template>
                 </mat-menu>
 

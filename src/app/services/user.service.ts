@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpClientJsonpModule } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 import { User } from '../models/symbioTypes';
 
@@ -10,7 +11,7 @@ import { User } from '../models/symbioTypes';
 })
 export class UserService {
 
-    apiUrl: string = 'http://localhost:8080';
+    apiUrl: string = environment.resApiUrl;
     headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     constructor(private http: HttpClient) { }

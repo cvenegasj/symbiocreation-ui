@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, ChildActivationEnd } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
 
