@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  resApiUrl: 'http://162.243.166.30',
-  localhost: 'https://cvenegasj.github.io/symbiocreation-ui'
+  resApiUrl: 'https://174.129.125.140', // has to be https, uses port 443 by default
+  localhost: 'https://symbiocreation-ui.vercel.app'
 };
