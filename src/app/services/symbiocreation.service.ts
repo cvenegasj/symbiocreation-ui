@@ -4,7 +4,7 @@ import { catchError, concatMap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { Symbiocreation } from '../models/symbioTypes';
+import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
 
 @Injectable({
@@ -49,13 +49,13 @@ export class SymbiocreationService {
     }
 
     // update
-    updateSymbiocreation(data: Symbiocreation): Observable<Symbiocreation> {
+    /*updateSymbiocreation(data: Symbiocreation): Observable<Symbiocreation> {
         let API_URL = `${this.apiUrl}/symbiocreations`;
         return this.http.put<Symbiocreation>(API_URL, data, {headers: this.headers})
             .pipe(
                 catchError(this.error)
             );
-    }
+    }*/
 
     // update name
     updateSymbiocreationName(data: Symbiocreation): Observable<void> {
@@ -84,20 +84,51 @@ export class SymbiocreationService {
             );
     }
 
-    /*
     // change name of node
-    updateNodeName(idSymbio: string, newNode: Node): Observable<Symbiocreation> {
-        let API_URL = `${this.apiUrl}/symbiocreations/${idSymbio}/updateNodeName`;
+    updateNodeName(symbioId: string, newNode: Node): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/updateNodeName`;
         return this.http.put<Symbiocreation>(API_URL, newNode, {headers: this.headers})
             .pipe(
                 catchError(this.error)
             );
-    } */
+    }
 
     // find node by id
     getNodeById(symbioId: string, nodeId: string): Observable<Node> {
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/getNode/${nodeId}`;
         return this.http.get<Node>(API_URL);
+    }
+
+    createParticipant(symbioId: string, p: Participant): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createParticipant`;
+        return this.http.post<Symbiocreation>(API_URL, p)
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    createGroupNode(symbioId: string, n: Node): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createGroupNode`;
+        return this.http.post<Symbiocreation>(API_URL, n)
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    setParentNode(symbioId: string, childId: string, parentId: string): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/setParentNode/${childId}/${parentId}`;
+        return this.http.get<Symbiocreation>(API_URL)
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    deleteNode(symbioId: string, nodeId: string): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/deleteNode/${nodeId}`;
+        return this.http.delete<Symbiocreation>(API_URL)
+            .pipe(
+                catchError(this.error)
+            );
     }
 
     // Handle Errors 
