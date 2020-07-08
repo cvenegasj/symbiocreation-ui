@@ -1,8 +1,10 @@
-import { Component, OnInit, AfterViewInit, AfterViewChecked, AfterContentInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SidenavService } from '../services/sidenav.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Node } from '../models/forceGraphTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
+import { AuthService } from '../services/auth.service';
+import { SharedService } from '../services/shared.service';
 import { concatMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 
@@ -19,25 +21,37 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
 
   node: Node;
   nameToShow: string;
+  roleOfLoggedIn: string;
 
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
     private sidenav: SidenavService,
     private symbioService: SymbiocreationService,
+    public auth: AuthService,
+    private sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
     ) {}
 
   ngOnInit(): void {
-    this.getNode();
+    this.subscribeToParams();
+    
+    /*this.route.paramMap
+      //.pipe(map(() => window.history.state))
+      .subscribe(
+        () => console.log(history.state)
+      );*/
+    this.sharedService.role$.subscribe(role => {
+      if (role) this.roleOfLoggedIn = role;
+    });
   }
 
   ngAfterViewInit() {
     setTimeout(()=> this.sidenav.open(), 0); // to allow sidenav to be injected properly
   }
 
-  getNode() {
+  subscribeToParams() {
     const idSymbio = this.route.parent.snapshot.paramMap.get('id');
 
     this.route.params.pipe(
@@ -68,6 +82,8 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
       if (idea) {
         this.node.idea = idea; // has id and new idea
         this.symbioService.updateNodeIdea(idSymbio, this.node).subscribe(res => {
+          this.sharedService.nextNode(this.node);
+
           this._snackBar.open('Se registró la idea correctamente.', 'ok', {
             duration: 2000,
           });

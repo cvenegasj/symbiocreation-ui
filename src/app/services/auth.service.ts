@@ -103,7 +103,7 @@ export class AuthService {
         // Have client, now call method to handle auth callback redirect
         tap(cbRes => {
           // Get and set target redirect route from callback results
-          console.log('redirect object: ', cbRes.appState);
+          //console.log('redirect object: ', cbRes.appState);
           targetRoute = cbRes.appState && cbRes.appState.target ? cbRes.appState.target : '/';
         }),
         concatMap(() => {

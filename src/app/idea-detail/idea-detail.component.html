@@ -1,7 +1,7 @@
 <mat-toolbar color="accent">
     <span class="ellipsed">Idea de {{nameToShow}}</span>
     <span fxFlex></span>
-    <button mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
+    <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
         <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #ideaSidenavMenu="matMenu">

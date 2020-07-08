@@ -87,6 +87,8 @@
 
         <!-- Side area -->
         <div fxFlex="23" fxFlex.lt-md="30" class="mat-elevation-z1">
+
+            <!-- Grupos -->
             <mat-expansion-panel expanded class="mat-elevation-z0">
                 <mat-expansion-panel-header class="accent-bg">
                     <mat-panel-title>
@@ -98,7 +100,7 @@
                 </mat-expansion-panel-header>
                 
                 <div class="centered">
-                    <button mat-raised-button color="primary" (click)="openNewGroupDialog()">
+                    <button *ngIf="auth.loggedIn" mat-raised-button color="primary" (click)="openNewGroupDialog()">
                         <span>Nuevo grupo</span>
                     </button>
                 </div>
@@ -121,9 +123,9 @@
                 <mat-menu #groupMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Grupo padre</button>
-                        <button mat-menu-item (click)="onNodeChangedName(node.id)">Cambiar nombre</button>
-                        <button mat-menu-item (click)="onNodeDeleted(node.id)">Eliminar</button>
+                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Grupo padre</button>
+                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item (click)="onNodeChangedName(node.id)">Cambiar nombre</button>
+                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item (click)="onNodeDeleted(node.id)">Eliminar</button>
                     </ng-template>
                 </mat-menu>
 
@@ -137,6 +139,7 @@
                 
             </mat-expansion-panel>
 
+            <!-- Participantes -->
             <mat-expansion-panel expanded class="mat-elevation-z0">
                 <mat-expansion-panel-header class="accent-bg">
                     <mat-panel-title>
@@ -164,7 +167,7 @@
                 <mat-menu #participantMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Grupo</button>
+                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Grupo</button>
                     </ng-template>
                 </mat-menu>
 

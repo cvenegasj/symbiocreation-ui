@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SidenavService } from '../services/sidenav.service';
-import { MatSidenav } from '@angular/material/sidenav';
 import * as d3 from "d3"
 import { DimensionsType } from '../utils/types';
 import { Node, Link } from '../models/forceGraphTypes';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AuthService } from '../services/auth.service';
 import { SymbiocreationService } from '../services/symbiocreation.service';
+import { SharedService } from '../services/shared.service';
 
 @Component({
   selector: 'app-graph',
@@ -21,7 +21,9 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Output() nodeDeleted = new EventEmitter<string>();
   @Output() nodeChangedName = new EventEmitter<string>();
   @Output() nodeChangedIdea = new EventEmitter<string>();
-  nodeSelected: Node;
+
+  roleOfLoggedIn: string;
+  //nodeSelected: Node;
 
   menuX: number = 0;
   menuY: number = 0;
@@ -54,6 +56,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     private sidenav: SidenavService,
     private auth: AuthService,
     private symbioService: SymbiocreationService,
+    private sharedService: SharedService,
     private router: Router, 
     private route: ActivatedRoute,
   ) {
@@ -287,6 +290,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   openIdeaDetailSidenav(idNode: string) {
+    this.sharedService.nextRole(this.roleOfLoggedIn);
+
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();
   }

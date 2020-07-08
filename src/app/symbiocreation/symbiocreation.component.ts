@@ -8,6 +8,7 @@ import { Symbiocreation, Participant, Idea } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
 import { SSEService } from '../services/sse.service';
+import { SharedService } from '../services/shared.service';
 import { concatMap, tap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
@@ -18,6 +19,7 @@ import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.co
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
 import { Subscription } from 'rxjs';
+import { GraphComponent } from '../graph/graph.component';
 
 @Component({
   selector: 'app-symbiocreation',
@@ -27,6 +29,9 @@ import { Subscription } from 'rxjs';
 export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   @ViewChild('sidenav') sidenav: MatSidenav;
+  @ViewChild(GraphComponent)
+  private graphComponent: GraphComponent;
+
   sseSubscription: Subscription;
 
   disabledGroupSelector: boolean;
@@ -45,6 +50,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     private userService: UserService,
     public auth: AuthService,
     private sseService: SSEService,
+    private sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
   ) { 
@@ -58,146 +64,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     //this.temperatureAccessor = d => d.temperature;
     //this.humidityAccessor = d => d.humidity
 
-    /*this.root = {
-      id: '1',
-      name: 'Group 1',
-      idea: 'Mejorar el mundo!',
-      children: [
-        {
-          id: "2",
-          name: "Grupo 2",
-          idea: "Cambiar el mundo",
-          children: [
-            {
-              id: "45",
-              name: "José Bustamante",
-              idea: "Cambiar el mundo",
-            },
-            {
-              id: "345",
-              name: "Miguel Saavedra",
-              idea: "Cambiar el mundo",
-            },
-            {
-              id: "35",
-              name: "Julia Mantilla",
-              idea: "Cambiar el mundo",
-            },
-            {
-              id: "65",
-              name: "Benito Juárez",
-              idea: "Cambiar el mundo",
-            },
-            {
-              id: "2",
-              name: "Lefo",
-              idea: "Cambiar el mundo",
-            }
-          ]
-        },
-        {
-          id: "3",
-          name: "Grupo 3",
-          idea: "Resolver el cambio climático",
-          children: [
-            {
-              id: "76",
-              name: "Grupo 54",
-              idea: "Cambiar el mundo",
-              children: [
-                {
-                  id: "67",
-                  name: "Luis",
-                  idea: "Cambiar el mundo",
-                },
-                {
-                  id: "321",
-                  name: "Milagros",
-                  idea: "Cambiar el mundo",
-                },
-                {
-                  id: "4355",
-                  name: "Consuelo",
-                  idea: "Cambiar el mundo",
-                },
-                {
-                  id: "7623",
-                  name: "Aiden",
-                  idea: "Cambiar el mundo",
-                }
-              ]
-            },
-            {
-              id: "675",
-              name: "Grupo 45",
-              idea: "Cambiar el mundo",
-              children: [
-                {
-                  id: "76223",
-                  name: "Louise",
-                  idea: "Cambiar el mundo",
-                },
-                {
-                  id: "733",
-                  name: "Joan",
-                  idea: "Cambiar el mundo",
-                }
-              ]
-            },
-            {
-              id: "45",
-              name: "Grupo 33",
-              idea: "Cambiar el mundo",
-              children: [
-                {
-                  id: "713",
-                  name: "Matthew",
-                  idea: "Cambiar el mundo",
-                }, 
-                {
-                  id: "533",
-                  name: "Sergio",
-                  idea: "Cambiar el mundo",
-                }, 
-                {
-                  id: "633",
-                  name: "Karla",
-                  idea: "Cambiar el mundo",
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: "4",
-          name: "Grupo 4",
-          idea: "Mi idea",
-          children: [
-            {
-              id: "657",
-              name: "Carlos",
-              idea: "Cambiar el mundo",
-            },
-            {
-              id: "643",
-              name: "Joan",
-              idea: "Cambiar el mundo",
-            },
-            {
-              id: "097",
-              name: "Olivia",
-              idea: "Cambiar el mundo",
-            }
-          ]
-        }
-      ]
-    };*/
-
     this.getData();
     
     this.sseSubscription = this.sseService.symbio$.subscribe(
       symbio => {
-        console.log(symbio);
+        //console.log(symbio);
         if (symbio) {
           this.symbiocreation = symbio;
           this.updateReferences();
@@ -219,6 +90,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.symbioService.getSymbiocreation(id).pipe(
       tap(s => {
         this.symbiocreation = s;
+        this.groups = this.getGroups();
+
         this.sseService.receiveUpdatesFromSymbio(this.symbiocreation.id);
       }),
       concatMap(s => this.auth.userProfile$),
@@ -231,8 +104,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
               const parentNode = this.getMyGroup();
               this.disabledGroupSelector =  parentNode ? true : false;
               this.idGroupSelected = parentNode?.id;
+
+              this.graphComponent.roleOfLoggedIn = this.roleOfLoggedIn;
               
-              this.groups = this.getGroups();
               break;
             }
           }
@@ -242,6 +116,13 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       if (this.participant) {
         // get node w idea from DB 
         this.symbioService.getNodeById(this.symbiocreation.id, this.getMyNode().id).subscribe(node => this.participant.idea = node.idea);
+
+        // subscribe to changes made in IdeaDetailComponent
+        this.sharedService.node$.subscribe(node => {
+          if (node) {
+            if (node.u_id === this.participant.u_id) this.participant.idea = node.idea;
+          }
+        });
       }
     });
   }
@@ -381,6 +262,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
   /* ========================================================================= */
 
+
   joinSymbiocreation() {
     if (!this.auth.loggedIn) {
       const id = this.route.snapshot.params.id;
@@ -401,9 +283,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           return this.symbioService.createParticipant(this.symbiocreation.id, this.participant);
         })
       ).subscribe(symbio => {
-        //console.log('updated from server: ', res);
-        this.symbiocreation = symbio;
-        this.updateReferences(); 
+        //this.symbiocreation = symbio;
+        //this.updateReferences(); 
         // for view
         this.roleOfLoggedIn = 'participant';
         this.disabledGroupSelector = false;
@@ -436,8 +317,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         //this.symbiocreation.lastModified = new Date();
 
         this.symbioService.createGroupNode(this.symbiocreation.id, newNode).subscribe(symbio => {
-          this.symbiocreation = symbio;
-          this.updateReferences();
+          //this.symbiocreation = symbio;
+          //this.updateReferences();
         });
       }
     });
@@ -483,12 +364,12 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     //this.symbiocreation.lastModified = new Date();
 
-    this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected)
+    this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected ? this.idGroupSelected : 'none')
       .subscribe(symbio => {
         //console.log('my new parent: ', this.getMyGroup());
         //console.log('new symbio graph: ', this.symbiocreation.graph);
-        this.symbiocreation = symbio;
-        this.updateReferences();
+        //this.symbiocreation = symbio;
+        //this.updateReferences();
         this.disabledGroupSelector = true;
       });
   }
@@ -518,8 +399,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     this.symbioService.deleteNode(this.symbiocreation.id, id)
       .subscribe(symbio => {
-        this.symbiocreation = symbio;
-        this.updateReferences();
+        //this.symbiocreation = symbio;
+        //this.updateReferences();
       });
   }
 
@@ -577,6 +458,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   openIdeaDetailSidenav(idNode: string) {
+    this.sharedService.nextRole(this.roleOfLoggedIn);
+
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();
   }
