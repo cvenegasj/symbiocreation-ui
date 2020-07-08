@@ -18,7 +18,7 @@ export class SSEService {
         let evtSource = new EventSource(`${environment.resApiUrl}/sse-symbios/${id}`);
         let that = this;
         evtSource.onmessage = function(event) {
-            console.log(event);
+            //console.log(event);
             that.symbioSubject$.next(JSON.parse(event.data));
         }
     }

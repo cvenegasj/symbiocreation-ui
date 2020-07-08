@@ -68,7 +68,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     
     this.sseSubscription = this.sseService.symbio$.subscribe(
       symbio => {
-        //console.log(symbio);
         if (symbio) {
           this.symbiocreation = symbio;
           this.updateReferences();
