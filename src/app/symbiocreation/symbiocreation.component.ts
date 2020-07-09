@@ -85,7 +85,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         this.groups = this.getGroups();
 
         this.rSocketService.connectToSymbio(this.symbiocreation.id);
-        console.log('current symbio: ', this.symbiocreation.id);
 
         this.rSocketService.symbio$.subscribe(
           symbio => {
