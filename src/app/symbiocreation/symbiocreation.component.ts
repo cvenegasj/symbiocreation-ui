@@ -264,6 +264,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.symbiocreation.graph = recurse(this.symbiocreation.graph);
   }
 
+  nodeAContainsNodeB(nodeA: Node, nodeB: Node): boolean {
+    let contains = false;
+    function recurse(node: Node) {
+      if (node.children) node.children.forEach(recurse);
+      if (node.id === nodeB.id) contains = true;
+    }
+
+    recurse(nodeA);
+    return contains;
+  }
+
   // BFS
   getNodeHeight(node: Node): number {
     let height = 0;
@@ -407,7 +418,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     //this.addNodeAsChild(child, ids[1]);
 
     //this.symbiocreation.lastModified = new Date();
-    if (this.getNodeHeight(child) > this.getNodeHeight(parent)) {
+    if (this.nodeAContainsNodeB(child, parent)) {
       this._snackBar.open('No se puede asignar el nuevo grupo padre.', 'ok', {
         duration: 2000,
       });
