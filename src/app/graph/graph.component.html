@@ -12,7 +12,7 @@
     <mat-menu #nodeContextMenu="matMenu">
         <ng-template matMenuContent let-node="node">
             <button mat-menu-item (click)="changeIdeaNode(node)">Editar idea</button>
-            <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Grupo padre</button>
+            <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Seleccionar grupo padre</button>
             <button mat-menu-item (click)="changeNameNode(node)" *ngIf="!node.u_id">Cambiar nombre</button>
             <button mat-menu-item (click)="deleteNode(node)" *ngIf="!node.u_id">Eliminar</button>
         </ng-template>

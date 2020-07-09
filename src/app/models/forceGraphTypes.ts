@@ -8,6 +8,7 @@ export interface Node extends d3Force.SimulationNodeDatum {
     name?: string;
     idea?: Idea;
     //r?: number;
+    height?: number;
     children?: Node[];
 }
 
@@ -16,6 +17,6 @@ export interface Link extends d3Force.SimulationLinkDatum<Node> {
 }
 
 export interface Graph {
-    node: Node[];
+    nodes: Node[];
     links: Link[];
 }

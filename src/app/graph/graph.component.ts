@@ -9,6 +9,8 @@ import { AuthService } from '../services/auth.service';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { SharedService } from '../services/shared.service';
 
+import { Queue } from '../utils/queue';
+
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
@@ -160,8 +162,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .enter()
       .append("g");
 
+    // get the maximum height of any node, which must belong to a root-level node
+    let maxNodeHeight = 0;
+    for (let node of this.data) {
+      let temp = this.getNodeHeight(node);
+      if (temp > maxNodeHeight) maxNodeHeight = temp;
+    }
+
     nodeEnter.append("circle")
-        .attr("fill", d => d.children ? "#fff" : "#FF4081")
+        //.attr("fill", d => d.children ? "#fff" : "#FF4081")
+        //.attr("stroke", d => d.children ? "#C51162" : "#fff")
+        .attr("fill", d => this.getGradientColor(d.height, maxNodeHeight, "#FF4081", "#FFFFFF"))
         .attr("stroke", d => d.children ? "#C51162" : "#fff")
         .attr("stroke-width", 1.5)
         .attr('r', d => d.children ? 10 : 8)
@@ -193,8 +204,11 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   getNodes(data: Node[]): Node[] {
     let nodes: Node[] = [];
     //let i = 0;
+    let that = this;
 
     function recurse(node: Node) {
+      node.height = that.getNodeHeight(node);
+
       if (node.children) node.children.forEach(recurse);
       //if (!node.id) node.id = ++i;
       nodes.push(node);
@@ -306,7 +320,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   setParentNode(childId: string, parentId: string) {
-    //console.log(childId, parentId);
     this.parentChanged.emit([childId, parentId]);
   }
 
@@ -324,6 +337,100 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   changeIdeaNode(node: Node) {
     this.nodeChangedIdea.emit(node.id);
+  }
+
+
+  /************ Helper functions ************/
+
+  // BFS
+  getNodeHeight(node: Node): number {
+    let height = 0;
+
+    let queue = new Queue<Node>();
+    queue.add(node);
+    let current: Node;
+
+    while (!queue.isEmpty()) {
+      current = queue.pop();
+
+      if (current.children) {
+        height +=1 ;
+        current.children.forEach(child => queue.add(child));
+      }
+    }
+
+    return height;
+  }
+
+  getGradientColor(height: number, maxHeight: number, from: string, to: string): string {
+    let start = this.convertToRGB(from);    
+    let end = this.convertToRGB(to);
+    let diff = [0, 0, 0];
+    diff[0] = end[0] - start[0];
+    diff[1] = end[1] - start[1];
+    diff[2] = end[2] - start[2];
+
+    if (maxHeight === 0) return from;
+
+    let color = [0, 0, 0];
+    color[0] = diff[0] * (height / maxHeight) + start[0];
+    color[1] = diff[1] * (height / maxHeight) + start[1];
+    color[2] = diff[2] * (height / maxHeight) + start[2];
+
+    return '#' + this.convertToHex(color);
+  } 
+
+  /*getGradientArray(from: string, to: string, steps: number): string[] {
+    let start = this.convertToRGB(from);    
+    let end = this.convertToRGB(to);
+    let diff = [0, 0, 0];
+    diff[0] = end[0] - start[0];
+    diff[1] = end[1] - start[1];
+    diff[2] = end[2] - start[2];
+
+    //Alpha blending amount
+    let alpha = 0.0;
+    let array = [];
+    
+    for (let i = 0; i < steps; i++) {
+      let c = [];
+      alpha += (1.0/steps);
+      
+      c[0] = start[0] * alpha + (1 - alpha) * end[0];
+      c[1] = start[1] * alpha + (1 - alpha) * end[1];
+      c[2] = start[2] * alpha + (1 - alpha) * end[2];
+
+      array.push(this.convertToHex(c));
+    }
+    
+    return array;
+  }*/
+
+  hex(c): string {
+    var s = "0123456789abcdef";
+    var i = parseInt(c);
+    if (i == 0 || isNaN(c))
+      return "00";
+    i = Math.round(Math.min(Math.max(0, i), 255));
+
+    return s.charAt((i - i % 16) / 16) + s.charAt (i % 16);
+  }
+  
+  /* Convert an RGB triplet to a hex string */
+  convertToHex(rgb: number[]): string {
+    return this.hex(rgb[0]) + this.hex(rgb[1]) + this.hex(rgb[2]);
+  }
+  
+  /* Remove '#' in color hex string */
+  trim(s): string { return (s.charAt(0) == '#') ? s.substring(1, 7) : s }
+  
+  /* Convert a hex string to an RGB triplet */
+  convertToRGB(hex): number[] {
+    var color = [];
+    color[0] = parseInt((this.trim(hex)).substring(0, 2), 16);
+    color[1] = parseInt((this.trim(hex)).substring(2, 4), 16);
+    color[2] = parseInt((this.trim(hex)).substring(4, 6), 16);
+    return color;
   }
 
 }

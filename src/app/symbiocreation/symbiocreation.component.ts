@@ -7,7 +7,6 @@ import { Node } from '../models/forceGraphTypes';
 import { Symbiocreation, Participant, Idea } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
-import { SSEService } from '../services/sse.service';
 import { RSocketService } from '../services/rsocket.service';
 import { SharedService } from '../services/shared.service';
 import { concatMap, tap } from 'rxjs/operators';
@@ -15,12 +14,13 @@ import { UserService } from '../services/user.service';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-//import { v4 as uuidv4 } from 'uuid';
 import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.component';
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
 import { Subscription } from 'rxjs';
 import { GraphComponent } from '../graph/graph.component';
+
+import { Queue } from '../utils/queue';
 
 @Component({
   selector: 'app-symbiocreation',
@@ -50,7 +50,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     private symbioService: SymbiocreationService,
     private userService: UserService,
     public auth: AuthService,
-    //private sseService: SSEService,
     private rSocketService: RSocketService,
     private sharedService: SharedService,
     private _snackBar: MatSnackBar,
@@ -131,6 +130,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   /*============= Operations on local symbiocreation object =============*/
+
   getGroups(): Node[] {
     let groups: Node[] = [];
 
@@ -263,7 +263,30 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     this.symbiocreation.graph = recurse(this.symbiocreation.graph);
   }
+
+  // BFS
+  getNodeHeight(node: Node): number {
+    let height = 0;
+
+    let queue = new Queue<Node>();
+    queue.add(node);
+    let current: Node;
+
+    while (!queue.isEmpty()) {
+      current = queue.pop();
+
+      if (current.children) {
+        height +=1 ;
+        current.children.forEach(child => queue.add(child));
+      }
+    }
+
+    return height;
+  }
+
+
   /* ========================================================================= */
+
 
 
   joinSymbiocreation() {
@@ -379,10 +402,18 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   onParentChanged(ids) {
     let child = this.getNode(ids[0]);
+    let parent = this.getNode(ids[1]);
     //this.removeNodeFromGraph(ids[0]);
     //this.addNodeAsChild(child, ids[1]);
 
     //this.symbiocreation.lastModified = new Date();
+    if (this.getNodeHeight(child) > this.getNodeHeight(parent)) {
+      this._snackBar.open('No se puede asignar el nuevo grupo padre.', 'ok', {
+        duration: 2000,
+      });
+
+      return;
+    }
 
     this.symbioService.setParentNode(this.symbiocreation.id, ids[0], ids[1])
       .subscribe(symbio => {

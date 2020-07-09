@@ -1,6 +1,6 @@
 <div>
     <div class="grow" style="margin-top: 40px;">
-        <h2 class="mat-subheading-1" style="display: inline-block;">Mis simbiocreaciones</h2>
+        <h2 class="mat-title" style="display: inline-block;">Mis simbiocreaciones</h2>
 
         <button routerLink="/create" mat-raised-button color="accent" style="float: right;">
             <mat-icon>add</mat-icon>
@@ -18,8 +18,8 @@
             </h3>
             <mat-list-item style="margin-top: 70px; margin-bottom: 50px;" *ngFor="let s of symbiocreations; index as i; last as last">
                <div matLine>
-                    <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-17 teal-700" style="max-width: 55%; padding: 5px;">{{s.name}}</a>
-                    <span class="chip-role" style="margin-left: 12px;" *ngIf="isModerator[i]">Moderador</span>
+                    <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%; padding: 5px;">{{s.name}}</a>
+                    <span class="chip-role small" style="margin-left: 12px;" *ngIf="isModerator[i]">Moderador</span>
         
                     <span fxFlex></span>
                     
@@ -41,7 +41,7 @@
                     </mat-menu>
                </div>
                <div matLine style="padding-bottom: 50px;">
-                   <mat-form-field fxFlex="50" style="padding-left: 5px;">
+                   <mat-form-field fxFlex="30" style="padding-left: 5px;">
                         <mat-label>Link para compartir</mat-label>
                         <input matInput type="text" value="{{environment.localhost}}/symbiocreation/{{s.id}}" readonly>
                         <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/symbiocreation/{{s.id}}">

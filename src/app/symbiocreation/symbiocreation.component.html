@@ -123,7 +123,7 @@
                 <mat-menu #groupMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Grupo padre</button>
+                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Seleccionar grupo padre</button>
                         <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item (click)="onNodeChangedName(node.id)">Cambiar nombre</button>
                         <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item (click)="onNodeDeleted(node.id)">Eliminar</button>
                     </ng-template>
@@ -167,7 +167,7 @@
                 <mat-menu #participantMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Grupo</button>
+                        <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-menu-item [matMenuTriggerFor]="participantsSubMenu" [matMenuTriggerData]="{node: node}">Seleccionar grupo</button>
                     </ng-template>
                 </mat-menu>
 

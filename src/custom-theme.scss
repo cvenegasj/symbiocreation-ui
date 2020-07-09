@@ -27,8 +27,10 @@ $symbiocreation-ui-theme: mat-light-theme($symbiocreation-ui-primary, $symbiocre
 @include angular-material-theme($symbiocreation-ui-theme);
 
 .chip-role {
-    background-color: mat-color($mat-pink, 400);
-    color: mat-contrast($mat-pink, 500);
+    //background-color: mat-color($mat-pink, 400);
+    //color: mat-contrast($mat-pink, 500);
+    color: mat-color($mat-pink, 400);
+    border-color: mat-color($mat-pink, 400);
 }
 
 .accent-bg, .accent-bg:hover {
