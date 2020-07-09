@@ -12,15 +12,27 @@ export class SSEService {
     private symbioSubject$ = new BehaviorSubject<Symbiocreation>(null);
     symbio$ = this.symbioSubject$.asObservable();
 
+    private evtSource: EventSource;
+
     constructor() {}
 
-    receiveUpdatesFromSymbio(id: string) {
-        let evtSource = new EventSource(`${environment.resApiUrl}/sse-symbios/${id}`);
+    listenFromSymbio(id: string) {
+        this.evtSource = new EventSource(`${environment.resApiUrl}/sse-symbios/${id}`);
         let that = this;
-        evtSource.onmessage = function(event) {
+        this.evtSource.onmessage = function(event) {
             //console.log(event);
             that.symbioSubject$.next(JSON.parse(event.data));
         }
+
+        this.evtSource.onerror = function (error) {
+            console.error('Error in evtSource: ', error);
+            this.close();
+        };
+    }
+
+    stopListening() {
+        if (this.evtSource) this.evtSource.close();
+        this.evtSource = null;
     }
 
 }

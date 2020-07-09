@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   resApiUrl: 'http://localhost:8080',
-  localhost: 'http://localhost:4200'
+  localhost: 'http://localhost:4200',
+  socketUrl: 'ws://localhost:8080/rsocket'
 };
 
 /*

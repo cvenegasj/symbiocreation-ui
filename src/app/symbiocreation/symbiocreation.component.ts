@@ -8,6 +8,7 @@ import { Symbiocreation, Participant, Idea } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
 import { SSEService } from '../services/sse.service';
+import { RSocketService } from '../services/rsocket.service';
 import { SharedService } from '../services/shared.service';
 import { concatMap, tap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
@@ -49,7 +50,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     private symbioService: SymbiocreationService,
     private userService: UserService,
     public auth: AuthService,
-    private sseService: SSEService,
+    //private sseService: SSEService,
+    private rSocketService: RSocketService,
     private sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
@@ -58,40 +60,43 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.groups = [];
   }
 
-  ngOnInit(): void {
-    //this.dateParser = d3.timeParse("%m/%d/%Y");
-    //this.dateAccessor = d => this.dateParser(d.date);
-    //this.temperatureAccessor = d => d.temperature;
-    //this.humidityAccessor = d => d.humidity
-
+  ngOnInit() {
     this.getData();
-    
-    this.sseSubscription = this.sseService.symbio$.subscribe(
-      symbio => {
-        if (symbio) {
-          this.symbiocreation = symbio;
-          this.updateReferences();
-        }
-      }
-    );
   }
 
   ngAfterViewInit() {
     this.sidenavService.setSidenav(this.sidenav);
   }
 
-  ngOnDestroy(): void {
-    this.sseSubscription.unsubscribe();
+  ngOnDestroy() {
+    //this.sseSubscription.unsubscribe();
+    //this.sseService.stopListening();
+    this.rSocketService.disconnect();
+    console.log('ngOnDestroy');
   }
   
   getData() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.symbioService.getSymbiocreation(id).pipe(
+
+    this.symbioService.getSymbiocreation(id)
+    .pipe(
       tap(s => {
         this.symbiocreation = s;
         this.groups = this.getGroups();
 
-        this.sseService.receiveUpdatesFromSymbio(this.symbiocreation.id);
+        this.rSocketService.connectToSymbio(this.symbiocreation.id);
+        console.log('current symbio: ', this.symbiocreation.id);
+
+        this.rSocketService.symbio$.subscribe(
+          symbio => {
+            if (symbio?.id === this.symbiocreation.id) { // to avoid pulling last symbio with another id
+              //console.log(symbio);
+              this.symbiocreation = symbio;
+              this.updateReferences();
+            }
+          }
+        );
+
       }),
       concatMap(s => this.auth.userProfile$),
       tap(u => {
@@ -382,8 +387,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     this.symbioService.setParentNode(this.symbiocreation.id, ids[0], ids[1])
       .subscribe(symbio => {
-        this.symbiocreation = symbio;
-        this.updateReferences();
+        //this.symbiocreation = symbio;
+        //this.updateReferences();
         // if edited node is me, update my group selector
         if (child.u_id === this.participant.u_id) this.idGroupSelected = ids[1];
       });

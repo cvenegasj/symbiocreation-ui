@@ -11,7 +11,7 @@ import { Symbiocreation } from '../models/symbioTypes';
 })
 export class RSocketService {
 
-    client: any;
+    private client: any;
     private symbioSubject$ = new BehaviorSubject<Symbiocreation>(null);
     symbio$ = this.symbioSubject$.asObservable();
 
@@ -41,15 +41,15 @@ export class RSocketService {
             socket
               .requestStream({
                 data: {
-                    id: id
+                    //id: id
                 },
-                metadata: String.fromCharCode('listen.symbio'.length) + 'listen.symbio'
+                metadata: String.fromCharCode(`listen.symbio.${id}`.length) + `listen.symbio.${id}`
               })
               .subscribe({
                 onComplete: () => console.log('Request-stream completed'),
                 onError: error => console.error(`Request-stream error: ${error.message}`),
                 onNext: payload => {
-                  console.log('%s', payload.data);
+                  //console.log('%s', payload.data);
                   this.symbioSubject$.next(payload.data);
                 },
                 onSubscribe: sub => sub.request(2147483647),
@@ -59,8 +59,8 @@ export class RSocketService {
      }
 
      disconnect() {
-        this.client.close();
-        this.client = null;
+        if (this.client) this.client.close();
+        this.client = undefined;
      }
 
 }
