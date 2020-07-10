@@ -47,7 +47,11 @@ export class RSocketService {
               })
               .subscribe({
                 onComplete: () => console.log('Request-stream completed'),
-                onError: error => console.error(`Request-stream error: ${error.message}`),
+                onError: error => { 
+                  console.error(`Request-stream error: ${error.message}`);
+                  this.disconnect();
+                  this.connectToSymbio(id);
+                },
                 onNext: payload => {
                   //console.log('%s', payload.data);
                   this.symbioSubject$.next(payload.data);

@@ -276,7 +276,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   // BFS
-  getNodeHeight(node: Node): number {
+  /*getNodeHeight(node: Node): number {
     let height = 0;
 
     let queue = new Queue<Node>();
@@ -293,7 +293,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     return height;
-  }
+  }*/
 
 
   /* ========================================================================= */
