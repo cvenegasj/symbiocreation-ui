@@ -46,7 +46,11 @@ export class RSocketService {
                 metadata: String.fromCharCode(`listen.symbio.${id}`.length) + `listen.symbio.${id}`
               })
               .subscribe({
-                onComplete: () => console.log('Request-stream completed'),
+                onComplete: () => {
+                  console.log('Request-stream completed');
+                  this.disconnect();
+                  this.connectToSymbio(id);
+                },
                 onError: error => { 
                   console.error(`Request-stream error: ${error.message}`);
                   this.disconnect();

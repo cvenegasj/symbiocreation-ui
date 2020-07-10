@@ -68,6 +68,14 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   openEditIdeaDialog() {
+    if (!this.auth.loggedIn) {
+      const id = this.route.parent.snapshot.params.id;
+      const ideaId = this.route.snapshot.params.idNode;
+      this.auth.login(`/symbiocreation/${id}/idea/${ideaId}`);
+
+      return;
+    }
+
     const idSymbio = this.route.parent.snapshot.paramMap.get('id');
 
     const dialogRef = this.dialog.open(EditIdeaDialogComponent, {

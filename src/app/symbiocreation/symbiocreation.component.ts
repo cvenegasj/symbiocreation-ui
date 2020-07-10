@@ -304,33 +304,36 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     if (!this.auth.loggedIn) {
       const id = this.route.snapshot.params.id;
       this.auth.login(`/symbiocreation/${id}`);
-    } else {
-      // add logged-in user as participant
-      this.auth.userProfile$.pipe(
-        concatMap(user => this.userService.getUserByEmail(user.email)),
-        concatMap(u => {
-          this.participant = {u_id: u.id, user: u, role: 'participant', idea: null};
-          //let pNode: Node = {id: uuidv4(), u_id: u.id, name: u.firstName};
+      
+      return;
+    } 
 
-          //this.symbiocreation.participants.push(this.participant);
-          //this.symbiocreation.graph.push({id: uuidv4(), u_id: u.id, name: u.firstName} as Node);
-          
-          //this.symbiocreation.lastModified = new Date();
-          
-          return this.symbioService.createParticipant(this.symbiocreation.id, this.participant);
-        })
-      ).subscribe(symbio => {
-        //this.symbiocreation = symbio;
-        //this.updateReferences(); 
-        // for view
-        this.roleOfLoggedIn = 'participant';
-        this.disabledGroupSelector = false;
+    // add logged-in user as participant
+    this.auth.userProfile$.pipe(
+      concatMap(user => this.userService.getUserByEmail(user.email)),
+      concatMap(u => {
+        this.participant = {u_id: u.id, user: u, role: 'participant', idea: null};
+        //let pNode: Node = {id: uuidv4(), u_id: u.id, name: u.firstName};
 
-        this._snackBar.open('Se te agregó como participante.', 'ok', {
-          duration: 2000,
-        });
+        //this.symbiocreation.participants.push(this.participant);
+        //this.symbiocreation.graph.push({id: uuidv4(), u_id: u.id, name: u.firstName} as Node);
+        
+        //this.symbiocreation.lastModified = new Date();
+        
+        return this.symbioService.createParticipant(this.symbiocreation.id, this.participant);
+      })
+    ).subscribe(symbio => {
+      //this.symbiocreation = symbio;
+      //this.updateReferences(); 
+      // for view
+      this.roleOfLoggedIn = 'participant';
+      this.disabledGroupSelector = false;
+
+      this._snackBar.open('Se te agregó como participante.', 'ok', {
+        duration: 2000,
       });
-    }
+    });
+    
   }
 
   // will propagate changes to child component graph
