@@ -1,14 +1,5 @@
 <div #container style="height: 100%;">
-    <!--
-    <app-chart 
-        [dimensions]="dimensions">
-
-       <svg:g appCircles
-            [data]="nodes">
-        </svg:g> 
-        
-    </app-chart> 
--->
+    
     <mat-menu #nodeContextMenu="matMenu">
         <ng-template matMenuContent let-node="node">
             <button mat-menu-item (click)="changeIdeaNode(node)">Editar idea</button>

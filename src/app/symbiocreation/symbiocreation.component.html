@@ -10,9 +10,18 @@
             <div class="mat-elevation-z3" style="padding: 7px; background-color: white;" [ngSwitch]="roleOfLoggedIn">
                 <h2 class="mat-subheading-1 centered">{{symbiocreation?.name}}</h2>
                 
-                <!-- Moderator view -->
-                <div *ngSwitchCase="'moderator'">
+                <!-- Participant view -->
+                <div *ngSwitchCase="'moderator' || 'participant'">
                     <div style="text-align: center;" fxLayout="row">
+                        <div fxFlex>
+                            <mat-form-field appearance="fill" style="width: 75%;">
+                                <mat-label>Idea</mat-label>
+                                <input matInput [value]="participant.idea?.title" readonly>
+                                <button mat-icon-button matSuffix matTooltip="Editar idea" [attr.aria-label]="'Edit idea'" (click)="openMyIdeaEditDialog()">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </div>
                         <div fxFlex>
                             <mat-form-field appearance="fill">
                                 <mat-label>Grupo</mat-label>
@@ -21,15 +30,6 @@
                                     <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
                                 </mat-select>
                                 <button mat-icon-button matSuffix matTooltip="Editar grupo" [attr.aria-label]="'Edit group'" (click)="disabledGroupSelector = false" [disabled]="!disabledGroupSelector">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </mat-form-field>
-                        </div>
-                        <div fxFlex>
-                            <mat-form-field appearance="fill" style="width: 75%;">
-                                <mat-label>Idea</mat-label>
-                                <input matInput [value]="participant.idea?.title" readonly>
-                                <button mat-icon-button matSuffix matTooltip="Editar idea" [attr.aria-label]="'Edit idea'" (click)="openMyIdeaEditDialog()">
                                     <mat-icon>edit</mat-icon>
                                 </button>
                             </mat-form-field>
@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- Participant view -->
-                <div *ngSwitchCase="'participant'">
+                <!--<div *ngSwitchCase="'participant'">
                     <div style="text-align: center;" fxLayout="row">
                         <div fxFlex>
                             <mat-form-field appearance="fill">
@@ -62,7 +62,7 @@
                             </mat-form-field>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div *ngSwitchDefault>
                     <p class="centered">Participa de esta simbiocreación!</p>

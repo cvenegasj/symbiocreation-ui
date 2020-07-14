@@ -23,6 +23,8 @@ import { EditIdeaDialogComponent } from './edit-idea-dialog/edit-idea-dialog.com
 import { EditGroupNameDialogComponent } from './edit-group-name-dialog/edit-group-name-dialog.component';
 import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-capture-dialog.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 
 @NgModule({
   declarations: [
@@ -49,9 +51,12 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
     HttpClientModule,
     ClipboardModule,
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
+    MomentTimezonePickerModule,
     
   ],
-  providers: [],
+  providers: [
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

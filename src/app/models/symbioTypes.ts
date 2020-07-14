@@ -10,6 +10,17 @@ export interface User {
 export interface Symbiocreation {
     id?: string;
     name: string;
+    place?: string;
+    dateTime?: Date;
+    timeZone?: string;
+    hasStartTime?: boolean;
+
+    description?: string;
+    infoUrl?: string;
+    tags?: string[];
+    extraUrls?: string[];
+    sdgs?: string[];
+
     lastModified?: Date;
     enabled?: boolean;
     visibility?: string;

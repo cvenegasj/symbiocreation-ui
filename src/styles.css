@@ -168,13 +168,16 @@ a:hover {
 }
 
 .nodes circle {
-    /*fill: #fff;
-    stroke: #000;*/
-    stroke-width: 1.5px;
+    /*stroke-width: 1.5px;*/
     cursor: pointer;
 }
 
 .nodes text {
     font-size: 11px;
     fill: #424242;
+}
+
+ng-moment-timezone-picker div.wrapper {
+    width: 280px !important;
+    height: auto !important;
 }

@@ -15,6 +15,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+
 
 @NgModule({
   imports: [
@@ -34,6 +38,9 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     MatTooltipModule,
     MatDialogModule,
     ClipboardModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
 
   ],
   exports: [
@@ -53,6 +60,9 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     MatTooltipModule,
     MatDialogModule,
     ClipboardModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
     
   ],
 })

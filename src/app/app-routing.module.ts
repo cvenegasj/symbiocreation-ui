@@ -9,8 +9,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { CreateSymbioComponent } from './create-symbio/create-symbio.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-  //{ path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'explore', component: ExploreComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'symbiocreation/:id', component: SymbiocreationComponent, 

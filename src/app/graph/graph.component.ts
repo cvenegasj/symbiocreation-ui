@@ -138,6 +138,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .force('charge', d3.forceManyBody().strength(-40))
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2));
 
+    // get the maximum height of any node, which must belong to a root-level node
+    let maxNodeHeight = 0;
+    for (let node of this.data) {
+      let temp = this.getNodeHeight(node);
+      if (temp > maxNodeHeight) maxNodeHeight = temp;
+    }
+
     // draw links
     this.linkElements = this.linkGroup
       .selectAll('line')
@@ -147,7 +154,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     const linkEnter = this.linkElements
       .enter()
-      .append("line");
+      .append("line")
+        .style("stroke-width", d => (6 - 0.8) * (d.source.height / maxNodeHeight) + 0.8);
 
     this.linkElements = linkEnter.merge(this.linkElements);
     
@@ -162,27 +170,20 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .enter()
       .append("g");
 
-    // get the maximum height of any node, which must belong to a root-level node
-    let maxNodeHeight = 0;
-    for (let node of this.data) {
-      let temp = this.getNodeHeight(node);
-      if (temp > maxNodeHeight) maxNodeHeight = temp;
-    }
-
     nodeEnter.append("circle")
         //.attr("fill", d => d.children ? "#fff" : "#FF4081")
         //.attr("stroke", d => d.children ? "#C51162" : "#fff")
-        .attr("fill", d => this.getGradientColor(d.height, maxNodeHeight, "#FF4081", "#FFFFFF"))
-        .attr("stroke", d => d.children ? "#C51162" : "#fff")
+        .attr("fill", d => this.getGradientColor(d.height, maxNodeHeight, "#FFFFFF", "#FF4081"))
+        .attr("stroke", d => d.children ? this.getDarkerColor(this.getGradientColor(d.height, maxNodeHeight, "#FFFFFF", "#FF4081")) : "#cccccc")
         .attr("stroke-width", 1.5)
-        .attr('r', d => d.children ? 10 : 8)
+        .attr('r', d => this.getGradientRadius(d.height, maxNodeHeight, 8, 12))
         .on('click', d => this.openIdeaDetailSidenav(d.id))
         .on('contextmenu', d => this.openNodeContextMenu(d));
 
     nodeEnter.append("text")
         .text(d => d.name)
-        .attr('x', -9)
-        .attr('y', -11);
+        .attr('x', d => d.children ? -9 : -9)
+        .attr('y', d =>  d.children ? -14: -10);
 
     this.nodeElements = nodeEnter.merge(this.nodeElements);
 
@@ -380,31 +381,20 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     return '#' + this.convertToHex(color);
   } 
 
-  /*getGradientArray(from: string, to: string, steps: number): string[] {
-    let start = this.convertToRGB(from);    
-    let end = this.convertToRGB(to);
-    let diff = [0, 0, 0];
-    diff[0] = end[0] - start[0];
-    diff[1] = end[1] - start[1];
-    diff[2] = end[2] - start[2];
+  getDarkerColor(color: string): string {
+    let colorRGB = this.convertToRGB(color);  
 
-    //Alpha blending amount
-    let alpha = 0.0;
-    let array = [];
-    
-    for (let i = 0; i < steps; i++) {
-      let c = [];
-      alpha += (1.0/steps);
-      
-      c[0] = start[0] * alpha + (1 - alpha) * end[0];
-      c[1] = start[1] * alpha + (1 - alpha) * end[1];
-      c[2] = start[2] * alpha + (1 - alpha) * end[2];
+    colorRGB[0] -= 55;
+    colorRGB[1] -= 55;
+    colorRGB[2] -= 55;
 
-      array.push(this.convertToHex(c));
-    }
-    
-    return array;
-  }*/
+    return '#' + this.convertToHex(colorRGB);
+  }
+
+  getGradientRadius(height: number, maxHeight: number, from: number, to: number): number {
+    const diff = to - from;
+    return diff * (height / maxHeight) + from;
+  }
 
   hex(c): string {
     var s = "0123456789abcdef";

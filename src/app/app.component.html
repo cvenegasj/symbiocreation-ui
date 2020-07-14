@@ -1,5 +1,6 @@
 <mat-toolbar color="primary">
     <a routerLink="/" style="margin-right: 15px;">{{title}}</a>
+    <a mat-button routerLink="/dashboard" *ngIf="auth.loggedIn">Dashboard</a>
     <a mat-button routerLink="/explore">Explora</a>
 
     <span fxFlex></span>

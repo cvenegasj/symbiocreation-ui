@@ -1,10 +1,119 @@
 <div style="width: 50%; margin: 40px auto 0; padding: 5px;">
     
     <form #form="ngForm" (ngSubmit)="onSubmit()">
-        <mat-form-field style="width: 100%;">
-            <mat-label>Nombre de la simbiocreación</mat-label>
-            <input matInput type="text" required [(ngModel)]="model.name" name="name">
-        </mat-form-field>
+        <div fxLayout="row">
+            <mat-form-field fxFlex="80" style="padding-right: 20px;">
+                <mat-label>Nombre de la simbiocreación</mat-label>
+                <input matInput type="text" required [(ngModel)]="model.name" name="name">
+            </mat-form-field>
+
+            <mat-checkbox fxFlex="20" [(ngModel)]="isPrivate" name="isPrivate">Es un evento privado</mat-checkbox>
+        </div>
+
+        <div>
+            <mat-form-field style="width: 400px; padding-right: 20px;">
+                <mat-label>Lugar</mat-label>
+                <input matInput type="text" [(ngModel)]="model.place" name="place">
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row">
+            <mat-form-field appearance="fill" style="padding-right: 10px;">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
+
+                <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-checkbox fxFlex="20" [(ngModel)]="hasStartTime" name="hasStartTime">Establecer hora de inicio</mat-checkbox>
+        </div>
+
+        <div *ngIf="hasStartTime" fxLayout="row">
+            <mat-form-field appearance="fill" style="padding-right: 10px;">
+                <mat-label>Hora</mat-label>
+                <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
+            </mat-form-field>
+
+            <ng-moment-timezone-picker (onselect)="onTzSelected($event)" 
+                            [customPlaceholderText]="'Zona horaria'"
+                            [customNotFoundText]="'No se encontró zona'">
+            </ng-moment-timezone-picker>
+        </div>
+
+        <div>
+            <mat-form-field fxFlex appearance="fill">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput [(ngModel)]="model.description" name="description" rows="9"></textarea>
+            </mat-form-field>
+        </div>
+
+
+        <!-- More details of event -->
+        <div style="text-align: right;">
+            <button  type="button" mat-button color="primary" (click)="detailsOpened = !detailsOpened">{{detailsOpened ? 'Menos' : 'Más'}} detalles</button>
+        </div>
+
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-label>Link con información del evento</mat-label>
+                <input matInput type="url" [(ngModel)]="model.infoUrl" name="infoUrl">
+            </mat-form-field>
+        </div>
+
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-chip-list #tagList>
+                    <mat-chip *ngFor="let tag of model.tags" selected color="accent"
+                            [removable]="true" (removed)="removeTag(tag)">
+                        {{tag}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Tags"
+                            [matChipInputFor]="tagList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="true"
+                            (matChipInputTokenEnd)="addTag($event)">
+                </mat-chip-list>
+            </mat-form-field>
+        </div>
+
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-chip-list #extraUrlsList class="mat-chip-list-stacked">
+                    <mat-chip *ngFor="let url of model.extraUrls" selected color="accent"
+                            [removable]="true" (removed)="removeExtraUrl(url)">
+                        {{url}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input style="flex: 1 0 40px;" placeholder="Extra URLs"
+                            [matChipInputFor]="extraUrlsList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="true"
+                            (matChipInputTokenEnd)="addExtraUrl($event)">
+                </mat-chip-list>
+            </mat-form-field>
+            
+        </div>
+
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-chip-list #sdgList>
+                    <mat-chip *ngFor="let sdg of model.sdgs" selected color="accent"
+                            [removable]="true" (removed)="removeSDG(sdg)">
+                        {{sdg}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="ODS"
+                            [matChipInputFor]="sdgList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="true"
+                            (matChipInputTokenEnd)="addSDG($event)">
+                </mat-chip-list>
+            </mat-form-field>
+        </div>
+
+
     
         <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid">
             <span>Crear</span>
