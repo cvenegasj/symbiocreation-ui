@@ -11,6 +11,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 
 import { environment } from '../../environments/environment';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
+import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -73,6 +74,7 @@ export class DashboardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+
         this.symbioService.deleteSymbiocreation(id).subscribe(
           res => {
             this.symbiocreations = this.symbiocreations.filter(s => s.id !== id);
@@ -92,6 +94,18 @@ export class DashboardComponent implements OnInit {
         this.symbioService.updateSymbiocreationName(symbio).subscribe();
       }
     });
+  }
+
+  viewSymbiocreationDetail(symbio: Symbiocreation, isModerator: boolean) {
+    const dialogRef = this.dialog.open(SymbiocreationDetailComponent, {
+      width: '600px',
+      data: {
+        symbio: symbio,
+        isModerator: isModerator
+      }
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 
 }

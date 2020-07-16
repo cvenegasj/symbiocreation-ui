@@ -1,0 +1,315 @@
+<h1 mat-dialog-title>
+    <span>{{data.symbio.name}}</span>
+    <mat-icon class="font-20 gray-600" style="position: relative; top: 3px; margin-left: 8px;">
+        {{data.symbio.visibility === 'public' ? 'public' : 'lock'}}
+    </mat-icon>
+
+    <span fxFlex></span>
+
+    <button mat-icon-button matTooltip="Editar información" (click)="editSymbiocreationInfo(data.symbio)">
+        <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+    </button>
+</h1>
+
+<mat-dialog-content>
+
+    <!-- Place -->
+    <div style="margin-top: 20px;" [hidden]="!data.symbio.place" (mouseenter)="showEditButton(btn1)" (mouseleave)="hideEditButton(btn1)">
+        <mat-icon color="primary">place</mat-icon>
+        <span class="gray-700 font-15" style="position: relative; top: -5px; margin-left: 5px;">{{data.symbio.place}}</span>
+        
+        <span #btn1 hidden style="position: relative; top: -7px; margin-left: 5px;">
+            <button mat-icon-button matTooltip="Editar" (click)="editPlace = true;" style="line-height: 0; width: 0; height: 0;">
+                <mat-icon class="font-18 gray-700">edit</mat-icon>
+            </button>
+        </span>
+    </div>
+
+    <div *ngIf="editPlace" fxLayout="row">
+        <mat-form-field fxFlex>
+            <mat-label>Lugar</mat-label>
+            <input matInput [(ngModel)]="data.symbio.place">
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editPlace = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveGeneral()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Date and time -->
+    <div style="margin-top: 20px;" *ngIf="data.symbio.dateTime" fxLayout="row">
+        <div (mouseenter)="showEditButton(btn2)" (mouseleave)="hideEditButton(btn2)">
+            <mat-icon color="primary">event</mat-icon>
+            <span class="gray-700 font-15" style="position: relative; top: -5px; margin-left: 5px;">{{data.symbio.dateTime | date : 'd MMM, y' : 'UTC'}}</span>
+            
+            <span #btn2 hidden style="position: relative; top: -7px; margin-left: 5px;">
+                <button mat-icon-button matTooltip="Editar" (click)="editDate = true;" style="line-height: 0; width: 0; height: 0;">
+                    <mat-icon class="font-18 gray-700">edit</mat-icon>
+                </button>
+            </span>
+        </div>
+        
+        <div *ngIf="data.symbio.hasStartTime" (mouseenter)="showEditButton(btn3)" (mouseleave)="hideEditButton(btn3)" style="margin-left: 35px;">
+            <mat-icon color="primary">schedule</mat-icon>
+            <span class="gray-700 font-15" style="margin-right: 5px; position: relative; top: -5px; margin-left: 5px;">{{data.symbio.dateTime | date : 'shortTime' : 'UTC'}}</span>
+            <span class="gray-700 font-15" style="position: relative; top: -5px;">{{data.symbio.timeZone}}</span>
+
+            <span #btn3 hidden style="position: relative; top: -7px; margin-left: 5px;">
+                <button mat-icon-button matTooltip="Editar" (click)="editTime = true;" style="line-height: 0; width: 0; height: 0;">
+                    <mat-icon class="font-18 gray-700">edit</mat-icon>
+                </button>
+            </span>
+        </div>
+    </div>
+
+    <div *ngIf="editDate" fxLayout="row">
+        <mat-form-field appearance="fill">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate">
+
+            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+            <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editDate = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveDate()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="editTime" fxLayout="row">
+        <mat-form-field appearance="fill">
+            <mat-label>Hora</mat-label>
+            <input matInput type="time" [(ngModel)]="eventTime">
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editTime = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveTime()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Description -->
+    <div style="margin-top: 20px;" *ngIf="data.symbio.description" (mouseenter)="showEditButton(btn4)" (mouseleave)="hideEditButton(btn4)">
+        <p class="gray-700 font-15 justified" style="white-space: pre-wrap;">
+            {{data.symbio.description}}
+        </p>
+
+        <span #btn4 hidden style="position: relative; top: -7px; margin-left: 5px;">
+            <button mat-icon-button matTooltip="Editar" (click)="editDesc = true;" style="line-height: 0; width: 0; height: 0;">
+                <mat-icon class="font-18 gray-700">edit</mat-icon>
+            </button>
+        </span>
+    </div>
+
+    <div *ngIf="editDesc">
+        <mat-form-field appearance="fill" style="width: 100%;">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput [(ngModel)]="data.symbio.description" rows="8"></textarea>
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editDesc = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveGeneral()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Info URL -->
+    <div style="margin-top: 20px;" *ngIf="data.symbio.infoUrl" (mouseenter)="showEditButton(btn5)" (mouseleave)="hideEditButton(btn5)">
+        <mat-icon color="primary">link</mat-icon>
+        <span class="gray-700 font-15" style="position: relative; top: -5px; margin-left: 5px;">{{data.symbio.infoUrl}}</span>
+
+        <span #btn5 hidden style="position: relative; top: -7px; margin-left: 5px;">
+            <button mat-icon-button matTooltip="Editar" (click)="editInfoUrl = true;" style="line-height: 0; width: 0; height: 0;">
+                <mat-icon class="font-18 gray-700">edit</mat-icon>
+            </button>
+        </span>
+    </div>
+
+    <div *ngIf="editInfoUrl" fxLayout="row">
+        <mat-form-field fxFlex>
+            <mat-label>Link con información del evento</mat-label>
+            <input matInput type="url" [(ngModel)]="data.symbio.infoUrl">
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editInfoUrl = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveGeneral()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Tags -->
+    <div style="margin-top: 20px;" *ngIf="data.symbio.tags?.length > 0" (mouseenter)="showEditButton(btn6)" (mouseleave)="hideEditButton(btn6)">
+        <mat-icon color="primary">label</mat-icon>
+        <span style="position: relative; top: -5px; margin-left: 5px;">Tags</span>
+
+        <span #btn6 hidden style="position: relative; top: -7px; margin-left: 5px;">
+            <button mat-icon-button matTooltip="Editar" (click)="editTags = true;" style="line-height: 0; width: 0; height: 0;">
+                <mat-icon class="font-18 gray-700">edit</mat-icon>
+            </button>
+        </span>
+
+        <div>
+            <!--<span *ngIf="data.symbio.tags?.length === 0 || !data.symbio.tags" class="gray-500 font-13">Ninguna</span>-->
+
+            <mat-chip-list aria-label="Tags">
+                <mat-chip *ngFor="let tag of data.symbio.tags" selected color="accent">
+                    {{tag}}
+                </mat-chip>
+              </mat-chip-list>
+        </div>
+    </div>
+
+    <div *ngIf="editTags">
+        <mat-form-field style="width: 100%;">
+            <mat-chip-list #tagList>
+                <mat-chip *ngFor="let tag of data.symbio.tags" selected color="accent"
+                        [removable]="true" (removed)="removeTag(tag)">
+                    {{tag}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Tags"
+                        [matChipInputFor]="tagList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true"
+                        (matChipInputTokenEnd)="addTag($event)">
+            </mat-chip-list>
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editTags = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveGeneral()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Extra URLs -->
+    <div style="margin-top: 20px;" *ngIf="data.symbio.extraUrls?.length > 0" (mouseenter)="showEditButton(btn7)" (mouseleave)="hideEditButton(btn7)">
+        <mat-icon color="primary">link</mat-icon>
+        <span style="position: relative; top: -5px; margin-left: 5px;">Extra URLs</span>
+
+        <span #btn7 hidden style="position: relative; top: -7px; margin-left: 5px;">
+            <button mat-icon-button matTooltip="Editar" (click)="editExtraUrls = true;" style="line-height: 0; width: 0; height: 0;">
+                <mat-icon class="font-18 gray-700">edit</mat-icon>
+            </button>
+        </span>
+
+        <div>
+            <!--<span *ngIf="!data.symbio.extraUrls || data.symbio.extraUrls?.length === 0" class="gray-500 font-13">Ninguna</span>-->
+
+            <mat-chip-list aria-label="Extra URLs">
+                <mat-chip *ngFor="let url of data.symbio.extraUrls" selected color="accent">
+                    {{url}}
+                </mat-chip>
+              </mat-chip-list>
+        </div>
+    </div>
+
+    <div *ngIf="editExtraUrls">
+        <mat-form-field style="width: 100%;">
+            <mat-chip-list #extraUrlsList>
+                <mat-chip *ngFor="let url of data.symbio.extraUrls" selected color="accent"
+                        [removable]="true" (removed)="removeExtraUrl(url)">
+                    {{url}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Extra URLs"
+                        [matChipInputFor]="extraUrlsList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true"
+                        (matChipInputTokenEnd)="addExtraUrl($event)">
+            </mat-chip-list>
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editExtraUrls = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveGeneral()">
+                Guardar
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ODS -->
+    <div style="margin-top: 20px;" *ngIf="data.symbio.sdgs?.length > 0" (mouseenter)="showEditButton(btn8)" (mouseleave)="hideEditButton(btn8)">
+        <mat-icon color="primary">outlined_flag</mat-icon>
+        <span style="position: relative; top: -5px; margin-left: 5px;">ODS</span>
+
+        <span #btn8 hidden style="position: relative; top: -7px; margin-left: 5px;">
+            <button mat-icon-button matTooltip="Editar" (click)="editSDGs = true;" style="line-height: 0; width: 0; height: 0;">
+                <mat-icon class="font-18 gray-700">edit</mat-icon>
+            </button>
+        </span>
+        
+        <div>
+            <!--<span *ngIf="data.symbio.sdgs?.length === 0 || !data.symbio.sdgs" class="gray-500 font-13">Ninguna</span> -->
+            
+            <mat-chip-list aria-label="ODS">
+                <mat-chip *ngFor="let sdg of data.symbio.sdgs" selected color="accent">
+                    {{sdg}}
+                </mat-chip>
+              </mat-chip-list>
+        </div>
+    </div>
+
+    <div *ngIf="editSDGs">
+        <mat-form-field style="width: 100%;">
+            <mat-chip-list #sdgList>
+                <mat-chip *ngFor="let sdg of data.symbio.sdgs" selected color="accent"
+                        [removable]="true" (removed)="removeSDG(sdg)">
+                    {{sdg}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="ODS"
+                        [matChipInputFor]="sdgList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        [matChipInputAddOnBlur]="true"
+                        (matChipInputTokenEnd)="addSDG($event)">
+            </mat-chip-list>
+        </mat-form-field>
+
+        <div> 
+            <button mat-flat-button (click)="editSDGs = false;">
+                Cancelar
+            </button>
+            <button mat-flat-button color="accent" (click)="saveGeneral()">
+                Guardar
+            </button>
+        </div>
+    </div>
+    
+</mat-dialog-content>

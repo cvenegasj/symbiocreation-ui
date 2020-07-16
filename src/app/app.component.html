@@ -6,7 +6,7 @@
     <span fxFlex></span>
 
     <button *ngIf="auth.userProfile$ | async as profile" mat-stroked-button [matMenuTriggerFor]="userMenu">
-        <span>{{profile.given_name}}</span>
+        <span>{{profile.name.split(" ")[0]}}</span>
         <mat-icon>expand_more</mat-icon>
     </button>
     <mat-menu #userMenu="matMenu">

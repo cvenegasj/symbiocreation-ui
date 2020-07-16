@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Symbiocreation } from '../models/symbioTypes';
+import { SymbiocreationService } from '../services/symbiocreation.service';
 
 @Component({
   selector: 'app-explore',
@@ -7,9 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExploreComponent implements OnInit {
 
-  constructor() { }
+  symbiocreations: Symbiocreation[];
+
+  constructor(
+    private symbioService: SymbiocreationService
+  ) { }
 
   ngOnInit(): void {
+    this.symbioService.getPublicSymbiocreations().subscribe(
+      symbios => {
+        this.symbiocreations = symbios;
+        //console.log(this.symbiocreations);
+      }
+    );
   }
 
 }

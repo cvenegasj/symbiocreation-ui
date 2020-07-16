@@ -7,6 +7,7 @@ import { ExploreComponent } from './explore/explore.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CreateSymbioComponent } from './create-symbio/create-symbio.component';
+import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
     ] 
   },
   { path: 'create', component: CreateSymbioComponent, canActivate: [AuthGuard] },
+  { path: 'edit/:id', component: EditSymbiocreationDetailComponent },
   { path: '**', redirectTo: '' }
 ];
 

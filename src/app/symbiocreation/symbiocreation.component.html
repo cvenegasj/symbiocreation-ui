@@ -15,7 +15,7 @@
                     <div style="text-align: center;" fxLayout="row">
                         <div fxFlex>
                             <mat-form-field appearance="fill" style="width: 75%;">
-                                <mat-label>Idea</mat-label>
+                                <mat-label>Mi idea</mat-label>
                                 <input matInput [value]="participant.idea?.title" readonly>
                                 <button mat-icon-button matSuffix matTooltip="Editar idea" [attr.aria-label]="'Edit idea'" (click)="openMyIdeaEditDialog()">
                                     <mat-icon>edit</mat-icon>
@@ -24,7 +24,7 @@
                         </div>
                         <div fxFlex>
                             <mat-form-field appearance="fill">
-                                <mat-label>Grupo</mat-label>
+                                <mat-label>Mi grupo</mat-label>
                                 <mat-select [(value)]="idGroupSelected" [disabled]="disabledGroupSelector" (selectionChange)="onMyGroupChanged()">
                                     <mat-option>Ninguno</mat-option>
                                     <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>

@@ -108,6 +108,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
               this.idGroupSelected = parentNode?.id;
 
               this.graphComponent.roleOfLoggedIn = this.roleOfLoggedIn;
+              this.sharedService.nextRole(this.roleOfLoggedIn);
               
               break;
             }

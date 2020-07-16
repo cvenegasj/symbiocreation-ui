@@ -1,10 +1,12 @@
 <div style="width: 50%; margin: 40px auto 0; padding: 5px;">
-    
-    <form #form="ngForm" (ngSubmit)="onSubmit()">
+
+    <h1>Editar información</h1>
+
+    <form #form="ngForm" (ngSubmit)="onSubmit()" *ngIf="symbio">
         <div fxLayout="row">
             <mat-form-field fxFlex="80" style="padding-right: 20px;">
                 <mat-label>Nombre de la simbiocreación</mat-label>
-                <input matInput cdkFocusInitial type="text" required [(ngModel)]="model.name" name="name">
+                <input matInput cdkFocusInitial required [(ngModel)]="symbio.name" name="name">
             </mat-form-field>
 
             <mat-checkbox fxFlex="20" [(ngModel)]="isPrivate" name="isPrivate">Es un evento privado</mat-checkbox>
@@ -13,29 +15,30 @@
         <div>
             <mat-form-field style="width: 80%; padding-right: 20px;">
                 <mat-label>Lugar</mat-label>
-                <input matInput type="text" [(ngModel)]="model.place" name="place">
+                <input matInput type="text" [(ngModel)]="symbio.place" name="place">
             </mat-form-field>
         </div>
 
         <div fxLayout="row">
             <mat-form-field appearance="fill" style="padding-right: 10px;">
                 <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="model.dateTime" name="dateTime">
+                <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="symbio.dateTime" name="dateTime">
 
                 <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                 <mat-datepicker #datePicker></mat-datepicker>
             </mat-form-field>
 
-            <mat-checkbox fxFlex="20" [(ngModel)]="model.hasStartTime" name="hasStartTime">Establecer hora de inicio</mat-checkbox>
+            <mat-checkbox fxFlex="20" [(ngModel)]="symbio.hasStartTime" name="hasStartTime">Establecer hora de inicio</mat-checkbox>
         </div>
 
-        <div *ngIf="model.hasStartTime" fxLayout="row">
+        <div *ngIf="symbio.hasStartTime" fxLayout="row">
             <mat-form-field appearance="fill" style="padding-right: 10px;">
                 <mat-label>Hora</mat-label>
                 <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
             </mat-form-field>
 
-            <ng-moment-timezone-picker (onselect)="onTzSelected($event)" 
+            <ng-moment-timezone-picker
+                            (onselect)="onTzSelected($event)" 
                             [customPlaceholderText]="'Zona horaria'"
                             [customNotFoundText]="'No se encontró zona'">
             </ng-moment-timezone-picker>
@@ -44,29 +47,21 @@
         <div>
             <mat-form-field fxFlex appearance="fill">
                 <mat-label>Descripción</mat-label>
-                <textarea matInput [(ngModel)]="model.description" name="description" rows="9"></textarea>
+                <textarea matInput [(ngModel)]="symbio.description" name="description" rows="9"></textarea>
             </mat-form-field>
         </div>
 
-
-        <!-- More details of event -->
-        <div style="text-align: right;">
-            <button type="button" mat-button color="primary" (click)="detailsOpened = !detailsOpened">
-                {{detailsOpened ? 'Menos' : 'Más'}} detalles
-            </button>
-        </div>
-
-        <div *ngIf="detailsOpened">
+        <div>
             <mat-form-field fxFlex>
                 <mat-label>Link con información del evento</mat-label>
-                <input matInput type="url" [(ngModel)]="model.infoUrl" name="infoUrl">
+                <input matInput type="url" [(ngModel)]="symbio.infoUrl" name="infoUrl">
             </mat-form-field>
         </div>
 
-        <div *ngIf="detailsOpened">
+        <div>
             <mat-form-field fxFlex>
                 <mat-chip-list #tagList>
-                    <mat-chip *ngFor="let tag of model.tags" selected color="accent"
+                    <mat-chip *ngFor="let tag of symbio.tags" selected color="accent"
                             [removable]="true" (removed)="removeTag(tag)">
                         {{tag}}
                         <mat-icon matChipRemove>cancel</mat-icon>
@@ -80,10 +75,10 @@
             </mat-form-field>
         </div>
 
-        <div *ngIf="detailsOpened">
+        <div>
             <mat-form-field fxFlex>
                 <mat-chip-list #extraUrlsList class="mat-chip-list-stacked">
-                    <mat-chip *ngFor="let url of model.extraUrls" selected color="accent"
+                    <mat-chip *ngFor="let url of symbio.extraUrls" selected color="accent"
                             [removable]="true" (removed)="removeExtraUrl(url)">
                         {{url}}
                         <mat-icon matChipRemove>cancel</mat-icon>
@@ -95,13 +90,12 @@
                             (matChipInputTokenEnd)="addExtraUrl($event)">
                 </mat-chip-list>
             </mat-form-field>
-            
         </div>
 
-        <div *ngIf="detailsOpened">
+        <div>
             <mat-form-field fxFlex>
                 <mat-chip-list #sdgList>
-                    <mat-chip *ngFor="let sdg of model.sdgs" selected color="accent"
+                    <mat-chip *ngFor="let sdg of symbio.sdgs" selected color="accent"
                             [removable]="true" (removed)="removeSDG(sdg)">
                         {{sdg}}
                         <mat-icon matChipRemove>cancel</mat-icon>
@@ -115,10 +109,14 @@
             </mat-form-field>
         </div>
 
-    
-        <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid">
-            <span>Crear</span>
-        </button>
+
+        <div>
+            <button mat-button type="button" (click)="location.back()">Cancelar</button>
+            <span fxFlex></span>
+            <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid">
+                <span>Guardar</span>
+            </button>
+        </div>
     </form>
 
 </div>

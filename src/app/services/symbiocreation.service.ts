@@ -48,6 +48,12 @@ export class SymbiocreationService {
         return this.http.get<Symbiocreation[]>(API_URL);
     }
 
+    // find public symbiocreations
+    getPublicSymbiocreations(): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getPublic`;
+        return this.http.get<Symbiocreation[]>(API_URL);
+    }
+
     // update
     /*updateSymbiocreation(data: Symbiocreation): Observable<Symbiocreation> {
         let API_URL = `${this.apiUrl}/symbiocreations`;
@@ -60,6 +66,15 @@ export class SymbiocreationService {
     // update name
     updateSymbiocreationName(data: Symbiocreation): Observable<void> {
         let API_URL = `${this.apiUrl}/symbiocreations/${data.id}/updateName`;
+        return this.http.put<void>(API_URL, data, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    // update info
+    updateSymbiocreationInfo(data: Symbiocreation): Observable<void> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${data.id}/updateInfo`;
         return this.http.put<void>(API_URL, data, {headers: this.headers})
             .pipe(
                 catchError(this.error)

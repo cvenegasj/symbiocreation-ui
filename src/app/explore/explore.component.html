@@ -1,1 +1,25 @@
-<p>En desarrollo!</p>
+<div fxLayout="column" fxLayoutAlign="center center">
+
+
+    <div style="margin-top: 30px;" style="width: 80%; margin: 20px auto;">
+        <mat-grid-list cols="4" rowHeight="2:1" gutterSize="10px">
+            <mat-grid-tile *ngFor="let s of symbiocreations">
+                <mat-card class="card-pink-bg" style="width: 100%;">
+                    <div class="centered font-14 gray-300">
+                        <mat-icon *ngIf="s.dateTime" class="font-16">event</mat-icon>
+                        <span *ngIf="s.dateTime" style="position: relative; top: -3px;">{{s.dateTime | date : 'd MMM' : 'UTC'}}</span>
+
+                        <!--<mat-icon class="font-16" style="margin-left: 10px;">schedule</mat-icon> -->
+                        <!--<span style="position: relative; top: -3px; margin-left: 5px;">{{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
+                        <span style="position: relative; top: -3px; margin-left: 5px;">{{s.timeZone}}</span> -->
+                    </div> 
+                    <div class="centered">
+
+                        <span class="font-20 bold" style="color: white">{{s.name}}</span>
+
+                    </div>
+                </mat-card>
+            </mat-grid-tile>
+        </mat-grid-list>
+    </div>
+</div>

@@ -2,8 +2,9 @@ import { Node } from './forceGraphTypes';
 
 export interface User {
     id?: string;
-    firstName: string;
-    lastName: string;
+    name: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
 }
 

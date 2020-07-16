@@ -17,7 +17,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatNativeDateModule } from '@angular/material/core';
+//import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -40,7 +43,10 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     ClipboardModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatMomentDateModule,
+    //MatMomentDateModule,
+    MatNativeDateModule,
+    MatGridListModule,
+    MatCardModule,
 
   ],
   exports: [
@@ -62,7 +68,10 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     ClipboardModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatMomentDateModule,
+    //MatMomentDateModule,
+    MatNativeDateModule,
+    MatGridListModule,
+    MatCardModule,
     
   ],
 })

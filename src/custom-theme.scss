@@ -37,3 +37,11 @@ $symbiocreation-ui-theme: mat-light-theme($symbiocreation-ui-primary, $symbiocre
     background-color: mat-color($symbiocreation-ui-accent, darker) !important;
 }
 
+.card-pink-bg {
+    background-color: mat-color($mat-pink, 400);
+}
+
+/*.card-pink-bg .contrast-color {
+    color: mat-contrast($mat-pink, 400);
+}*/
+

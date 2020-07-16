@@ -392,6 +392,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   getGradientRadius(height: number, maxHeight: number, from: number, to: number): number {
+    if (maxHeight === 0) return from;
+    
     const diff = to - from;
     return diff * (height / maxHeight) + from;
   }

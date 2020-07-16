@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
@@ -7,7 +7,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
-import { v4 as uuidv4 } from 'uuid';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 //import * as moment from 'moment';
@@ -21,12 +20,11 @@ import * as moment from 'moment-timezone';
 export class CreateSymbioComponent implements OnInit {
 
   model: Symbiocreation;
+
   isPrivate: boolean;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  eventDate: any;
   eventTime: any;
-  eventTz: any;
-  hasStartTime: boolean;
+  eventTz: string;
 
   detailsOpened: boolean;
 
@@ -39,32 +37,32 @@ export class CreateSymbioComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.model = { name: '', enabled: true, participants: [], tags: [], extraUrls:[], sdgs: [] };
+    this.model = { name: '', hasStartTime: false, enabled: true, participants: [], tags: [], extraUrls:[], sdgs: [] };
     this.isPrivate = false;
-    this.eventDate = null;
-    this.eventTime = null;
-    this.eventTz = null;
-    this.hasStartTime = false;
+    this.eventTime = '12:00';
+    this.eventTz = 'UTC';
 
     this.detailsOpened = false;
   }
 
   onSubmit() {
-    this.model.lastModified = new Date();
     this.model.participants = [];
     this.model.graph = [];
 
     this.model.visibility = this.isPrivate ? 'private' : 'public';
-    this.model.hasStartTime = this.hasStartTime;
 
-    if (this.eventDate) {
-      this.model.dateTime = this.eventDate.toDate();
+    if (this.model.dateTime) {
+      let eventDateTime = moment.utc({year: this.model.dateTime.getFullYear(), 
+                                    month: this.model.dateTime.getMonth(), 
+                                    day: this.model.dateTime.getDate()});
+
+      this.model.dateTime = eventDateTime.toDate();
       
-      if (this.hasStartTime && this.eventTime) {
+      if (this.model.hasStartTime) {
         // dateTime object: UTC + timezone string
-        this.eventDate.set({"hour": this.eventTime.split(':')[0], "minute": this.eventTime.split(':')[1]});
-        //console.log(this.eventDate.format());
-        this.model.dateTime = this.eventDate.toDate();
+        this.model.dateTime.setUTCHours(this.eventTime.split(':')[0]);
+        this.model.dateTime.setUTCSeconds(this.eventTime.split(':')[1]);
+
         this.model.timeZone = this.eventTz;
       }
     }
@@ -74,7 +72,7 @@ export class CreateSymbioComponent implements OnInit {
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(u => {
         this.model.participants.push({u_id: u.id, role: 'moderator'} as Participant); // participant
-        this.model.graph.push({id: uuidv4(), u_id: u.id, name: u.firstName} as Node); // node
+        this.model.graph.push({u_id: u.id, name: u.name} as Node); // node
 
         return this.symbioService.createSymbiocreation(this.model);
       })

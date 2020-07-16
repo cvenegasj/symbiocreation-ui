@@ -23,8 +23,10 @@ import { EditIdeaDialogComponent } from './edit-idea-dialog/edit-idea-dialog.com
 import { EditGroupNameDialogComponent } from './edit-group-name-dialog/edit-group-name-dialog.component';
 import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-capture-dialog.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+//import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
+import { SymbiocreationDetailComponent } from './symbiocreation-detail/symbiocreation-detail.component';
+import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,8 @@ import { MomentTimezonePickerModule } from 'moment-timezone-picker';
     EditGroupNameDialogComponent,
     CameraCaptureDialogComponent,
     ConfirmationDialogComponent,
+    SymbiocreationDetailComponent,
+    EditSymbiocreationDetailComponent,
     
   ],
   imports: [
@@ -55,7 +59,7 @@ import { MomentTimezonePickerModule } from 'moment-timezone-picker';
     
   ],
   providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
+    //{provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
   ],
   bootstrap: [AppComponent]
 })

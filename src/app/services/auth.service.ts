@@ -124,14 +124,13 @@ export class AuthService {
         if (!u) { // if no object returned
           console.log('new user!');
           // create new user
-          let newUser: User = {firstName: usr.given_name, 
-              lastName: usr.family_name,
-              email: usr.email};
+          let newUser: User = {name: usr.name, email: usr.email};
+
           this.userService.createUser(newUser).subscribe(res => this.router.navigate([targetRoute]));
         } else {
           console.log('returning user!');
-          u.firstName = usr.given_name;
-          u.lastName = usr.family_name;
+          u.name = usr.name;
+          
           this.userService.updateUser(u).subscribe(res => this.router.navigate([targetRoute]));
         }
       });
