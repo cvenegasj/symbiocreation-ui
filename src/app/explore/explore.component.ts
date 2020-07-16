@@ -16,12 +16,36 @@ export class ExploreComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.symbioService.getPublicSymbiocreations().subscribe(
-      symbios => {
-        this.symbiocreations = symbios;
-        //console.log(this.symbiocreations);
-      }
+    this.symbioService.getUpcomingPublicSymbiocreations().subscribe(
+      symbios => this.symbiocreations = symbios
     );
+  }
+
+  filterSelected(value: string) {
+    switch(value) {
+      case "upcoming": {
+        this.symbioService.getUpcomingPublicSymbiocreations().subscribe(
+          symbios => this.symbiocreations = symbios
+        );
+        break;
+      }
+      case "past": {
+        this.symbioService.getPastPublicSymbiocreations().subscribe(
+          symbios => this.symbiocreations = symbios
+        );
+        break;
+      }
+      case "all": {
+        this.symbioService.getAllPublicSymbiocreations().subscribe(
+          symbios => this.symbiocreations = symbios
+        );
+        break;
+      }
+      default: { 
+        console.log("Invalid choice"); 
+        break;              
+     } 
+    }
   }
 
 }

@@ -1,25 +1,36 @@
-<div fxLayout="column" fxLayoutAlign="center center">
+<div style="padding: 15px;">
+    <div class="container-80" style="margin-top: 40px; margin-bottom: 15px;">
+        <h2 class="font-26 bolder gray-900" style="display: inline-block;">Explora</h2>
+    </div>
 
+    <div class="container-80">
+        <mat-button-toggle-group name="filter" #group="matButtonToggleGroup" (change)="filterSelected(group.value)">
+            <mat-button-toggle value="upcoming" checked>Próximas</mat-button-toggle>
+            <mat-button-toggle value="past">Pasadas</mat-button-toggle>
+            <mat-button-toggle value="all">Todas</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
 
-    <div style="margin-top: 30px;" style="width: 80%; margin: 20px auto;">
-        <mat-grid-list cols="4" rowHeight="2:1" gutterSize="10px">
-            <mat-grid-tile *ngFor="let s of symbiocreations">
-                <mat-card class="card-pink-bg" style="width: 100%;">
-                    <div class="centered font-14 gray-300">
-                        <mat-icon *ngIf="s.dateTime" class="font-16">event</mat-icon>
-                        <span *ngIf="s.dateTime" style="position: relative; top: -3px;">{{s.dateTime | date : 'd MMM' : 'UTC'}}</span>
+    <div class="container-80" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="18px">
 
-                        <!--<mat-icon class="font-16" style="margin-left: 10px;">schedule</mat-icon> -->
-                        <!--<span style="position: relative; top: -3px; margin-left: 5px;">{{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
-                        <span style="position: relative; top: -3px; margin-left: 5px;">{{s.timeZone}}</span> -->
-                    </div> 
-                    <div class="centered">
+        <mat-card *ngFor="let s of symbiocreations" class="card-1 card-pink-bg" fxFlex="0 1 calc(25% - 18px)" fxFlex.lt-md="0 1 calc(33.3% - 18px)">
+            <div class="centered font-14 gray-300" style="height: 30px;">
+                <!--<mat-icon *ngIf="s.dateTime" class="font-16">event</mat-icon>-->
+                <span *ngIf="s.dateTime" style="position: relative; top: -3px;">{{s.dateTime | date : 'E d MMM' : 'UTC'}}, {{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
 
-                        <span class="font-20 bold" style="color: white">{{s.name}}</span>
+                <!--<mat-icon class="font-16" style="margin-left: 10px;">schedule</mat-icon> -->
+                <!--<span style="position: relative; top: -3px; margin-left: 5px;">{{s.dateTime | date : 'shortTime' : 'UTC'}}</span> -->
+                <!--<span style="position: relative; top: -3px; margin-left: 5px;">{{s.timeZone}}</span>-->
+            </div> 
 
-                    </div>
-                </mat-card>
-            </mat-grid-tile>
-        </mat-grid-list>
+            <div class="centered font-20 bold" style="color: white; height: 55px;">
+                <a [routerLink]="['/symbiocreation/', s.id]" class="ellipsed-2 link-hvr-underline">{{s.name}}</a>
+            </div>
+
+            <div class="centered" style="height: 30px;">
+                participantes...
+            </div>
+        </mat-card>
+
     </div>
 </div>

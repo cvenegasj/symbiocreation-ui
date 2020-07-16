@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs';
 import { GraphComponent } from '../graph/graph.component';
 
 import { Queue } from '../utils/queue';
+import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 
 @Component({
   selector: 'app-symbiocreation',
@@ -511,6 +512,18 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();
+  }
+
+  viewSymbiocreationDetail() {
+    const dialogRef = this.dialog.open(SymbiocreationDetailComponent, {
+      width: '600px',
+      data: {
+        symbio: this.symbiocreation,
+        isModerator: this.roleOfLoggedIn === 'moderator' ? true : false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 
 }

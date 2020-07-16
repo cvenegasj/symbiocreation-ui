@@ -8,7 +8,16 @@
         <!-- Main area -->
         <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column">
             <div class="mat-elevation-z3" style="padding: 7px; background-color: white;" [ngSwitch]="roleOfLoggedIn">
-                <h2 class="mat-subheading-1 centered">{{symbiocreation?.name}}</h2>
+                <h2 class="mat-subheading-1 centered">
+                    {{symbiocreation?.name}}
+
+                    <button mat-icon-button 
+                        matTooltip="Ver más información" matTooltipPosition="above"
+                        style="position: relative; top: -3px;" 
+                        (click)="viewSymbiocreationDetail()">
+                        <mat-icon class="font-20 gray-600">info</mat-icon>
+                    </button>
+                </h2>
                 
                 <!-- Participant view -->
                 <div *ngSwitchCase="'moderator' || 'participant'">
@@ -152,7 +161,8 @@
                 
                 <mat-list dense>
                     <mat-list-item *ngFor="let p of symbiocreation?.participants">
-                        <span>{{p.user.firstName}} {{p.user.lastName}}</span>
+                        <span *ngIf="p.user.firstName && p.user.lastName">{{p.user.firstName}} {{p.user.lastName}}</span>
+                        <span *ngIf="!(p.user.firstName && p.user.lastName)">{{p.user.name}}</span>
                         <span class="chip-role small" style="margin-left: 6px;" *ngIf="p.role === 'moderator'">Moderador</span>
                         
                         <span fxFlex></span>

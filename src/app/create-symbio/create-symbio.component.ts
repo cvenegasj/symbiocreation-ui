@@ -11,6 +11,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 //import * as moment from 'moment';
 import * as moment from 'moment-timezone';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-create-symbio',
@@ -33,6 +34,7 @@ export class CreateSymbioComponent implements OnInit {
     private userService: UserService,
     private auth: AuthService,
     private router: Router,
+    public location: Location,
     private _snackBar: MatSnackBar
     ) { }
 

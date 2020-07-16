@@ -123,13 +123,18 @@ export class AuthService {
         // update/create user
         if (!u) { // if no object returned
           console.log('new user!');
+
           // create new user
-          let newUser: User = {name: usr.name, email: usr.email};
+          let newUser: User = {name: usr.name, firstName: usr.given_name, lastName: usr.family_name, email: usr.email, pictureUrl: usr.picture};
 
           this.userService.createUser(newUser).subscribe(res => this.router.navigate([targetRoute]));
         } else {
           console.log('returning user!');
+
           u.name = usr.name;
+          if (usr.given_name) u.firstName = usr.given_name;
+          if (usr.family_name) u.lastName = usr.family_name;
+          if (usr.picture) u.pictureUrl = usr.picture;
           
           this.userService.updateUser(u).subscribe(res => this.router.navigate([targetRoute]));
         }

@@ -6,7 +6,7 @@
 
     <span fxFlex></span>
 
-    <button mat-icon-button matTooltip="Editar información" (click)="editSymbiocreationInfo(data.symbio)">
+    <button *ngIf="data.isModerator" mat-icon-button matTooltip="Editar información" (click)="editSymbiocreationInfo(data.symbio)">
         <mat-icon>edit</mat-icon>
     </button>
     <button mat-icon-button mat-dialog-close>

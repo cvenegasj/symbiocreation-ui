@@ -48,9 +48,21 @@ export class SymbiocreationService {
         return this.http.get<Symbiocreation[]>(API_URL);
     }
 
-    // find public symbiocreations
-    getPublicSymbiocreations(): Observable<Symbiocreation[]> {
-        let API_URL = `${this.apiUrl}/symbiocreations/getPublic`;
+    // find all public symbiocreations
+    getAllPublicSymbiocreations(): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getAllPublic`;
+        return this.http.get<Symbiocreation[]>(API_URL);
+    }
+
+    // find all upcoming symbiocreations
+    getUpcomingPublicSymbiocreations(): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getUpcomingPublic`;
+        return this.http.get<Symbiocreation[]>(API_URL);
+    }
+
+    // find all past symbiocreations
+    getPastPublicSymbiocreations(): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getPastPublic`;
         return this.http.get<Symbiocreation[]>(API_URL);
     }
 

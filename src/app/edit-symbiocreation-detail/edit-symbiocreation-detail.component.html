@@ -1,8 +1,9 @@
-<div style="width: 50%; margin: 40px auto 0; padding: 5px;">
+<div style="padding: 15px;">
+    <div class="container-80" style="margin-top: 40px; margin-bottom: 35px;">
+        <h2 class="font-26 bolder gray-900" style="display: inline-block;">Editar simbiocreación</h2>
+    </div>
 
-    <h1>Editar información</h1>
-
-    <form #form="ngForm" (ngSubmit)="onSubmit()" *ngIf="symbio">
+    <form #form="ngForm" (ngSubmit)="onSubmit()" *ngIf="symbio" class="container-60">
         <div fxLayout="row">
             <mat-form-field fxFlex="80" style="padding-right: 20px;">
                 <mat-label>Nombre de la simbiocreación</mat-label>
