@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Symbiocreation } from '../models/symbioTypes';
+import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 
 @Component({
   selector: 'app-explore',
@@ -12,7 +14,8 @@ export class ExploreComponent implements OnInit {
   symbiocreations: Symbiocreation[];
 
   constructor(
-    private symbioService: SymbiocreationService
+    private symbioService: SymbiocreationService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -46,6 +49,33 @@ export class ExploreComponent implements OnInit {
         break;              
      } 
     }
+  }
+
+  viewSymbiocreationDetail(s: Symbiocreation) {
+    const dialogRef = this.dialog.open(SymbiocreationDetailComponent, {
+      width: '600px',
+      data: {
+        symbio: s,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe();
+  }
+
+  getParticipantsToDisplay(participants: Participant[]): Participant[] {
+    let selected: Participant[] = [];
+    // include moderators w picture
+    for (let p of participants) {
+      if (p.role === 'moderator' && p.user.pictureUrl) selected.push(p);
+    }
+
+    // fill 5 spots w/ participants
+    for (let p of participants) {
+      if (selected.length < 5 && p.role !== 'moderator' && p.user.pictureUrl) selected.push(p);
+    }
+
+    console.log(selected);
+    return selected;
   }
 
 }

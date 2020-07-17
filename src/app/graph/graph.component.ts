@@ -176,7 +176,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr("fill", d => this.getGradientColor(d.height, maxNodeHeight, "#FFFFFF", "#FF4081"))
         .attr("stroke", d => d.children ? this.getDarkerColor(this.getGradientColor(d.height, maxNodeHeight, "#FFFFFF", "#FF4081")) : "#cccccc")
         .attr("stroke-width", 1.5)
-        .attr('r', d => this.getGradientRadius(d.height, maxNodeHeight, 8, 12))
+        .attr('r', d => this.getGradientRadius(d.height, maxNodeHeight, 8, 17))
         .on('click', d => this.openIdeaDetailSidenav(d.id))
         .on('contextmenu', d => this.openNodeContextMenu(d));
 

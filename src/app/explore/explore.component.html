@@ -14,7 +14,7 @@
     <div class="container-80" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="18px">
 
         <mat-card *ngFor="let s of symbiocreations" class="card-1 card-pink-bg" fxFlex="0 1 calc(25% - 18px)" fxFlex.lt-md="0 1 calc(33.3% - 18px)">
-            <div class="centered font-14 gray-300" style="height: 30px;">
+            <div class="centered font-14 gray-300 uppercase" style="height: 30px;">
                 <!--<mat-icon *ngIf="s.dateTime" class="font-16">event</mat-icon>-->
                 <span *ngIf="s.dateTime" style="position: relative; top: -3px;">{{s.dateTime | date : 'E d MMM' : 'UTC'}}, {{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
 
@@ -25,10 +25,22 @@
 
             <div class="centered font-20 bold" style="color: white; height: 55px;">
                 <a [routerLink]="['/symbiocreation/', s.id]" class="ellipsed-2 link-hvr-underline">{{s.name}}</a>
+                <!--<button mat-icon-button 
+                        matTooltip="Ver más información" matTooltipPosition="above"
+                        style="position: relative; top: -3px;" 
+                        (click)="viewSymbiocreationDetail(s)">
+                        <mat-icon class="font-20">info</mat-icon>
+                </button> -->
             </div>
 
-            <div class="centered" style="height: 30px;">
-                participantes...
+            <div>
+
+                <div *ngFor="let p of getParticipantsToDisplay(s.participants)">
+                    <cl-image [public-id]="p.user.pictureUrl" type="fetch" style="width: 50px;">
+                        <cl-transformation height="50" width="50" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
+                    </cl-image>
+                </div>
+
             </div>
         </mat-card>
 
