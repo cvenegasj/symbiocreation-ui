@@ -16,12 +16,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class EditSymbiocreationDetailComponent implements OnInit {
 
   symbio: Symbiocreation;
+  isPrivate: boolean;
+
+  eventDate: moment.Moment;
+  eventTime: any;
+  eventTz: string;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-
-  eventTime: any;
-  isPrivate: boolean;
-  eventTz: string;
 
   constructor(
     private router: Router,
@@ -39,9 +40,10 @@ export class EditSymbiocreationDetailComponent implements OnInit {
         this.symbio = symbio;
 
         if (symbio.dateTime) {
-          this.symbio.dateTime = new Date(symbio.dateTime);
+          this.eventDate = moment(symbio.dateTime).tz('UTC');
+
           if (symbio.hasStartTime) {
-            this.eventTime = moment(this.symbio.dateTime).tz('UTC').format('HH:mm');
+            this.eventTime = moment(symbio.dateTime).tz('UTC').format('HH:mm');
           } 
         }
 
@@ -56,17 +58,13 @@ export class EditSymbiocreationDetailComponent implements OnInit {
   onSubmit() {
     this.symbio.visibility = this.isPrivate ? 'private' : 'public';
 
-    if (this.symbio.dateTime) {
-      let eventDateTime = moment.utc({year: this.symbio.dateTime.getFullYear(), 
-                                    month: this.symbio.dateTime.getMonth(), 
-                                    day: this.symbio.dateTime.getDate()});
-
-      this.symbio.dateTime = eventDateTime.toDate();
+    if (this.eventDate) {
+      this.symbio.dateTime = this.eventDate.toDate();
       
       if (this.symbio.hasStartTime) {
         // dateTime object: UTC + timezone string
         this.symbio.dateTime.setUTCHours(this.eventTime.split(':')[0]);
-        this.symbio.dateTime.setUTCSeconds(this.eventTime.split(':')[1]);
+        this.symbio.dateTime.setUTCMinutes(this.eventTime.split(':')[1]);
 
         this.symbio.timeZone = this.eventTz;
       }

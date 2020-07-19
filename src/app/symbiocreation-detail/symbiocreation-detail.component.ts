@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Symbiocreation } from '../models/symbioTypes';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { EditSymbiocreationDetailComponent } from '../edit-symbiocreation-detail/edit-symbiocreation-detail.component';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 
 import * as moment from 'moment-timezone';
@@ -28,7 +27,7 @@ export class SymbiocreationDetailComponent implements OnInit {
   editExtraUrls: boolean;
   editSDGs: boolean;
 
-  eventDate: Date;
+  eventDate: moment.Moment;
   eventTime: any;
 
   constructor(
@@ -66,30 +65,22 @@ export class SymbiocreationDetailComponent implements OnInit {
   }
 
   saveDate() {
-    const prevDate = new Date(this.data.symbio.dateTime); // json property contains milliseconds
+    let newDateTime = this.eventDate.toDate();
+    newDateTime.setUTCHours((new Date(this.data.symbio.dateTime)).getUTCHours());
+    newDateTime.setUTCMinutes((new Date(this.data.symbio.dateTime)).getUTCMinutes());
 
-    let eventDateTime = moment.utc({ year: this.eventDate.getFullYear(), 
-                                    month: this.eventDate.getMonth(), 
-                                    day: this.eventDate.getDate(),
-                                    hours: prevDate.getUTCHours(),
-                                    minutes: prevDate.getUTCMinutes() });
-
-    this.data.symbio.dateTime = eventDateTime.toDate();
+    this.data.symbio.dateTime = newDateTime;
 
     this.symbioService.updateSymbiocreationInfo(this.data.symbio).subscribe();
     this.editDate = false;
   }
 
   saveTime() {
-    const prevDate = new Date(this.data.symbio.dateTime);
+    let newDateTime = new Date(this.data.symbio.dateTime);
+    newDateTime.setUTCHours(this.eventTime.split(":")[0]);
+    newDateTime.setUTCMinutes(this.eventTime.split(":")[1]);
 
-    let eventDateTime = moment.utc({ year: prevDate.getFullYear(), 
-                                    month: prevDate.getMonth(), 
-                                    day: prevDate.getDate(),
-                                    hours: this.eventTime.split(":")[0],
-                                    minutes: this.eventTime.split(":")[1] });
-
-    this.data.symbio.dateTime = eventDateTime.toDate();
+    this.data.symbio.dateTime = newDateTime;
 
     this.symbioService.updateSymbiocreationInfo(this.data.symbio).subscribe();
     this.editTime = false;

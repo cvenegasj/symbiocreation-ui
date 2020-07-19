@@ -68,7 +68,7 @@ export class RSocketService {
 
      disconnect() {
         if (this.client) this.client.close();
-        this.client = undefined;
+        this.client = null;
      }
 
 }

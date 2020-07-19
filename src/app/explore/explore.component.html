@@ -11,38 +11,68 @@
         </mat-button-toggle-group>
     </div>
 
-    <div class="container-80" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="18px">
+    <div *ngIf="symbiocreations?.length === 0" class="container-80 centered gray-600" style="margin-top: 15px;">
+        No se encontraron simbiocreaciones.
+    </div>
 
-        <mat-card *ngFor="let s of symbiocreations" class="card-1 card-pink-bg" fxFlex="0 1 calc(25% - 18px)" fxFlex.lt-md="0 1 calc(33.3% - 18px)">
-            <div class="centered font-14 gray-300 uppercase" style="height: 30px;">
+    <div class="container-80" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="15px">
+
+        <!-- card -->
+        <mat-card *ngFor="let s of symbiocreations" class="card-1 pink-bg">
+
+            <div class="centered font-13 gray-300 uppercase" style="height: 30px;">
                 <!--<mat-icon *ngIf="s.dateTime" class="font-16">event</mat-icon>-->
-                <span *ngIf="s.dateTime" style="position: relative; top: -3px;">{{s.dateTime | date : 'E d MMM' : 'UTC'}}, {{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
-
-                <!--<mat-icon class="font-16" style="margin-left: 10px;">schedule</mat-icon> -->
-                <!--<span style="position: relative; top: -3px; margin-left: 5px;">{{s.dateTime | date : 'shortTime' : 'UTC'}}</span> -->
-                <!--<span style="position: relative; top: -3px; margin-left: 5px;">{{s.timeZone}}</span>-->
+                <span *ngIf="s.dateTime">{{s.dateTime | date : 'E d MMM' : 'UTC'}}</span>
+                <span *ngIf="s.hasStartTime">, {{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
             </div> 
 
-            <div class="centered font-20 bold" style="color: white; height: 55px;">
+            <div class="centered font-20 bold" style="color: white; height: 48px;">
                 <a [routerLink]="['/symbiocreation/', s.id]" class="ellipsed-2 link-hvr-underline">{{s.name}}</a>
-                <!--<button mat-icon-button 
-                        matTooltip="Ver más información" matTooltipPosition="above"
-                        style="position: relative; top: -3px;" 
-                        (click)="viewSymbiocreationDetail(s)">
-                        <mat-icon class="font-20">info</mat-icon>
-                </button> -->
             </div>
 
-            <div>
+            <div *ngIf="getParticipantsToDisplay(s.participants) as participantsToDisplay" 
+                style="margin: 20px auto 0; height: 40px; position: relative;" 
+                [style.width]="(participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, participantsToDisplay.length) + 'px'">
 
-                <div *ngFor="let p of getParticipantsToDisplay(s.participants)">
-                    <cl-image [public-id]="p.user.pictureUrl" type="fetch" style="width: 50px;">
-                        <cl-transformation height="50" width="50" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
+                    <cl-image *ngFor="let p of participantsToDisplay; index as i;" 
+                        [public-id]="p.user.pictureUrl" type="fetch" class="img-1" 
+                        [style.z-index]="5-i" [style.left]="i*24 + 'px'"
+                        [matTooltip]="p.user.name" matTooltipPosition="above">
+                        <cl-transformation height="90" width="90" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
                     </cl-image>
+
+                    <span *ngIf="participantsToDisplay.length > 0 && s.participants.length - participantsToDisplay.length > 0" 
+                        class="font-12 gray-300" style="position: absolute; top: 10px;" 
+                        [style.left]="(participantsToDisplay.length - 1) * 24 + 45 + 'px'">
+                        {{s.participants.length - participantsToDisplay.length}} más
+                    </span>
+
+            </div>
+
+            <div style="margin-top: 20px; height: 30px;">
+                <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="float: left; width: 151px;">
+                    <mat-icon class="font-17 gray-300" style="position: relative; top: 4px;">update</mat-icon>
+                    <span class="font-12 gray-300" style="position: relative; left: -4px;">{{getTimeAgo(s.lastModified)}}</span>
                 </div>
 
+                <!--<button mat-stroked-button
+                        class="gray-300"
+                        (click)="viewSymbiocreationDetail(s)">
+                        Ver detalles
+                </button> -->
+                <div style="float: right; width: 40px; height: 30px;">
+                    <button class="infoButton"
+                            mat-icon-button 
+                            matTooltip="Ver más información" matTooltipPosition="above"
+                            style="position: relative; top: -5px;" 
+                            (click)="openSymbioDetailDialog(s)">
+                            <mat-icon class="font-20 gray-300">info</mat-icon>
+                    </button>
+                </div>
             </div>
+            
         </mat-card>
+         <!-- End of card -->
 
     </div>
 </div>

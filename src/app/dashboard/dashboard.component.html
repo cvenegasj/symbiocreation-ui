@@ -1,73 +1,33 @@
 <div style="padding: 15px;">
     <div class="container-80" style="margin-top: 40px; margin-bottom: 15px;">
-        <h2 class="font-26 bolder gray-900" style="display: inline-block;">Mis simbiocreaciones</h2>
+        <h2 fxFlex class="font-26 bolder gray-900">Mis simbiocreaciones</h2>
 
-        <button routerLink="/create" mat-raised-button color="accent" style="float: right;">
-            <mat-icon>add</mat-icon>
-            <span>Crear</span>
-        </button>
+        <div>
+            <button *ngIf="!isGridViewOn"
+                mat-icon-button
+                matTooltip="Vista de cuadrícula" matTooltipPosition="above"
+                style="margin-right: 10px;"
+                (click)="toggleViewMode()">
+                <mat-icon>grid_on</mat-icon>
+            </button>
+
+            <button *ngIf="isGridViewOn"
+                mat-icon-button
+                matTooltip="Vista de lista" matTooltipPosition="above"
+                style="margin-right: 10px;"
+                (click)="toggleViewMode()">
+                <mat-icon>view_list</mat-icon>
+            </button>
+
+            <button routerLink="/create" mat-raised-button color="accent">
+                <mat-icon>add</mat-icon>
+                <span>Crear</span>
+            </button>
+        </div>
     </div>
 
-    <div class="container-80">
-        <mat-list>
-            <h3 matSubheader>
-                <span fxFlex></span>
-                <span fxFlex="15">Número de participantes</span>
-                <span fxFlex="15">Última modificación</span>
-                <span fxFlex="40px"></span>
-            </h3>
-            <mat-list-item style="margin-top: 70px; margin-bottom: 50px;" *ngFor="let s of symbiocreations; index as i; last as last">
-               <div matLine>
-                    <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%; padding-left: 5px;">{{s.name}}</a>
-                    <span class="chip-role small" style="margin-left: 12px;" *ngIf="isModerator[i]">Moderador</span>
-                    
-                    <mat-icon class="font-20 gray-600" style="margin-left: 8px;" [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" matTooltipPosition="above">
-                        {{s.visibility === 'public' ? 'public' : 'lock'}}
-                    </mat-icon>
+    
+    <app-list-symbios-user *ngIf="!isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-list-symbios-user>
+    <app-grid-symbios-user *ngIf="isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-grid-symbios-user> 
 
-                    <button mat-icon-button 
-                        matTooltip="Ver más información" matTooltipPosition="above"
-                        style="position: relative; top: -9px;" 
-                        (click)="viewSymbiocreationDetail(s, isModerator[i])">
-                        <mat-icon class="font-20 gray-600">info</mat-icon>
-                    </button>
-        
-                    <span fxFlex></span>
-                    
-                    <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{s.nparticipants}} {{s.nparticipants === 1 ? 'participante' : 'participantes'}} </span>
-                    <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{s.lastModified | date: 'd MMM y'}}</span>
-                    
-                    <button mat-icon-button [matMenuTriggerFor]="simbioMenu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #simbioMenu="matMenu">
-                        <button mat-menu-item (click)="changeNameSymbiocreation(s)">
-                            <mat-icon>text_fields</mat-icon>
-                            <span>Cambiar nombre</span>
-                        </button>
-                        <button mat-menu-item>
-                            <mat-icon>edit</mat-icon>
-                            <span>Editar evento</span>
-                        </button>
-                        <button mat-menu-item (click)="deleteSymbiocreation(s.id)">
-                            <mat-icon>delete</mat-icon>
-                            <span>Eliminar</span>
-                        </button>
-                    </mat-menu>
-               </div>
-               <div matLine style="padding-bottom: 50px;">
-                   <mat-form-field fxFlex="30" style="padding-left: 5px;">
-                        <mat-label>Link para compartir</mat-label>
-                        <input matInput type="text" value="{{environment.localhost}}/symbiocreation/{{s.id}}" readonly>
-                        <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/symbiocreation/{{s.id}}">
-                            <mat-icon>content_copy</mat-icon>
-                        </button>
-                   </mat-form-field>
-               </div>
-               <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
-                
-            </mat-list-item>
-        
-         </mat-list>
-    </div>
 </div>

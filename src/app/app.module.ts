@@ -23,10 +23,12 @@ import { EditIdeaDialogComponent } from './edit-idea-dialog/edit-idea-dialog.com
 import { EditGroupNameDialogComponent } from './edit-group-name-dialog/edit-group-name-dialog.component';
 import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-capture-dialog.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-//import { MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 import { SymbiocreationDetailComponent } from './symbiocreation-detail/symbiocreation-detail.component';
 import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
+import { GridSymbiosUserComponent } from './grid-symbios-user/grid-symbios-user.component';
+import { ListSymbiosUserComponent } from './list-symbios-user/list-symbios-user.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/
     ConfirmationDialogComponent,
     SymbiocreationDetailComponent,
     EditSymbiocreationDetailComponent,
+    GridSymbiosUserComponent,
+    ListSymbiosUserComponent,
     
   ],
   imports: [
@@ -55,11 +59,12 @@ import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/
     HttpClientModule,
     ClipboardModule,
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
+    MatMomentDateModule,
     MomentTimezonePickerModule,
     
   ],
   providers: [
-    //{provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
   ],
   bootstrap: [AppComponent]
 })

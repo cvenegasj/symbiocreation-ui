@@ -158,6 +158,15 @@ export class SymbiocreationService {
             );
     }
 
+    // participant has u_id and new role
+    updateParticipantRole(symbioId: string, participant: Participant): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/updateParticipantRole`;
+        return this.http.put<Symbiocreation>(API_URL, participant, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
     // Handle Errors 
     error(error: HttpErrorResponse) {
         let errorMessage = '';

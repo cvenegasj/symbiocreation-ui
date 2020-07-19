@@ -7,6 +7,7 @@ export interface User {
     lastName?: string;
     email: string;
     pictureUrl?: string;
+    isGridViewOn?: boolean;
 }
 
 export interface Symbiocreation {

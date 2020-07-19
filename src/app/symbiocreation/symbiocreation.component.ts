@@ -4,7 +4,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
 
 import { Node } from '../models/forceGraphTypes';
-import { Symbiocreation, Participant, Idea } from '../models/symbioTypes';
+import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
 import { RSocketService } from '../services/rsocket.service';
@@ -20,8 +20,8 @@ import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-gro
 import { Subscription } from 'rxjs';
 import { GraphComponent } from '../graph/graph.component';
 
-import { Queue } from '../utils/queue';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-symbiocreation',
@@ -34,13 +34,13 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   @ViewChild(GraphComponent)
   private graphComponent: GraphComponent;
 
-  sseSubscription: Subscription;
+  //sseSubscription: Subscription;
 
   disabledGroupSelector: boolean;
   idGroupSelected: string = null;
   participant: Participant;
   groups: Node[];
-  root: any;
+
   symbiocreation: Symbiocreation;
   roleOfLoggedIn: string = '';
 
@@ -84,6 +84,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         this.symbiocreation = s;
         this.groups = this.getGroups();
 
+        // connect to socket for updates
         this.rSocketService.connectToSymbio(this.symbiocreation.id);
 
         this.rSocketService.symbio$.subscribe(
@@ -98,16 +99,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
       }),
       concatMap(s => this.auth.userProfile$),
-      tap(u => {
+      tap(usrProfile => {
         if (this.auth.loggedIn) {
           for (let p of this.symbiocreation.participants) {
-            if (p.user.email === u.email) {
+            if (p.user.email === usrProfile.email) {
               this.participant = p;
-              this.roleOfLoggedIn = p.role;
+              // group of logged-in user
               const parentNode = this.getMyGroup();
               this.disabledGroupSelector =  parentNode ? true : false;
               this.idGroupSelected = parentNode?.id;
-
+              // role of logged-in user
+              this.roleOfLoggedIn = p.role;
               this.graphComponent.roleOfLoggedIn = this.roleOfLoggedIn;
               this.sharedService.nextRole(this.roleOfLoggedIn);
               
@@ -119,7 +121,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     ).subscribe(u => {
       if (this.participant) {
         // get node w idea from DB 
-        this.symbioService.getNodeById(this.symbiocreation.id, this.getMyNode().id).subscribe(node => this.participant.idea = node.idea);
+        this.symbioService.getNodeById(this.symbiocreation.id, this.getMyNode().id)
+          .subscribe(node => this.participant.idea = node.idea);
 
         // subscribe to changes made in IdeaDetailComponent
         this.sharedService.node$.subscribe(node => {
@@ -219,6 +222,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     return n;
   }
 
+  /*
   removeNodeFromGraph(nodeId: string) {
     function recurse(nodes: Node[]) {
       for (let i = 0; i < nodes.length; i++) {
@@ -228,8 +232,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     this.symbiocreation.graph = recurse(this.symbiocreation.graph);
-  }
+  }*/
 
+  /*
   addNodeAsChild(child: Node, parentId: string) {
     function recurse(nodes: Node[]) {
       for (let i = 0; i < nodes.length; i++) {
@@ -240,8 +245,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     this.symbiocreation.graph = recurse(this.symbiocreation.graph);
-  }
+  }*/
 
+  /*
   changeNodeName(nodeId: string, newName: string) {
     function recurse(nodes: Node[]) {
       for (let i = 0; i < nodes.length; i++) {
@@ -252,8 +258,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     this.symbiocreation.graph = recurse(this.symbiocreation.graph);
-  }
+  }*/
 
+  /*
   changeNodeIdea(nodeId: string, newIdea: Idea) {
     function recurse(nodes: Node[]) {
       for (let i = 0; i < nodes.length; i++) {
@@ -264,7 +271,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     this.symbiocreation.graph = recurse(this.symbiocreation.graph);
-  }
+  }*/
 
   nodeAContainsNodeB(nodeA: Node, nodeB: Node): boolean {
     let contains = false;
@@ -277,32 +284,10 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     return contains;
   }
 
-  // BFS
-  /*getNodeHeight(node: Node): number {
-    let height = 0;
-
-    let queue = new Queue<Node>();
-    queue.add(node);
-    let current: Node;
-
-    while (!queue.isEmpty()) {
-      current = queue.pop();
-
-      if (current.children) {
-        height +=1 ;
-        current.children.forEach(child => queue.add(child));
-      }
-    }
-
-    return height;
-  }*/
-
-
   /* ========================================================================= */
 
 
-
-  joinSymbiocreation() {
+  joinSymbiocreation(btnParticipate: MatButton) {
     if (!this.auth.loggedIn) {
       const id = this.route.snapshot.params.id;
       this.auth.login(`/symbiocreation/${id}`);
@@ -310,17 +295,13 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       return;
     } 
 
+    btnParticipate.disabled = true;
+    
     // add logged-in user as participant
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(u => {
         this.participant = {u_id: u.id, user: u, role: 'participant', idea: null};
-        //let pNode: Node = {id: uuidv4(), u_id: u.id, name: u.firstName};
-
-        //this.symbiocreation.participants.push(this.participant);
-        //this.symbiocreation.graph.push({id: uuidv4(), u_id: u.id, name: u.firstName} as Node);
-        
-        //this.symbiocreation.lastModified = new Date();
         
         return this.symbioService.createParticipant(this.symbiocreation.id, this.participant);
       })
@@ -338,10 +319,26 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     
   }
 
-  // will propagate changes to child component graph
+  // will propagate changes to child graph component
   updateReferences() {
     this.symbiocreation.graph = this.symbiocreation.graph.slice();
     this.groups = this.getGroups();
+
+    // update only role of logged-in user to keep participant.idea
+    if (this.participant) {
+      // look for my participant object
+      for (let p of this.symbiocreation.participants) {
+        if (p.user.email === this.participant.user.email) {
+          this.participant.role = p.role;
+          this.roleOfLoggedIn = p.role;
+          
+          this.graphComponent.roleOfLoggedIn = this.roleOfLoggedIn;
+          this.sharedService.nextRole(this.roleOfLoggedIn);
+          
+          break;
+        }
+      }
+    }
   }
 
   openNewGroupDialog() {
@@ -351,12 +348,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(name => {
       if (name) {
-        //console.log('ok pressed');
-        //const newNode: Node = {id: uuidv4(), name: result, children: []};
         const newNode: Node = {name: name, children: []};
-        //this.symbiocreation.graph.push(newNode);
-
-        //this.symbiocreation.lastModified = new Date();
 
         this.symbioService.createGroupNode(this.symbiocreation.id, newNode).subscribe(symbio => {
           //this.symbiocreation = symbio;
@@ -368,13 +360,15 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   openMyIdeaEditDialog() {
     let toChange = this.getMyNode();
+
     // get node w idea from DB
     this.symbioService.getNodeById(this.symbiocreation.id, toChange.id).subscribe(
       node => {
         const dialogRef = this.dialog.open(EditIdeaDialogComponent, {
           width: '450px',
           data: {
-            name: this.participant.user.firstName + ' ' + this.participant.user.lastName,
+            //name: this.participant.user.firstName && this.participant.user.lastName ? this.participant.user.firstName + ' ' + this.participant.user.lastName : this.participant.user.name,
+            name: toChange.name,
             idea: node.idea
           }
         });
@@ -397,14 +391,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   onMyGroupChanged() {
     // update graph
     let myNode = this.getMyNode();
-    //console.log('my node: ', myNode);
-    //console.log('my current parent: ', this.getMyGroup());
-
-    //console.log('old symbio graph: ', this.symbiocreation.graph);
-    //this.removeNodeFromGraph(myNode.id);
-    //this.addNodeAsChild(myNode, this.idGroupSelected);
-
-    //this.symbiocreation.lastModified = new Date();
 
     this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected ? this.idGroupSelected : 'none')
       .subscribe(symbio => {
@@ -419,8 +405,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   onParentChanged(ids) {
     let child = this.getNode(ids[0]);
     let parent = this.getNode(ids[1]);
-    //this.removeNodeFromGraph(ids[0]);
-    //this.addNodeAsChild(child, ids[1]);
 
     //this.symbiocreation.lastModified = new Date();
     if (this.nodeAContainsNodeB(child, parent)) {
@@ -441,12 +425,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   onNodeDeleted(id) {
-    //let toDelete = this.getNode(id);
-    //this.removeNodeFromGraph(toDelete.id);
-    //this.symbiocreation.graph.push(...toDelete.children);
-
-    //this.symbiocreation.lastModified = new Date();
-
     this.symbioService.deleteNode(this.symbiocreation.id, id)
       .subscribe(symbio => {
         //this.symbiocreation = symbio;
@@ -454,7 +432,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       });
   }
 
-  onNodeChangedName(id) {
+  openChangeNodeNameDialog(id) {
     let toChange = this.getNode(id);
 
     const dialogRef = this.dialog.open(EditGroupNameDialogComponent, {
@@ -463,10 +441,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(name => {
       if (name) {
-        //this.changeNodeName(id, result);
         toChange.name = name;
-
-        //this.symbiocreation.lastModified = new Date();
 
         this.symbioService.updateNodeName(this.symbiocreation.id, toChange)
           .subscribe(symbio => {
@@ -477,13 +452,14 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     });
   }
 
-  onNodeChangedIdea(id) {
+  openEditNodeIdeaDialog(id) {
     let toChange = this.getNode(id);
+
     // get node w idea from DB
     this.symbioService.getNodeById(this.symbiocreation.id, toChange.id).subscribe(
       node => {
         const dialogRef = this.dialog.open(EditIdeaDialogComponent, {
-          width: '450px',
+          width: '550px',
           data: {
             name: toChange.name,
             idea: node.idea
@@ -492,7 +468,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     
         dialogRef.afterClosed().subscribe(idea => {
           if (idea) {
-            //this.changeNodeIdea(id, result);
             toChange.idea = idea; // toChange has id and new name
             this.symbioService.updateNodeIdea(this.symbiocreation.id, toChange).subscribe(res => {
               if (node.u_id === this.participant.u_id) this.participant.idea = idea;
@@ -514,7 +489,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.sidenav.open();
   }
 
-  viewSymbiocreationDetail() {
+  setAsModerator(userId: string) {
+    this.symbioService.updateParticipantRole(this.symbiocreation.id, {u_id: userId, role: 'moderator'} as Participant)
+      .subscribe();
+  }
+
+  setAsAmbassador(userId: string) {
+    this.symbioService.updateParticipantRole(this.symbiocreation.id, {u_id: userId, role: 'ambassador'} as Participant)
+      .subscribe();
+  }
+
+  openSymbioDetailDialog() {
     const dialogRef = this.dialog.open(SymbiocreationDetailComponent, {
       width: '600px',
       data: {

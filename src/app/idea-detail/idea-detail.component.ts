@@ -58,7 +58,10 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
       concatMap(routeParams => this.symbioService.getNodeById(idSymbio, routeParams.idNode))
     ).subscribe(node => { // node injected w user
       this.node = node;
-      this.nameToShow = this.node.user ? this.node.user.firstName + ' ' + this.node.user.lastName : this.node.name; // bc 'Idea de Carlos E' as title is not cool. I want my last name!
+      this.nameToShow = this.node.name;
+      // get nameToShow from db object user
+      //if (this.node.user) this.nameToShow = this.node.user.firstName && this.node.user.lastName ? this.node.user.firstName + ' ' + this.node.user.lastName : this.node.user.name;
+      //else this.nameToShow = this.node.name;
     });
   }
 
@@ -79,7 +82,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     const idSymbio = this.route.parent.snapshot.paramMap.get('id');
 
     const dialogRef = this.dialog.open(EditIdeaDialogComponent, {
-      width: '450px',
+      width: '550px',
       data: {
         name: this.nameToShow,
         idea: this.node.idea

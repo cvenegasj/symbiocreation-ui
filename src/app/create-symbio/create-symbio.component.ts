@@ -21,11 +21,13 @@ import { Location } from '@angular/common';
 export class CreateSymbioComponent implements OnInit {
 
   model: Symbiocreation;
-
   isPrivate: boolean;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  
+  eventDate: moment.Moment;
   eventTime: any;
   eventTz: string;
+
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   detailsOpened: boolean;
 
@@ -41,6 +43,7 @@ export class CreateSymbioComponent implements OnInit {
   ngOnInit(): void {
     this.model = { name: '', hasStartTime: false, enabled: true, participants: [], tags: [], extraUrls:[], sdgs: [] };
     this.isPrivate = false;
+
     this.eventTime = '12:00';
     this.eventTz = 'UTC';
 
@@ -53,17 +56,13 @@ export class CreateSymbioComponent implements OnInit {
 
     this.model.visibility = this.isPrivate ? 'private' : 'public';
 
-    if (this.model.dateTime) {
-      let eventDateTime = moment.utc({year: this.model.dateTime.getFullYear(), 
-                                    month: this.model.dateTime.getMonth(), 
-                                    day: this.model.dateTime.getDate()});
-
-      this.model.dateTime = eventDateTime.toDate();
+    if (this.eventDate) {
+      this.model.dateTime = this.eventDate.toDate();
       
       if (this.model.hasStartTime) {
         // dateTime object: UTC + timezone string
         this.model.dateTime.setUTCHours(this.eventTime.split(':')[0]);
-        this.model.dateTime.setUTCSeconds(this.eventTime.split(':')[1]);
+        this.model.dateTime.setUTCMinutes(this.eventTime.split(':')[1]);
 
         this.model.timeZone = this.eventTz;
       }
@@ -73,10 +72,9 @@ export class CreateSymbioComponent implements OnInit {
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(u => {
-        this.model.participants.push({u_id: u.id, role: 'moderator'} as Participant); // participant
-        this.model.graph.push({u_id: u.id, name: u.name} as Node); // node
+        this.model.participants.push({u_id: u.id, user: u, role: 'moderator'} as Participant); // participant
 
-        return this.symbioService.createSymbiocreation(this.model);
+        return this.symbioService.createSymbiocreation(this.model); // node is created in backend
       })
     ).subscribe(res => {
       this._snackBar.open('Se creó la simbiocreación.', 'ok', {

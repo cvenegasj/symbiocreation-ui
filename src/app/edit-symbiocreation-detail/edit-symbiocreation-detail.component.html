@@ -23,7 +23,7 @@
         <div fxLayout="row">
             <mat-form-field appearance="fill" style="padding-right: 10px;">
                 <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="symbio.dateTime" name="dateTime">
+                <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
 
                 <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                 <mat-datepicker #datePicker></mat-datepicker>

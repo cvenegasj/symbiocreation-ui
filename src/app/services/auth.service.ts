@@ -131,7 +131,7 @@ export class AuthService {
         } else {
           console.log('returning user!');
 
-          u.name = usr.name;
+          if (usr.name) u.name = usr.name;
           if (usr.given_name) u.firstName = usr.given_name;
           if (usr.family_name) u.lastName = usr.family_name;
           if (usr.picture) u.pictureUrl = usr.picture;
