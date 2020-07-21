@@ -129,8 +129,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         }
       })
     ).subscribe(u => {
-      this.sharedService.nextIsLoading(false);
-      
       if (this.participant) {
         // get node w idea from DB 
         this.symbioService.getNodeById(this.symbiocreation.id, this.getMyNode().id)
@@ -143,6 +141,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           }
         });
       }
+
+      this.sharedService.nextIsLoading(false);
     });
   }
 
