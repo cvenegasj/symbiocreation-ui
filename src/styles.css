@@ -207,6 +207,19 @@ a.link-hvr-underline:hover {
     height: 22px;
 }
 
+.chip-ancestry {
+    display: inline-block;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 13px;
+    line-height: 26px;
+    height: 26px;
+    border-radius: 20px;
+    border: 1px solid #424242;
+    background-color: #EEEEEE;
+    color: #424242;
+}
+
 /* for some reason graph styles must be put here */
 .links line {
     stroke: #999;

@@ -10,6 +10,7 @@ import { SymbiocreationService } from '../services/symbiocreation.service';
 import { SharedService } from '../services/shared.service';
 
 import { Queue } from '../utils/queue';
+import { Participant } from '../models/symbioTypes';
 
 @Component({
   selector: 'app-graph',
@@ -24,8 +25,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Output() nodeChangedName = new EventEmitter<string>();
   @Output() nodeChangedIdea = new EventEmitter<string>();
 
+  participant: Participant;
   roleOfLoggedIn: string;
-  //nodeSelected: Node;
 
   menuX: number = 0;
   menuY: number = 0;
@@ -36,6 +37,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   nodes: Node[];
   links: Link[];
+  maxNodeHeight: number;
 
   simulation: any;
   wrapper: any;
@@ -125,25 +127,23 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   runSimulation() {
+    // get the maximum height of any node, which must belong to a root-level node
+    this.maxNodeHeight = 0;
+    for (let node of this.data) {
+      let temp = this.getNodeHeight(node);
+      if (temp > this.maxNodeHeight) this.maxNodeHeight = temp;
+    }
+
     //const root = d3.hierarchy(this.data);
     this.links = this.getLinks(this.data);
     //const nodes = root.descendants();
     this.nodes = this.getNodes(this.data);
     //const links = d3.hierarchy(this.data).links();
-    //console.log('Computed nodes: ', this.nodes);
-    //console.log('Computed links: ', this.links);
 
     this.simulation = d3.forceSimulation(this.nodes)
-      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance(55)) // d is for node, useful to set ids of source and target: default to node.id, then node.index
+      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => (d.source.height * 20) + 40)) // d is for node, useful to set ids of source and target: default to node.id, then node.index
       .force('charge', d3.forceManyBody().strength(-40))
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2));
-
-    // get the maximum height of any node, which must belong to a root-level node
-    let maxNodeHeight = 0;
-    for (let node of this.data) {
-      let temp = this.getNodeHeight(node);
-      if (temp > maxNodeHeight) maxNodeHeight = temp;
-    }
 
     // draw links
     this.linkElements = this.linkGroup
@@ -155,7 +155,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     const linkEnter = this.linkElements
       .enter()
       .append("line")
-        .style("stroke-width", d => (6 - 0.8) * (d.source.height / maxNodeHeight) + 0.8);
+        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10));
 
     this.linkElements = linkEnter.merge(this.linkElements);
     
@@ -168,22 +168,21 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     const nodeEnter = this.nodeElements
       .enter()
-      .append("g");
+      .append("g")
+      .call(this.drag(this.simulation));
 
     nodeEnter.append("circle")
-        //.attr("fill", d => d.children ? "#fff" : "#FF4081")
-        //.attr("stroke", d => d.children ? "#C51162" : "#fff")
-        .attr("fill", d => this.getGradientColor(d.height, maxNodeHeight, "#FFFFFF", "#FF4081"))
-        .attr("stroke", d => d.children ? this.getDarkerColor(this.getGradientColor(d.height, maxNodeHeight, "#FFFFFF", "#FF4081")) : "#cccccc")
+        .attr("fill", d => d.color)
+        .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
-        .attr('r', d => this.getGradientRadius(d.height, maxNodeHeight, 8, 30))
+        .attr('r', d => d.r)
         .on('click', d => this.openIdeaDetailSidenav(d.id))
         .on('contextmenu', d => this.openNodeContextMenu(d));
 
     nodeEnter.append("text")
         .text(d => d.name)
         .attr('x', d => d.children ? -9 : -9)
-        .attr('y', d =>  d.children ? -14: -10);
+        .attr('y', d =>  -d.r - 3);
 
     this.nodeElements = nodeEnter.merge(this.nodeElements);
 
@@ -198,6 +197,31 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       });
   }
 
+  drag = simulation => {
+  
+    function dragstarted(d) {
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+    
+    function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+    
+    function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+    
+    return d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended);
+  }
+
   removeChart() {
     this.wrapper.remove();
   }
@@ -209,10 +233,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     function recurse(node: Node) {
       node.height = that.getNodeHeight(node);
+      node.r = that.getGradientRadius(node.height, that.maxNodeHeight, 8, 30);
+      node.color = that.getGradientColor(node.height, that.maxNodeHeight, "#FFFFFF", "#FF4081");
 
       if (node.children) node.children.forEach(recurse);
       //if (!node.id) node.id = ++i;
       nodes.push(node);
+      //console.log(node);
     }
     // data can have many nodes at root level
     for (let n of data) {
@@ -398,6 +425,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     return diff * (height / maxHeight) + from;
   }
 
+  getGradientLinkWidth(height: number, maxHeight: number, from: number, to: number): number {
+    if (maxHeight <= 1) return from;
+
+    const diff = to - from;
+    return diff * ((height - 1) / (maxHeight - 1)) + from;
+  }
+
   hex(c): string {
     var s = "0123456789abcdef";
     var i = parseInt(c);
@@ -423,6 +457,33 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     color[1] = parseInt((this.trim(hex)).substring(2, 4), 16);
     color[2] = parseInt((this.trim(hex)).substring(4, 6), 16);
     return color;
+  }
+
+  getMyNode(): Node {
+    let participant = this.participant;
+    let n: Node = null;
+
+    function recurse(node: Node) {
+      if (node.children) node.children.forEach(recurse);
+      if (node.u_id === participant.u_id) n = node;
+    }
+    // data can have many nodes at root level
+    for (let i = 0; i < this.data.length; i++) {
+      recurse(this.data[i]);
+    }
+    return n;
+  }
+
+  nodeAContainsNodeB(nodeA: Node, nodeB: Node): boolean {
+    let contains = false;
+
+    function recurse(node: Node) {
+      if (node.children) node.children.forEach(recurse);
+      if (node.id === nodeB.id) contains = true;
+    }
+
+    recurse(nodeA);
+    return contains;
   }
 
 }

@@ -9,8 +9,8 @@
         <!-- Main area -->
         <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column">
 
-            <div class="mat-elevation-z3" style="padding: 7px; background-color: white;" [ngSwitch]="roleOfLoggedIn">
-                <h2 class="font-26 gray-900 bolder centered">
+            <div class="mat-elevation-z3" style="padding: 9px; background-color: white;">
+                <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
 
                     <mat-icon class="teal-color-1" 
                             [matTooltip]="symbiocreation?.visibility === 'public' ? 'Pública' : 'Privada'" matTooltipPosition="above"
@@ -28,34 +28,113 @@
                     </button>
                 </h2>
                 
-                <!-- Moderator view -->
-                <div *ngSwitchCase="'moderator'">
-                    <div style="text-align: center;" fxLayout="row">
-                        <div fxFlex>
-                            <mat-form-field appearance="fill" style="width: 75%;">
-                                <mat-label>Mi idea</mat-label>
-                                <input matInput [value]="participant.idea?.title" readonly>
-                                <button mat-icon-button matSuffix matTooltip="Editar idea" [attr.aria-label]="'Edit idea'" (click)="openMyIdeaEditDialog()">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </mat-form-field>
+                <!-- Participant control panel -->
+                <div *ngIf="participant">
+                    <div>
+                        <div class="gray-900 bold" style="padding: 7px 10px; width: 120px; text-align: right;">
+                            Mi idea
                         </div>
-                        <div fxFlex>
-                            <mat-form-field appearance="fill">
-                                <mat-label>Mi grupo</mat-label>
-                                <mat-select [(value)]="idGroupSelected" [disabled]="disabledGroupSelector" (selectionChange)="onMyGroupChanged()">
-                                    <mat-option>Ninguno</mat-option>
-                                    <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
-                                </mat-select>
-                                <button mat-icon-button matSuffix matTooltip="Editar grupo" [attr.aria-label]="'Edit group'" (click)="disabledGroupSelector = false" [disabled]="!disabledGroupSelector">
-                                    <mat-icon>edit</mat-icon>
+
+                        <div fxFlex style="padding: 0 10px;">
+                            <div *ngIf="participant.idea">
+                                <span class="gray-800">{{participant.idea?.title}}</span>
+
+                                <button mat-button
+                                    color="primary"
+                                    style="margin-left: 5px;" 
+                                    (click)="openIdeaDetailSidenav(getMyNode().id)">
+                                    <mat-icon>read_more</mat-icon>
+                                    Ver más
                                 </button>
-                            </mat-form-field>
+                            </div>
+
+                            <div *ngIf="!participant.idea">
+                                <button mat-raised-button color="primary"
+                                    (click)="openMyIdeaEditDialog()">
+                                    Registrar idea
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <div class="gray-900 bold" style="padding: 5px 10px; width: 120px; text-align: right;">
+                            Mi grupo<br />
+                            <span *ngIf="roleOfLoggedIn === 'ambassador'" class="chip-role small ambassador">Embajador</span>
+                        </div>
+
+                        <div fxFlex style="padding: 5px 10px 0;">
+                            <div *ngIf="myGroup">
+                                <ng-container *ngFor="let a of myAncestry; index as i; last as last">
+                                    <span class="chip-ancestry">
+                                        Nivel {{i + 1}}: {{a.name}}
+                                    </span>
+                                    <span *ngIf="!last"> > </span>
+                                </ng-container>
+                                
+
+                                <button mat-button color="primary"
+                                    style="margin-left: 5px;" 
+                                    (click)="groupSelectDiv.hidden = false;">
+                                    <mat-icon>edit</mat-icon>
+                                    Cambiar mi grupo
+                                </button>
+
+                                <button *ngIf="roleOfLoggedIn !== 'participant'"
+                                    mat-button color="primary"
+                                    style="margin-left: 5px;" 
+                                    (click)="openNextLevelGroupDialog()">
+                                    <mat-icon>upgrade</mat-icon>
+                                    Crear siguiente nivel
+                                </button>
+                            </div>
+
+                            <div #groupSelectDiv hidden style="margin-top: 5px;">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Seleccionar grupo</mat-label>
+                                    <mat-select [(value)]="idGroupSelected" (selectionChange)="onMyGroupChanged(); groupSelectDiv.hidden = true;">
+                                        <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <button mat-raised-button color="accent"
+                                    style="margin-left: 5px;"
+                                    (click)="openNewParentGroupDialog(groupSelectDiv)">
+                                    <mat-icon>add</mat-icon>
+                                    Crear grupo
+                                </button>
+
+                                <button mat-button 
+                                    style="margin-left: 5px;"
+                                    (click)="groupSelectDiv.hidden = true;">
+                                    Cancelar
+                                </button>
+                            </div>
+
+
+                            <div *ngIf="!myGroup">
+                                Selecciona un grupo existente 
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Seleccionar grupo</mat-label>
+                                    <mat-select [(value)]="idGroupSelected" (selectionChange)="onMyGroupChanged()">
+                                        <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                o crea un nuevo grupo 
+                                <button mat-raised-button color="primary"
+                                    (click)="openNewParentGroupDialog()">
+                                    <mat-icon>add</mat-icon>
+                                    Crear grupo
+                                </button>
+
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Participant view -->
+                <!--
                 <div *ngSwitchCase="'participant'">
                     <div style="text-align: center;" fxLayout="row">
                         <div fxFlex>
@@ -80,9 +159,10 @@
                             </mat-form-field>
                         </div>
                     </div>
-                </div>
+                </div> 
+                -->
 
-                <div *ngSwitchDefault>
+                <div *ngIf="!participant">
                     <p class="centered">Participa de esta simbiocreación!</p>
                     <div style="text-align: center;">
                         <button #btnParticipate mat-raised-button color="accent" (click)="joinSymbiocreation(btnParticipate)">
@@ -116,12 +196,6 @@
                         {{groups?.length}}
                     </mat-panel-description>
                 </mat-expansion-panel-header>
-                
-                <div class="centered" style="margin-top: 5px;">
-                    <button *ngIf="auth.loggedIn" mat-raised-button color="primary" (click)="openNewGroupDialog()">
-                        <span>Nuevo grupo</span>
-                    </button>
-                </div>
 
                 <mat-list dense>
                     <mat-list-item *ngFor="let g of groups">
@@ -141,9 +215,22 @@
                 <mat-menu #groupMenu="matMenu">
                     <ng-template matMenuContent let-node="node">
                         <button mat-menu-item (click)="openIdeaDetailSidenav(node.id)">Ver idea</button>
-                        <button *ngIf="roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator'" mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Seleccionar grupo padre</button>
-                        <button *ngIf="roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator'" mat-menu-item (click)="openChangeNodeNameDialog(node.id)">Cambiar nombre</button>
-                        <button *ngIf="roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator'" mat-menu-item (click)="onNodeDeleted(node.id)">Eliminar</button>
+                        <button *ngIf="roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode()))" 
+                            mat-menu-item 
+                            [matMenuTriggerFor]="groupsSubMenu" 
+                            [matMenuTriggerData]="{node: node}">
+                            Seleccionar grupo padre
+                        </button>
+                        <button *ngIf="roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode()))"
+                            mat-menu-item 
+                            (click)="openChangeNodeNameDialog(node.id)">
+                            Cambiar nombre
+                        </button>
+                        <button *ngIf="roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode()))" 
+                            mat-menu-item 
+                            (click)="onNodeDeleted(node.id)">
+                            Eliminar
+                        </button>
                     </ng-template>
                 </mat-menu>
 
@@ -174,7 +261,7 @@
                         <span *ngIf="p.user.firstName && p.user.lastName">{{p.user.firstName}} {{p.user.lastName}}</span>
                         <span *ngIf="!(p.user.firstName && p.user.lastName)">{{p.user.name}}</span>
 
-                        <span *ngIf="p.u_id === participant?.u_id" class="gray-600">(you)</span>
+                        <span *ngIf="p.u_id === participant?.u_id" class="gray-600" style="margin-left: 5px;">(tú)</span>
 
                         <span *ngIf="p.role === 'moderator'" class="chip-role small moderator" style="margin-left: 6px;">Moderador</span>
                         <span *ngIf="p.role === 'ambassador'" class="chip-role small ambassador" style="margin-left: 6px;">Embajador</span>
@@ -197,19 +284,32 @@
                             Ver idea
                         </button>
 
-                        <button *ngIf="roleOfLoggedIn === 'moderator' && node.u_id !== participant.u_id && p.role !== 'moderator'" 
+                        <button *ngIf="roleOfLoggedIn === 'moderator' && node.u_id !== participant?.u_id && p.role !== 'moderator'" 
                             mat-menu-item
-                            (click)="setAsModerator(node.u_id)">
+                            (click)="setAsRole(node.u_id, 'moderator')">
                             Asignar como moderador
                         </button>
 
-                        <button *ngIf="roleOfLoggedIn === 'moderator' && node.u_id !== participant.u_id && p.role !== 'ambassador'" 
+                        <button *ngIf="roleOfLoggedIn === 'moderator' && node.u_id !== participant?.u_id && p.role === 'moderator'" 
                             mat-menu-item
-                            (click)="setAsAmbassador(node.u_id)">
+                            (click)="setAsRole(node.u_id, 'participant')">
+                            Quitar rol de moderador
+                        </button>
+
+                        <button *ngIf="roleOfLoggedIn === 'moderator' && node.u_id !== participant?.u_id && p.role !== 'ambassador'" 
+                            mat-menu-item
+                            (click)="setAsRole(node.u_id, 'ambassador')">
                             Asignar como embajador
                         </button>
 
-                        <button *ngIf="roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator'" 
+                        <button *ngIf="roleOfLoggedIn === 'moderator' && node.u_id !== participant?.u_id && p.role === 'ambassador'" 
+                            mat-menu-item
+                            (click)="setAsRole(node.u_id, 'participant')">
+                            Quitar rol de embajador
+                        </button>
+
+
+                        <button *ngIf="roleOfLoggedIn === 'moderator' || node.u_id === participant?.u_id" 
                             mat-menu-item 
                             [matMenuTriggerFor]="participantsSubMenu" 
                             [matMenuTriggerData]="{node: node}">

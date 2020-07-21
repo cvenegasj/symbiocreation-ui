@@ -36,10 +36,13 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   //sseSubscription: Subscription;
 
-  disabledGroupSelector: boolean;
+  //disabledGroupSelector: boolean;
   idGroupSelected: string = null;
+  
   participant: Participant;
   groups: Node[];
+  myGroup: Node;
+  myAncestry: Node[];
 
   symbiocreation: Symbiocreation;
   roleOfLoggedIn: string = '';
@@ -58,6 +61,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   ) { 
     this.participant = null;
     this.groups = [];
+    this.myGroup = null;
   }
 
   ngOnInit() {
@@ -104,13 +108,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           for (let p of this.symbiocreation.participants) {
             if (p.user.email === usrProfile.email) {
               this.participant = p;
+
               // group of logged-in user
-              const parentNode = this.getMyGroup();
-              this.disabledGroupSelector =  parentNode ? true : false;
-              this.idGroupSelected = parentNode?.id;
+              this.myGroup = this.getMyGroup();
+              this.myAncestry = this.getMyAncestry();
+
               // role of logged-in user
               this.roleOfLoggedIn = p.role;
+              // set properties of child component
               this.graphComponent.roleOfLoggedIn = this.roleOfLoggedIn;
+              this.graphComponent.participant = this.participant;
+
               this.sharedService.nextRole(this.roleOfLoggedIn);
               
               break;
@@ -177,6 +185,34 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     return parent;
+  }
+
+  getMyAncestry(): Node[] {
+    this.computeParents();
+
+    let ancestry: Node[] = [];
+    let current = this.getMyGroup();
+
+    while(current) {
+      ancestry.push(current);
+      current = current.parent;
+    }
+
+    return ancestry;
+  }
+
+  computeParents(): void {
+
+    function recurse(node: Node) {
+      if (node.children) node.children.forEach(child => {
+        child.parent = node;
+        recurse(child);
+      });
+    }
+    // data can have many nodes at root level
+    for (let i = 0; i < this.symbiocreation.graph.length; i++) {
+      recurse(this.symbiocreation.graph[i]);
+    }
   }
 
   getMyNode(): Node {
@@ -275,6 +311,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   nodeAContainsNodeB(nodeA: Node, nodeB: Node): boolean {
     let contains = false;
+
     function recurse(node: Node) {
       if (node.children) node.children.forEach(recurse);
       if (node.id === nodeB.id) contains = true;
@@ -282,6 +319,14 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     recurse(nodeA);
     return contains;
+  }
+
+  getRootContaining(node: Node): Node {
+    for (let n of this.symbiocreation.graph) {
+      if (this.nodeAContainsNodeB(n, node)) return n;
+    }
+
+    return null; // this should never occur
   }
 
   /* ========================================================================= */
@@ -306,11 +351,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         return this.symbioService.createParticipant(this.symbiocreation.id, this.participant);
       })
     ).subscribe(symbio => {
-      //this.symbiocreation = symbio;
-      //this.updateReferences(); 
-      // for view
       this.roleOfLoggedIn = 'participant';
-      this.disabledGroupSelector = false;
 
       this._snackBar.open('Se te agregó como participante.', 'ok', {
         duration: 2000,
@@ -319,7 +360,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     
   }
 
-  // will propagate changes to child graph component
+  // propagates changes to child graph component
   updateReferences() {
     this.symbiocreation.graph = this.symbiocreation.graph.slice();
     this.groups = this.getGroups();
@@ -338,9 +379,48 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           break;
         }
       }
+      // update myGroup
+      this.myGroup = this.getMyGroup();
+      // update my ancestry
+      this.myAncestry = this.getMyAncestry();
     }
   }
 
+  openNewParentGroupDialog(containerToHide?: any) {
+    const dialogRef = this.dialog.open(NewGroupDialogComponent, {
+      width: '350px'
+    });
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (name) {
+        const nextLevelNode: Node = {name: name, children: []};
+
+        this.symbioService.createNextLevelGroup(this.symbiocreation.id, this.getMyNode().id, nextLevelNode)
+          .subscribe(
+            symbio => {
+              if (containerToHide) containerToHide.hidden = true;
+            }
+          );
+      }
+    });
+  }
+
+  openNextLevelGroupDialog() {
+    const dialogRef = this.dialog.open(NewGroupDialogComponent, {
+      width: '350px'
+    });
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (name) {
+        const nextLevelNode: Node = {name: name, children: []};
+
+        this.symbioService.createNextLevelGroup(this.symbiocreation.id, this.getRootContaining(this.getMyNode()).id, nextLevelNode)
+          .subscribe();
+      }
+    });
+  }
+
+  /*
   openNewGroupDialog() {
     const dialogRef = this.dialog.open(NewGroupDialogComponent, {
       width: '350px'
@@ -356,7 +436,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
+  }*/
 
   openMyIdeaEditDialog() {
     let toChange = this.getMyNode();
@@ -389,26 +469,18 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   onMyGroupChanged() {
-    // update graph
     let myNode = this.getMyNode();
 
     this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected ? this.idGroupSelected : 'none')
-      .subscribe(symbio => {
-        //console.log('my new parent: ', this.getMyGroup());
-        //console.log('new symbio graph: ', this.symbiocreation.graph);
-        //this.symbiocreation = symbio;
-        //this.updateReferences();
-        this.disabledGroupSelector = true;
-      });
+      .subscribe();
   }
 
   onParentChanged(ids) {
     let child = this.getNode(ids[0]);
     let parent = this.getNode(ids[1]);
 
-    //this.symbiocreation.lastModified = new Date();
     if (this.nodeAContainsNodeB(child, parent)) {
-      this._snackBar.open('No se puede asignar el nuevo grupo padre.', 'ok', {
+      this._snackBar.open('No se puede asignar. El grupo padre seleccionado es descendiente del nodo a modificar.', 'ok', {
         duration: 2000,
       });
 
@@ -416,20 +488,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     }
 
     this.symbioService.setParentNode(this.symbiocreation.id, ids[0], ids[1])
-      .subscribe(symbio => {
-        //this.symbiocreation = symbio;
-        //this.updateReferences();
-        // if edited node is me, update my group selector
-        if (child.u_id === this.participant.u_id) this.idGroupSelected = ids[1];
-      });
+      .subscribe();
   }
 
   onNodeDeleted(id) {
-    this.symbioService.deleteNode(this.symbiocreation.id, id)
-      .subscribe(symbio => {
-        //this.symbiocreation = symbio;
-        //this.updateReferences();
-      });
+    this.symbioService.deleteNode(this.symbiocreation.id, id).subscribe();
   }
 
   openChangeNodeNameDialog(id) {
@@ -444,10 +507,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         toChange.name = name;
 
         this.symbioService.updateNodeName(this.symbiocreation.id, toChange)
-          .subscribe(symbio => {
-            //this.symbiocreation = symbio;
-            //this.updateReferences();
-          });
+          .subscribe();
       }
     });
   }
@@ -489,13 +549,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.sidenav.open();
   }
 
-  setAsModerator(userId: string) {
-    this.symbioService.updateParticipantRole(this.symbiocreation.id, {u_id: userId, role: 'moderator'} as Participant)
-      .subscribe();
-  }
-
-  setAsAmbassador(userId: string) {
-    this.symbioService.updateParticipantRole(this.symbiocreation.id, {u_id: userId, role: 'ambassador'} as Participant)
+  setAsRole(userId: string, role: string) {
+    this.symbioService.updateParticipantRole(this.symbiocreation.id, {u_id: userId, role: role} as Participant)
       .subscribe();
   }
 

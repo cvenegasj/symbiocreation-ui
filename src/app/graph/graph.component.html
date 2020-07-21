@@ -2,10 +2,30 @@
     
     <mat-menu #nodeContextMenu="matMenu">
         <ng-template matMenuContent let-node="node">
-            <button mat-menu-item (click)="changeIdeaNode(node)">Editar idea</button>
-            <button mat-menu-item [matMenuTriggerFor]="groupsSubMenu" [matMenuTriggerData]="{node: node}">Seleccionar grupo padre</button>
-            <button mat-menu-item (click)="changeNameNode(node)" *ngIf="!node.u_id">Cambiar nombre</button>
-            <button mat-menu-item (click)="deleteNode(node)" *ngIf="!node.u_id">Eliminar</button>
+
+            <button mat-menu-item 
+                (click)="openIdeaDetailSidenav(node.id)">
+                Ver idea
+            </button>
+
+            <button *ngIf="roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode())) || node.u_id === participant?.u_id"
+                mat-menu-item 
+                [matMenuTriggerFor]="groupsSubMenu" 
+                [matMenuTriggerData]="{node: node}">
+                Seleccionar grupo padre
+            </button>
+
+            <button *ngIf="!node.u_id && (roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode())))"
+                mat-menu-item 
+                (click)="changeNameNode(node)">
+                Cambiar nombre
+            </button>
+
+            <button *ngIf="!node.u_id && (roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode())))" 
+                mat-menu-item 
+                (click)="deleteNode(node)">
+                Eliminar
+            </button>
         </ng-template>
     </mat-menu>
 

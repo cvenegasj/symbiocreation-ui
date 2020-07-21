@@ -7,8 +7,12 @@ export interface Node extends d3Force.SimulationNodeDatum {
     user?: User;
     name?: string;
     idea?: Idea;
-    //r?: number;
+    
     height?: number;
+    r?: number;
+    color?: string;
+
+    parent?: Node;
     children?: Node[];
 }
 

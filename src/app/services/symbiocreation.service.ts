@@ -134,9 +134,20 @@ export class SymbiocreationService {
             );
     }
 
+    /*
     createGroupNode(symbioId: string, n: Node): Observable<Symbiocreation> {
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createGroupNode`;
         return this.http.post<Symbiocreation>(API_URL, n)
+            .pipe(
+                catchError(this.error)
+            );
+    }
+    */
+
+    // nextLevelNode has name 
+    createNextLevelGroup(symbioId: string, childNodeId: string, nextLevelNode: Node): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createNextLevelGroup/${childNodeId}`;
+        return this.http.post<Symbiocreation>(API_URL, nextLevelNode)
             .pipe(
                 catchError(this.error)
             );
