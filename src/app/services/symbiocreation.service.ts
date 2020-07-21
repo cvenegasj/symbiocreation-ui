@@ -117,6 +117,7 @@ export class SymbiocreationService {
     updateNodeName(symbioId: string, newNode: Node): Observable<Symbiocreation> {
         newNode.parent = null;
 
+        
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/updateNodeName`;
         return this.http.put<Symbiocreation>(API_URL, newNode, {headers: this.headers})
             .pipe(
