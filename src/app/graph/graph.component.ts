@@ -141,8 +141,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     //const links = d3.hierarchy(this.data).links();
 
     this.simulation = d3.forceSimulation(this.nodes)
-      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => (d.source.height * 20) + 40)) // d is for node, useful to set ids of source and target: default to node.id, then node.index
-      .force('charge', d3.forceManyBody().strength(-40))
+      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 55, 90))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
+      .force('charge', d3.forceManyBody().strength(-50))
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2));
 
     // draw links
@@ -426,6 +426,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   getGradientLinkWidth(height: number, maxHeight: number, from: number, to: number): number {
+    if (maxHeight <= 1) return from;
+
+    const diff = to - from;
+    return diff * ((height - 1) / (maxHeight - 1)) + from;
+  }
+
+  getGradientLinkLength(height: number, maxHeight: number, from: number, to: number): number {
     if (maxHeight <= 1) return from;
 
     const diff = to - from;
