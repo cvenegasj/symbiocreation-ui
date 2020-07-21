@@ -4,6 +4,7 @@ import { SymbiocreationService } from '../services/symbiocreation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 import * as moment from 'moment';
+import { SharedService } from '../services/shared.service';
 
 @Component({
   selector: 'app-explore',
@@ -16,12 +17,17 @@ export class ExploreComponent implements OnInit {
 
   constructor(
     private symbioService: SymbiocreationService,
+    private sharedService: SharedService,
     public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
+    this.sharedService.nextIsLoading(true);
+
     this.symbioService.getUpcomingPublicSymbiocreations().subscribe(
       symbios => {
+        this.sharedService.nextIsLoading(false);
+
         this.symbiocreations = symbios;
         //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
       }
@@ -31,8 +37,12 @@ export class ExploreComponent implements OnInit {
   filterSelected(value: string) {
     switch(value) {
       case "upcoming": {
+        this.sharedService.nextIsLoading(true);
+
         this.symbioService.getUpcomingPublicSymbiocreations().subscribe(
           symbios => {
+            this.sharedService.nextIsLoading(false);
+
             this.symbiocreations = symbios;
             //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
           }
@@ -40,8 +50,12 @@ export class ExploreComponent implements OnInit {
         break;
       }
       case "past": {
+        this.sharedService.nextIsLoading(true);
+
         this.symbioService.getPastPublicSymbiocreations().subscribe(
           symbios => {
+            this.sharedService.nextIsLoading(false);
+
             this.symbiocreations = symbios;
             //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
           }
@@ -49,8 +63,12 @@ export class ExploreComponent implements OnInit {
         break;
       }
       case "all": {
+        this.sharedService.nextIsLoading(true);
+
         this.symbioService.getAllPublicSymbiocreations().subscribe(
           symbios => {
+            this.sharedService.nextIsLoading(false);
+            
             this.symbiocreations = symbios;
             //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
           }

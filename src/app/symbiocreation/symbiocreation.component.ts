@@ -31,12 +31,12 @@ import { MatButton } from '@angular/material/button';
 export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   @ViewChild('sidenav') sidenav: MatSidenav;
+
   @ViewChild(GraphComponent)
   private graphComponent: GraphComponent;
 
   //sseSubscription: Subscription;
 
-  //disabledGroupSelector: boolean;
   idGroupSelected: string = null;
   
   participant: Participant;
@@ -80,6 +80,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
   
   getData() {
+    this.sharedService.nextIsLoading(true);
+
     const id = this.route.snapshot.paramMap.get('id');
 
     this.symbioService.getSymbiocreation(id)
@@ -127,6 +129,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         }
       })
     ).subscribe(u => {
+      this.sharedService.nextIsLoading(false);
+      
       if (this.participant) {
         // get node w idea from DB 
         this.symbioService.getNodeById(this.symbiocreation.id, this.getMyNode().id)
@@ -169,15 +173,15 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     let parent = null;
 
     function recurse(node: Node) {
-      if (node.children) node.children.forEach(recurse);
-        for (let i = 0; i < node.children?.length; i++) {
+      if (node.children) {
+        for (let i = 0; i < node.children.length; i++) {
           recurse(node.children[i]);
           if (node.children[i].u_id === participant.u_id) {
             parent = node;
             break;
           }
         }
-      
+      }
     }
     // data can have many nodes at root level
     for (let i = 0; i < this.symbiocreation.graph.length; i++) {
@@ -188,20 +192,37 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   getMyAncestry(): Node[] {
-    this.computeParents();
+    let graphWParents = this.computeParents();
 
     let ancestry: Node[] = [];
-    let current = this.getMyGroup();
+    let parent = null;
+    let participant = this.participant;
 
-    while(current) {
-      ancestry.push(current);
-      current = current.parent;
+    function recurse(node: Node) {
+      if (node.children) {
+        for (let i = 0; i < node.children.length; i++) {
+          recurse(node.children[i]);
+          if (node.children[i].u_id === participant.u_id) {
+            parent = node;
+            break;
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < graphWParents.length; i++) {
+      recurse(graphWParents[i]);
+    }
+
+    while(parent) {
+      ancestry.push(parent);
+      parent = parent.parent;
     }
 
     return ancestry;
   }
 
-  computeParents(): void {
+  computeParents(): Node[] {
 
     function recurse(node: Node) {
       if (node.children) node.children.forEach(child => {
@@ -209,10 +230,31 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         recurse(child);
       });
     }
+
+    let graphWParents = this.copy(this.symbiocreation.graph);
+
     // data can have many nodes at root level
-    for (let i = 0; i < this.symbiocreation.graph.length; i++) {
-      recurse(this.symbiocreation.graph[i]);
+    for (let i = 0; i < graphWParents.length; i++) {
+      recurse(graphWParents[i]);
     }
+
+    return graphWParents;
+  }
+
+  // deep copy of array by value
+  copy(aObject) {
+    if (!aObject) {
+      return aObject;
+    }
+  
+    let v;
+    let bObject = Array.isArray(aObject) ? [] : {};
+    for (const k in aObject) {
+      v = aObject[k];
+      bObject[k] = (typeof v === "object") ? this.copy(v) : v;
+    }
+  
+    return bObject;
   }
 
   getMyNode(): Node {

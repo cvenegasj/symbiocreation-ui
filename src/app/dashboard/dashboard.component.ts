@@ -7,6 +7,7 @@ import { UserService } from '../services/user.service';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { SharedService } from '../services/shared.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,6 +25,7 @@ export class DashboardComponent implements OnInit {
     private symbioService: SymbiocreationService,
     private userService: UserService,
     private auth: AuthService,
+    public sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
     ) {
@@ -32,18 +34,21 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.sharedService.nextIsLoading(true);
+
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
       tap(u => this.isGridViewOn = u.isGridViewOn),
       concatMap(u => this.symbioService.getMySymbiocreations(u.id))
     ).subscribe(
       symbios => {
+        this.sharedService.nextIsLoading(false);
+
         this.symbiocreations = symbios;
-        // order has to nbe done in frontend bc of rx backend ?????
+        // order has to be done in frontend bc of rx backend ?????
         this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
 
         this.createIsModeratorList();
-        //console.log('Moderator of: ', this.isModeratorList);
     });
   }
 

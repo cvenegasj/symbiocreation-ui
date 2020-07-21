@@ -7,6 +7,9 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SharedService {
 
+    private isLoadingSubject$ = new BehaviorSubject<boolean>(null);
+    isLoading$ = this.isLoadingSubject$.asObservable();
+
     private nodeSubject$ = new BehaviorSubject<Node>(null);
     node$ = this.nodeSubject$.asObservable();
 
@@ -14,6 +17,10 @@ export class SharedService {
     role$ = this.roleSubject$.asObservable();
 
     constructor() {}
+
+    nextIsLoading(isLoading: boolean) {
+        this.isLoadingSubject$.next(isLoading);
+    }
 
     nextNode(node: Node) {
         this.nodeSubject$.next(node);
