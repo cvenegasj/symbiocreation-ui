@@ -97,7 +97,7 @@ export class ExploreComponent implements OnInit {
     let selected: Participant[] = [];
     // include moderators w picture
     for (let p of participants) {
-      if (p.role === 'moderator' && p.user.pictureUrl) selected.push(p);
+      if (selected.length < 5 && p.role === 'moderator' && p.user.pictureUrl) selected.push(p);
     }
 
     // fill 5 spots w/ participants
