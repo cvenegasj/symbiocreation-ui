@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   { path: 'create', component: CreateSymbioComponent, canActivate: [AuthGuard] },
   { path: 'edit/:id', component: EditSymbiocreationDetailComponent },
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'dashboard' }
 ];
 
 @NgModule({

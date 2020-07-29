@@ -29,7 +29,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     private sidenav: SidenavService,
     private symbioService: SymbiocreationService,
     public auth: AuthService,
-    private sharedService: SharedService,
+    public sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
     ) {}
@@ -45,6 +45,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     this.sharedService.role$.subscribe(role => {
       if (role) this.roleOfLoggedIn = role;
     });
+
   }
 
   ngAfterViewInit() {

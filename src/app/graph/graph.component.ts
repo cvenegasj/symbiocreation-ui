@@ -51,9 +51,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   nodeGroup: any;
   linkGroup: any;
   textGroup: any;
-  //public formatDate: (date: object) => string = d3.timeFormat("%-b %-d")
-  //public gradientId: string = getUniqueId("Timeline-gradient")
-  //public gradientColors: string[] = ["rgb(226, 222, 243)", "#f8f9fa"]
+
   @ViewChild('container', {static: true}) container: ElementRef;
 
   constructor(
@@ -331,8 +329,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     );
   }
 
+  // copy of fn in symbiocreation.component.ts
   openIdeaDetailSidenav(idNode: string) {
     this.sharedService.nextRole(this.roleOfLoggedIn);
+
+    const node = this.getNode(idNode);
+    
+    this.sharedService.nextEditableIdea(
+          this.roleOfLoggedIn === 'moderator' // if I am moderator
+          || (this.roleOfLoggedIn === 'ambassador' && this.nodeAContainsNodeB(node, this.getMyNode())) // if I am ambassador and descendant of node
+          || node.u_id === this.participant.u_id // if it's my node
+    ); 
 
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();
@@ -367,6 +374,19 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.nodeChangedIdea.emit(node.id);
   }
 
+  getNode(nodeId: string): Node {
+    let n: Node = null;
+
+    function recurse(node: Node) {
+      if (node.children) node.children.forEach(recurse);
+      if (node.id === nodeId) n = node;
+    }
+    // data can have many nodes at root level
+    for (let i = 0; i < this.data.length; i++) {
+      recurse(this.data[i]);
+    }
+    return n;
+  }
 
   /************ Helper functions ************/
 

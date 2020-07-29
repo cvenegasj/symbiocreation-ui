@@ -584,8 +584,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     );
   }
 
+  // function is copied in graph.component.ts
   openIdeaDetailSidenav(idNode: string) {
     this.sharedService.nextRole(this.roleOfLoggedIn);
+    
+    const node = this.getNode(idNode);
+    
+    this.sharedService.nextEditableIdea(
+          this.roleOfLoggedIn === 'moderator' // if I am moderator
+          || (this.roleOfLoggedIn === 'ambassador' && this.nodeAContainsNodeB(node, this.getMyNode())) // if I am ambassador and descendant of node
+          || node.u_id === this.participant.u_id // if it's my node
+    ); 
 
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();

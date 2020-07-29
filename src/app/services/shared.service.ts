@@ -16,6 +16,9 @@ export class SharedService {
     private roleSubject$ = new BehaviorSubject<string>(null);
     role$ = this.roleSubject$.asObservable();
 
+    private editableIdeaSubject$ = new BehaviorSubject<boolean>(false);
+    editableIdea$ = this.editableIdeaSubject$.asObservable(); 
+
     constructor() {}
 
     nextIsLoading(isLoading: boolean) {
@@ -28,6 +31,10 @@ export class SharedService {
 
     nextRole(role: string) {
         this.roleSubject$.next(role);
+    }
+
+    nextEditableIdea(editable: boolean) {
+        this.editableIdeaSubject$.next(editable);
     }
 
 }

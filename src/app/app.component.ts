@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { SharedService } from './services/shared.service';
 
@@ -7,15 +7,18 @@ import { SharedService } from './services/shared.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewChecked {
 
   title = 'Simbiocreación';
   
   constructor(
     public auth: AuthService,
-    public sharedService: SharedService
-    ) {}
+    public sharedService: SharedService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-
+  ngAfterViewChecked(): void {
+    this.cdr.detectChanges();
+  }
 
 }

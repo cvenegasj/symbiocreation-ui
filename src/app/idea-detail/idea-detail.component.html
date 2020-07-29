@@ -1,9 +1,12 @@
 <mat-toolbar color="accent">
     <span class="ellipsed">Idea de {{nameToShow}}</span>
+    
     <span fxFlex></span>
-    <button *ngIf="auth.loggedIn && (roleOfLoggedIn === 'participant' || roleOfLoggedIn === 'moderator')" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
+
+    <button *ngIf="sharedService.editableIdea$ | async" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
         <mat-icon>more_vert</mat-icon>
     </button>
+
     <mat-menu #ideaSidenavMenu="matMenu">
         <button mat-menu-item (click)="openEditIdeaDialog()">
             <span>Editar idea</span>
@@ -43,7 +46,7 @@
         <p class="centered gray-700 font-15">
             No hay ninguna idea registrada.
         </p>
-        <div class="centered">
+        <div *ngIf="sharedService.editableIdea$ | async" class="centered">
             <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">Registrar idea</button>
         </div>
     </div>
