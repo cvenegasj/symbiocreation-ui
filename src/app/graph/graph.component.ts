@@ -390,6 +390,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   /************ Helper functions ************/
 
+  // TODO: fix wrong implementation!!!!!!!!!!!!!!!
   // BFS
   getNodeHeight(node: Node): number {
     let height = 0;

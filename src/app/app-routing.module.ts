@@ -25,7 +25,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {initialNavigation: 'disabled'})], // disable initialNavigation for Auth0 to work
+  imports: [RouterModule.forRoot(routes, { initialNavigation: 'disabled', relativeLinkResolution: 'legacy' })], // disable initialNavigation for Auth0 to work
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
