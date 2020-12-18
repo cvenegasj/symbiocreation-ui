@@ -6,6 +6,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 })
 export class SidenavService {
     sidenav: MatSidenav;
+    isOpenInFullscreen: boolean = false;
 
     setSidenav(sidenav: MatSidenav) {
         this.sidenav = sidenav;
@@ -21,5 +22,9 @@ export class SidenavService {
 
     toggle(): void {
         this.sidenav.toggle();
+    }
+
+    toggleFullscreen(): void {
+        this.isOpenInFullscreen = !this.isOpenInFullscreen;
     }
 }

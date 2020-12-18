@@ -23,10 +23,14 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   nameToShow: string;
   roleOfLoggedIn: string;
 
+  rating: number = 3.5;
+  comment: string = '';
+  hiddenCommentButtons: boolean = true;
+
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
-    private sidenav: SidenavService,
+    public sidenav: SidenavService,
     private symbioService: SymbiocreationService,
     public auth: AuthService,
     public sharedService: SharedService,
@@ -37,19 +41,13 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.subscribeToParams();
     
-    /*this.route.paramMap
-      //.pipe(map(() => window.history.state))
-      .subscribe(
-        () => console.log(history.state)
-      );*/
     this.sharedService.role$.subscribe(role => {
       if (role) this.roleOfLoggedIn = role;
     });
-
   }
 
   ngAfterViewInit() {
-    setTimeout(()=> this.sidenav.open(), 0); // to allow sidenav to be injected properly
+    setTimeout(() => this.sidenav.open(), 0); // to allow sidenav to be injected properly
   }
 
   subscribeToParams() {
@@ -66,9 +64,16 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
+  toggleFullscreen() {
+    this.sidenav.toggleFullscreen();
+  }
+
   closeIdeaDetail() {
     const closed$ = from(this.sidenav.close());
-    closed$.subscribe(res => this.router.navigate(['.'], {relativeTo: this.route.parent})); // to avoid blank sidenav on closing
+    closed$.subscribe(res => {
+      this.router.navigate(['.'], {relativeTo: this.route.parent});
+      this.sharedService.nextSelectedNode(null);
+    }); // to avoid blank sidenav on closing
   }
 
   openEditIdeaDialog() {
@@ -76,7 +81,6 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
       const id = this.route.parent.snapshot.params.id;
       const ideaId = this.route.snapshot.params.idNode;
       this.auth.login(`/symbiocreation/${id}/idea/${ideaId}`);
-
       return;
     }
 
@@ -102,6 +106,15 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  onRateChange(rating: number) {
+    
+  }
+
+  cancelCommentPost() {
+    this.comment = '';
+    this.hiddenCommentButtons = true;
   }
 
 }

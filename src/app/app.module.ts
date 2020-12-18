@@ -9,6 +9,10 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { CloudinaryModule } from '@cloudinary/angular-5.x';
 import * as  Cloudinary from 'cloudinary-core';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MomentTimezonePickerModule } from 'moment-timezone-picker';
+import { NgxLinkifyjsModule } from 'ngx-linkifyjs';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -23,8 +27,6 @@ import { EditIdeaDialogComponent } from './edit-idea-dialog/edit-idea-dialog.com
 import { EditGroupNameDialogComponent } from './edit-group-name-dialog/edit-group-name-dialog.component';
 import { CameraCaptureDialogComponent } from './camera-capture-dialog/camera-capture-dialog.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 import { SymbiocreationDetailComponent } from './symbiocreation-detail/symbiocreation-detail.component';
 import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
 import { GridSymbiosUserComponent } from './grid-symbios-user/grid-symbios-user.component';
@@ -61,6 +63,8 @@ import { ListSymbiosUserComponent } from './list-symbios-user/list-symbios-user.
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
     MatMomentDateModule,
     MomentTimezonePickerModule,
+    NgbModule,
+    NgxLinkifyjsModule.forRoot(),
     
   ],
   providers: [

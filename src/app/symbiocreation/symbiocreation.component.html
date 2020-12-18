@@ -1,6 +1,6 @@
- <mat-sidenav-container hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
+ <mat-sidenav-container autosize hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
 
-    <mat-sidenav #sidenav position="end">
+    <mat-sidenav #sidenav position="end" [style.width]="sidenavService.isOpenInFullscreen ? '100%' : '470px'">
         <router-outlet></router-outlet>
     </mat-sidenav>
 
@@ -184,7 +184,7 @@
         </div>
 
         <!-- Side area -->
-        <div fxFlex="23" fxFlex.lt-md="30" class="mat-elevation-z1">
+        <div fxFlex="23" fxFlex.lt-md="30" class="mat-elevation-z1 container-scrollable">
 
             <!-- Grupos -->
             <mat-expansion-panel expanded class="mat-elevation-z0">
@@ -197,12 +197,19 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
 
+                <div>
+                    <mat-form-field appearance="standard" style="width: 100%;">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput placeholder="Buscar grupo..." [(ngModel)]="listFilter2" (keyup.esc)="listFilter2 = ''">
+                    </mat-form-field>
+                </div>
+
                 <mat-list dense>
-                    <mat-list-item *ngFor="let g of groups">
-                        <span>{{g.name}}</span>
-                        <span class="gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1? 'hijo' : 'hijos'}}</span>
-                        
-                        <span fxFlex></span>
+                    <mat-list-item *ngFor="let g of filteredGroups" class="hoveredList1" (mouseenter)="onMouseEnterListItem(g)">
+                        <div style="display: inline; width: 205px;" (click)="openIdeaDetailSidenav(g.id)">
+                            <span class="font-13">{{g.name}}</span>
+                            <span class="gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1? 'hijo' : 'hijos'}}</span>
+                        </div>
                         
                         <button mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
                             <mat-icon>more_vert</mat-icon>
@@ -219,7 +226,7 @@
                             mat-menu-item 
                             [matMenuTriggerFor]="groupsSubMenu" 
                             [matMenuTriggerData]="{node: node}">
-                            Seleccionar grupo padre
+                            Asignar grupo padre
                         </button>
                         <button *ngIf="roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode()))"
                             mat-menu-item 
@@ -254,19 +261,27 @@
                         {{symbiocreation?.participants.length}}
                     </mat-panel-description>
                 </mat-expansion-panel-header>
+
+                <div>
+                    <mat-form-field appearance="standard" style="width: 100%;">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput placeholder="Buscar participante..." [(ngModel)]="listFilter1" (keyup.esc)="listFilter1 = ''">
+                    </mat-form-field>
+                </div>
                 
                 <mat-list dense>
-                    <mat-list-item *ngFor="let p of symbiocreation?.participants">
-                        
-                        <span *ngIf="p.user.firstName && p.user.lastName">{{p.user.firstName}} {{p.user.lastName}}</span>
-                        <span *ngIf="!(p.user.firstName && p.user.lastName)">{{p.user.name}}</span>
+                    <mat-list-item *ngFor="let p of filteredParticipants" class="hoveredList1" (mouseenter)="onMouseEnterListItem(getNodeByUserId(p.u_id))">
+                        <div style="display: inline; width: 205px;" (click)="openIdeaDetailSidenav(getNodeByUserId(p.u_id).id)">
+                            <span *ngIf="p.user.firstName && p.user.lastName" class="font-13">{{p.user.firstName}} {{p.user.lastName}}</span>
+                            <span *ngIf="!(p.user.firstName && p.user.lastName)" class="font-13">{{p.user.name}}</span>
 
-                        <span *ngIf="p.u_id === participant?.u_id" class="gray-600" style="margin-left: 5px;">(tú)</span>
+                            <span *ngIf="p.u_id === participant?.u_id" class="gray-600" style="margin-left: 5px;">(tú)</span>
 
-                        <span *ngIf="p.role === 'moderator'" class="chip-role small moderator" style="margin-left: 6px;">Moderador</span>
-                        <span *ngIf="p.role === 'ambassador'" class="chip-role small ambassador" style="margin-left: 6px;">Embajador</span>
-                        
-                        <span fxFlex></span>
+                            <br />
+
+                            <span *ngIf="p.role === 'moderator'" class="chip-role small moderator">Moderador</span>
+                            <span *ngIf="p.role === 'ambassador'" class="chip-role small ambassador">Embajador</span>
+                        </div>
                         
                         <button mat-icon-button 
                             [matMenuTriggerFor]="participantMenu" 
@@ -313,7 +328,7 @@
                             mat-menu-item 
                             [matMenuTriggerFor]="participantsSubMenu" 
                             [matMenuTriggerData]="{node: node}">
-                            Seleccionar grupo
+                            Asignar grupo
                         </button>
                     </ng-template>
                 </mat-menu>

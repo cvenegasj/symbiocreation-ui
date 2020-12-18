@@ -47,10 +47,16 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   symbiocreation: Symbiocreation;
   roleOfLoggedIn: string = '';
 
+  _listFilter1: string = '';
+  filteredParticipants: Participant[];
+
+  _listFilter2: string = '';
+  filteredGroups: Node[];
+
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
-    private sidenavService: SidenavService,
+    public sidenavService: SidenavService,
     private symbioService: SymbiocreationService,
     private userService: UserService,
     public auth: AuthService,
@@ -90,6 +96,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         this.symbiocreation = s;
         this.groups = this.getGroups();
 
+        this.filteredParticipants = this.symbiocreation.participants;
+        this.filteredGroups = this.groups;
+
         // connect to socket for updates
         this.rSocketService.connectToSymbio(this.symbiocreation.id);
 
@@ -122,7 +131,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
               this.graphComponent.participant = this.participant;
 
               this.sharedService.nextRole(this.roleOfLoggedIn);
-              
               break;
             }
           }
@@ -594,7 +602,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           this.roleOfLoggedIn === 'moderator' // if I am moderator
           || (this.roleOfLoggedIn === 'ambassador' && this.nodeAContainsNodeB(node, this.getMyNode())) // if I am ambassador and descendant of node
           || node.u_id === this.participant?.u_id // if it's my node
-    ); 
+    );
+    this.sharedService.nextSelectedNode(node);
 
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();
@@ -615,6 +624,48 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe();
+  }
+
+  onMouseEnterListItem(node: Node) {
+    this.sharedService.nextSelectedNode(node);
+  }
+
+  // setter and getter for _listFilters
+  get listFilter1(): string { 
+    return this._listFilter1; 
+  }
+   
+  set listFilter1(value: string) { 
+    this._listFilter1 = value; 
+    this.filteredParticipants = this.listFilter1 ? this.performFilter1(this.listFilter1) : this.symbiocreation.participants; 
+  }
+
+  get listFilter2(): string { 
+    return this._listFilter2; 
+  }
+   
+  set listFilter2(value: string) { 
+    this._listFilter2 = value; 
+    this.filteredGroups = this.listFilter2 ? this.performFilter2(this.listFilter2) : this.groups; 
+  }
+
+  performFilter1(filterBy: string): Participant[] { 
+    filterBy = filterBy.toLocaleLowerCase();  
+
+    return this.symbiocreation.participants.filter(
+      (p: Participant) => {
+        const name = p.user.firstName && p.user.lastName ? p.user.firstName + " " + p.user.lastName : p.user.name; 
+        return name.toLocaleLowerCase().indexOf(filterBy) !== -1;
+      }
+    ); 
+  }
+
+  performFilter2(filterBy: string): Node[] { 
+    filterBy = filterBy.toLocaleLowerCase();
+
+    return this.groups.filter(
+      (n: Node) => n.name.toLocaleLowerCase().indexOf(filterBy) !== -1
+    ); 
   }
 
 }

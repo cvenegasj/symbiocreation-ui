@@ -94,11 +94,11 @@ export class AuthService {
   private handleAuthCallback() {
     // Call when app reloads after user logs in with Auth0
     const params = window.location.search;
-    //onsole.log('params: ', params);
+    //console.log('params: ', params);
 
     if (params.includes('code=') && params.includes('state=')) {
       let usr;
-      let targetRoute: string; // Path to redirect to after login processsed
+      let targetRoute: string; // Path to redirect to after login is processed
       const authComplete$ = this.handleRedirectCallback$.pipe(
         // Have client, now call method to handle auth callback redirect
         tap(cbRes => {
@@ -119,14 +119,12 @@ export class AuthService {
         })
       );
 
-      authComplete$.subscribe(u => { // return null if new user
+      authComplete$.subscribe(u => { // is null if new user
         // update/create user
         if (!u) { // if no object returned
           console.log('new user!');
-
           // create new user
           let newUser: User = {name: usr.name, firstName: usr.given_name, lastName: usr.family_name, email: usr.email, pictureUrl: usr.picture};
-
           this.userService.createUser(newUser).subscribe(res => this.router.navigate([targetRoute]));
         } else {
           console.log('returning user!');

@@ -17,7 +17,10 @@ export class SharedService {
     role$ = this.roleSubject$.asObservable();
 
     private editableIdeaSubject$ = new BehaviorSubject<boolean>(false);
-    editableIdea$ = this.editableIdeaSubject$.asObservable(); 
+    editableIdea$ = this.editableIdeaSubject$.asObservable();
+
+    private selectedNodeSubject$ = new BehaviorSubject<Node>(null);
+    selectedNode$ = this.selectedNodeSubject$.asObservable();
 
     constructor() {}
 
@@ -35,6 +38,10 @@ export class SharedService {
 
     nextEditableIdea(editable: boolean) {
         this.editableIdeaSubject$.next(editable);
+    }
+
+    nextSelectedNode(node: Node) {
+        this.selectedNodeSubject$.next(node);
     }
 
 }

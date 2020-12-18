@@ -28,6 +28,11 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   participant: Participant;
   roleOfLoggedIn: string;
 
+  selectedNode: Node; // useful for getting the id of selected node; used in mouseout event of node
+  selectedNodeElement: any;
+  lastSelectedColor: string;
+  colorOfHovered: string;
+
   menuX: number = 0;
   menuY: number = 0;
 
@@ -92,6 +97,27 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   ngOnInit() {
     //this.updateDimensions();
+
+    // to update selected node
+    this.sharedService.selectedNode$.subscribe(node => { // of type Node extends d3Force.SimulationNodeDatum
+      if (node) {
+        if (this.selectedNode) {
+          this.selectedNodeElement.attr("fill", this.lastSelectedColor);
+        } 
+        // change fill color of selected node
+        this.selectedNodeElement = d3.select('#id' + node.id);
+        this.lastSelectedColor = this.selectedNodeElement.attr("fill");
+        this.selectedNodeElement.attr("fill", '#304FFE');
+      } else {
+        if (this.selectedNode) {
+          this.selectedNodeElement.attr("fill", this.lastSelectedColor);
+        }
+        this.selectedNodeElement = null;
+        this.lastSelectedColor = null;
+      }
+
+      this.selectedNode = node;
+    });
   }
 
   ngAfterContentInit() {
@@ -170,12 +196,24 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .call(this.drag(this.simulation));
 
     nodeEnter.append("circle")
+        .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
         .attr("fill", d => d.color)
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
         .attr('r', d => d.r)
-        .on('click', d => this.openIdeaDetailSidenav(d.id))
-        .on('contextmenu', d => this.openNodeContextMenu(d));
+        .on('click', d => {
+          this.openIdeaDetailSidenav(d.id);
+          this.lastSelectedColor = d.color; // after method call to keep property updated
+        })
+        .on('contextmenu', d => this.openNodeContextMenu(d))
+        .on('mouseover', d => {
+          d3.select(d3.event.currentTarget).attr("fill", '#304FFE');
+        })
+        .on('mouseout', d => {
+          if (d.id !== this.selectedNode?.id) {
+            d3.select(d3.event.currentTarget).attr("fill", d.color);
+          }
+        });
 
     nodeEnter.append("text")
         .text(d => d.name)
@@ -193,6 +231,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         this.nodeElements
           .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
       });
+
   }
 
   drag = simulation => {
@@ -339,7 +378,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
           this.roleOfLoggedIn === 'moderator' // if I am moderator
           || (this.roleOfLoggedIn === 'ambassador' && this.nodeAContainsNodeB(node, this.getMyNode())) // if I am ambassador and descendant of node
           || node.u_id === this.participant?.u_id // if it's my node
-    ); 
+    );
+    this.sharedService.nextSelectedNode(node);
 
     this.router.navigate(['idea', idNode], {relativeTo: this.route});
     this.sidenav.open();
@@ -347,6 +387,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   openNodeContextMenu(node: Node) {
     if (!this.auth.loggedIn) return;
+
     d3.event.preventDefault();
     this.menuX = d3.event.x - 10;
     this.menuY = d3.event.y - 50;
