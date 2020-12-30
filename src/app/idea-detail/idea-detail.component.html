@@ -51,13 +51,13 @@
         -->
 
         <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicId" [fxLayout]="sidenav.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
-            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'">
+            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
                 <cl-image [public-id]="'https://www.muycomputerpro.com/wp-content/uploads/2018/02/Machine-learning-in-cyber-security-770x476.jpg'" style="width: 100%;" type="fetch"></cl-image>
             </div>
-            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'">
+            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
                 <cl-image [public-id]="'https://www.bbva.com/wp-content/uploads/2019/11/machine-learning-1920x1180.jpg'" style="width: 100%;" type="fetch"></cl-image>
             </div>
-            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'">
+            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
                 <cl-image [public-id]="'https://www.bbva.com/wp-content/uploads/2019/11/infografia-machine-learning-408x1024.jpg'" style="width: 100%;" type="fetch"></cl-image>
             </div>
         </div>

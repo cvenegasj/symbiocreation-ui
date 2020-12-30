@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 import * as moment from 'moment';
 import { SharedService } from '../services/shared.service';
@@ -13,7 +14,11 @@ import { SharedService } from '../services/shared.service';
 })
 export class ExploreComponent implements OnInit {
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   symbiocreations: Symbiocreation[];
+  filter: string = 'upcoming';
+  totalCount: number;
 
   constructor(
     private symbioService: SymbiocreationService,
@@ -23,54 +28,50 @@ export class ExploreComponent implements OnInit {
 
   ngOnInit(): void {
     this.sharedService.nextIsLoading(true);
-
-    this.symbioService.getUpcomingPublicSymbiocreations().subscribe(
+    this.symbioService.countUpcomingPublicSymbiocreations().subscribe(count => this.totalCount = count);
+    this.symbioService.getUpcomingPublicSymbiocreations(0).subscribe(
       symbios => {
         this.sharedService.nextIsLoading(false);
-
         this.symbiocreations = symbios;
-        //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
       }
     );
   }
 
-  filterSelected(value: string) {
-    switch(value) {
+  filterChanged() {
+    this.symbiocreations = null;
+    this.paginator.firstPage();
+    
+    switch(this.filter) {
       case "upcoming": {
         this.sharedService.nextIsLoading(true);
-
-        this.symbioService.getUpcomingPublicSymbiocreations().subscribe(
+        this.symbioService.countUpcomingPublicSymbiocreations().subscribe(count => this.totalCount = count);
+        this.symbioService.getUpcomingPublicSymbiocreations(0).subscribe(
           symbios => {
             this.sharedService.nextIsLoading(false);
-
             this.symbiocreations = symbios;
-            //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
+            console.log(symbios);
           }
         );
         break;
       }
       case "past": {
         this.sharedService.nextIsLoading(true);
-
-        this.symbioService.getPastPublicSymbiocreations().subscribe(
+        this.symbioService.countPastPublicSymbiocreations().subscribe(count => this.totalCount = count);
+        this.symbioService.getPastPublicSymbiocreations(0).subscribe(
           symbios => {
             this.sharedService.nextIsLoading(false);
-
             this.symbiocreations = symbios;
-            //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
           }
         );
         break;
       }
       case "all": {
         this.sharedService.nextIsLoading(true);
-
-        this.symbioService.getAllPublicSymbiocreations().subscribe(
+        this.symbioService.countPublicSymbiocreations().subscribe(count => this.totalCount = count);
+        this.symbioService.getAllPublicSymbiocreations(0).subscribe(
           symbios => {
             this.sharedService.nextIsLoading(false);
-            
             this.symbiocreations = symbios;
-            //this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
           }
         );
         break;
@@ -99,13 +100,10 @@ export class ExploreComponent implements OnInit {
     for (let p of participants) {
       if (selected.length < 5 && p.role === 'moderator' && p.user.pictureUrl) selected.push(p);
     }
-
     // fill 5 spots w/ participants
     for (let p of participants) {
       if (selected.length < 5 && p.role !== 'moderator' && p.user.pictureUrl) selected.push(p);
     }
-
-    //console.log(selected);
     return selected;
   }
 
@@ -116,6 +114,48 @@ export class ExploreComponent implements OnInit {
   getTimeAgo(lastModified: number): string {
     moment.locale('es');
     return moment(lastModified).fromNow();
+  }
+
+  onPageFired(event) {
+    switch(this.filter) {
+      case "upcoming": {
+        this.sharedService.nextIsLoading(true);
+        this.symbiocreations = null;
+        this.symbioService.getUpcomingPublicSymbiocreations(event.pageIndex).subscribe(
+          symbios => {
+            this.sharedService.nextIsLoading(false);
+            this.symbiocreations = symbios;
+          }
+        );
+        break;
+      }
+      case "past": {
+        this.sharedService.nextIsLoading(true);
+        this.symbiocreations = null;
+        this.symbioService.getPastPublicSymbiocreations(event.pageIndex).subscribe(
+          symbios => {
+            this.sharedService.nextIsLoading(false);
+            this.symbiocreations = symbios;
+          }
+        );
+        break;
+      }
+      case "all": {
+        this.sharedService.nextIsLoading(true);
+        this.symbiocreations = null;
+        this.symbioService.getAllPublicSymbiocreations(event.pageIndex).subscribe(
+          symbios => {
+            this.sharedService.nextIsLoading(false);
+            this.symbiocreations = symbios;
+          }
+        );
+        break;
+      }
+      default: { 
+        console.log("Invalid choice"); 
+        break;              
+     } 
+    }
   }
 
 }

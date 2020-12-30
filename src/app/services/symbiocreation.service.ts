@@ -49,21 +49,36 @@ export class SymbiocreationService {
     }
 
     // find all public symbiocreations
-    getAllPublicSymbiocreations(): Observable<Symbiocreation[]> {
-        let API_URL = `${this.apiUrl}/symbiocreations/getAllPublic`;
+    getAllPublicSymbiocreations(page: number): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getAllPublic/${page}`;
         return this.http.get<Symbiocreation[]>(API_URL);
     }
 
     // find all upcoming symbiocreations
-    getUpcomingPublicSymbiocreations(): Observable<Symbiocreation[]> {
-        let API_URL = `${this.apiUrl}/symbiocreations/getUpcomingPublic`;
+    getUpcomingPublicSymbiocreations(page: number): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getUpcomingPublic/${page}`;
         return this.http.get<Symbiocreation[]>(API_URL);
     }
 
     // find all past symbiocreations
-    getPastPublicSymbiocreations(): Observable<Symbiocreation[]> {
-        let API_URL = `${this.apiUrl}/symbiocreations/getPastPublic`;
+    getPastPublicSymbiocreations(page: number): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getPastPublic/${page}`;
         return this.http.get<Symbiocreation[]>(API_URL);
+    }
+
+    countPublicSymbiocreations(): Observable<number> {
+        let API_URL = `${this.apiUrl}/symbiocreations/countPublic`;
+        return this.http.get<number>(API_URL);
+    }
+
+    countPastPublicSymbiocreations(): Observable<number> {
+        let API_URL = `${this.apiUrl}/symbiocreations/countPastPublic`;
+        return this.http.get<number>(API_URL);
+    }
+
+    countUpcomingPublicSymbiocreations(): Observable<number> {
+        let API_URL = `${this.apiUrl}/symbiocreations/countUpcomingPublic`;
+        return this.http.get<number>(API_URL);
     }
 
     // update
