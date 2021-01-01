@@ -3,6 +3,7 @@ import { Idea } from '../models/symbioTypes';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';
+import { Observable, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-edit-idea-dialog',
@@ -12,8 +13,7 @@ import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-ca
 export class EditIdeaDialogComponent implements OnInit {
 
   idea: Idea = {};
-  selectedFile: ImageSnippet;
-  capturedImg: ImageSnippet;
+  selectedImgs: ImageSnippet[];
 
   constructor(
     public dialogRef: MatDialogRef<EditIdeaDialogComponent>,
@@ -25,28 +25,41 @@ export class EditIdeaDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.selectedImgs = [];
   }
 
   onOkClick(okButton) {
     // upload img to cloudinary
     okButton.disabled = true;
     okButton._elementRef.nativeElement.innerText = 'Cargando...';
+    let observables: Observable<any>[] = [];
 
-    if (this.selectedFile || this.capturedImg) {
-      this.imageService.uploadImage(this.selectedFile? this.selectedFile.file : this.capturedImg.file).subscribe(
-        res => {
-          //console.log(res);
-          this.idea.imgPublicId = res.public_id;
-  
-          this.dialogRef.close(this.idea);
-        },
-        err => {
-          console.error(err);
-          this.dialogRef.close();
-        });
-    } else {
+    // new images to be uploaded
+    for (let img of this.selectedImgs) {
+      observables.push(this.imageService.uploadImage(img.file));
+    } 
+
+    if (observables.length == 0) {
       this.dialogRef.close(this.idea);
+      return;
     }
+
+    forkJoin(observables).subscribe(
+      res => {
+        if (!this.idea.imgPublicIds) {
+          this.idea.imgPublicIds = [];
+        }
+        for (let item of res) {
+          this.idea.imgPublicIds.push(item.public_id);
+        }
+      },
+      err => {
+        console.error(err);
+      },
+      () => {
+        this.dialogRef.close(this.idea);
+      }
+    );
   }
 
   openCamera() {
@@ -61,8 +74,7 @@ export class EditIdeaDialogComponent implements OnInit {
       if (imgSnippet) {
         //console.log('Capture received!');
         //console.log(img);
-        this.capturedImg = imgSnippet;
-        this.selectedFile = null;
+        this.selectedImgs.push(imgSnippet);
       }
     });
   }
@@ -72,11 +84,21 @@ export class EditIdeaDialogComponent implements OnInit {
     const reader = new FileReader();
     
     reader.onload = (event: any) => {
-      this.selectedFile = new ImageSnippet(event.target.result, file);
-      this.capturedImg = null;
+      const newImgSnippet = new ImageSnippet(event.target.result, file);
+      this.selectedImgs.push(newImgSnippet);
     };
 
     reader.readAsDataURL(file);
+  }
+
+  deletePublicId(publicId: string) {
+    const index = this.idea.imgPublicIds.indexOf(publicId);
+    this.idea.imgPublicIds.splice(index, 1);
+  }
+
+  deleteSelectedImg(img: ImageSnippet) {
+    const index = this.selectedImgs.indexOf(img);
+    this.selectedImgs.splice(index, 1);
   }
 }
 

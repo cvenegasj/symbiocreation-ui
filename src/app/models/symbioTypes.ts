@@ -45,5 +45,5 @@ export interface Idea {
     description?: string;
     lastModified?: Date;
     //photoURL?: string;
-    imgPublicId?: string;
+    imgPublicIds?: string[];
 }

@@ -41,5 +41,4 @@ export class ImageService {
         console.log(errorMessage);
         return throwError(errorMessage);
     }
-
 }

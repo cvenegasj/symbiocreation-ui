@@ -9,7 +9,7 @@
       <mat-label>Descripción</mat-label>
       <textarea matInput [(ngModel)]="idea.description" placeholder="Descripción larga de mi idea." rows="5"></textarea>
     </mat-form-field>
-    <div class="centered" style="padding-bottom: 10px;">
+    <div class="centered" style="padding-bottom: 25px;">
       <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="openCamera()">
         <mat-icon>camera_alt</mat-icon>
         <span>Tomar foto</span>
@@ -17,7 +17,7 @@
 
       <button mat-raised-button color="accent" (click)="imageInput.click()">
         <mat-icon>add_photo_alternate</mat-icon>
-        <span>Seleccionar foto</span>
+        <span>Agregar imagen</span>
       </button>
       <input #imageInput
               hidden
@@ -26,16 +26,14 @@
               (change)="processFile(imageInput)">
     </div>
     
-    <div *ngIf="idea.imgPublicId && !(selectedFile || capturedImg)">
-      <cl-image [public-id]="idea.imgPublicId" style="width: 100%;"></cl-image>
+    <div *ngFor="let publicId of idea.imgPublicIds" style="margin-top: 10px;">
+      <cl-image [public-id]="publicId" style="width: 80%;"></cl-image>
+      <button mat-button color="warn" (click)="deletePublicId(publicId)">Eliminar</button>
     </div>
 
-    <div *ngIf="selectedFile">
-      <img [src]="selectedFile.src" style="width: 100%;" />
-    </div>
-
-    <div *ngIf="capturedImg">
-      <img [src]="capturedImg.src" style="width: 100%;" />
+    <div *ngFor="let img of selectedImgs" style="margin-top: 10px;">
+      <img [src]="img.src" style="width: 80%;" />
+      <button mat-button color="warn" (click)="deleteSelectedImg(img)">Eliminar</button>
     </div>
 </mat-dialog-content>
 

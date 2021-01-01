@@ -44,21 +44,9 @@
             <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linkify"></p>
         </div>
 
-        <!--
-        <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicId">
-            <cl-image [public-id]="node.idea.imgPublicId" style="width: 100%;"></cl-image>
-        </div> 
-        -->
-
-        <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicId" [fxLayout]="sidenav.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
-            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
-                <cl-image [public-id]="'https://www.muycomputerpro.com/wp-content/uploads/2018/02/Machine-learning-in-cyber-security-770x476.jpg'" style="width: 100%;" type="fetch"></cl-image>
-            </div>
-            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
-                <cl-image [public-id]="'https://www.bbva.com/wp-content/uploads/2019/11/machine-learning-1920x1180.jpg'" style="width: 100%;" type="fetch"></cl-image>
-            </div>
-            <div [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
-                <cl-image [public-id]="'https://www.bbva.com/wp-content/uploads/2019/11/infografia-machine-learning-408x1024.jpg'" style="width: 100%;" type="fetch"></cl-image>
+        <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0" [fxLayout]="sidenav.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
+            <div *ngFor="let publicId of node.idea.imgPublicIds" [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
+                <cl-image [public-id]="publicId" style="width: 100%;"></cl-image>
             </div>
         </div>
     </div>
