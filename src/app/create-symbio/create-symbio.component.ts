@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+
 import { Router } from '@angular/router';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
-import { Node } from '../models/forceGraphTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 //import * as moment from 'moment';
 import * as moment from 'moment-timezone';
 import { Location } from '@angular/common';
@@ -28,6 +32,16 @@ export class CreateSymbioComponent implements OnInit {
   eventTz: string;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  sdgCtrl = new FormControl();
+  filteredSDGs: Observable<string[]>;
+  allSDGs: string[] = ['1 Fin de la pobreza', '2 Hambre cero', '3 Salud y bienestar', 
+    '4 Educación de calidad', '5 Igualdad de género', '6 Agua limpia y saneamiento', 
+    '7 Energía asequible y no contaminante', '8 Trabajo decente y crecimiento económico', '9 Industria, innovación e infraestructura',
+    '10 Reducción de las desigualdades', '11 Ciudades y comunidades sostenibles', '12 Producción y consumos responsables',
+    '13 Acción por el clima', '14 Vida submarina', '15 Vida de ecosistemas terrestres',
+    '16 Paz, justicia e instituciones sólidas', '17 Alianzas para lograr los objetivos'];
+
+  @ViewChild('sdgInput') sdgInput: ElementRef<HTMLInputElement>;
 
   detailsOpened: boolean;
 
@@ -38,7 +52,11 @@ export class CreateSymbioComponent implements OnInit {
     private router: Router,
     public location: Location,
     private _snackBar: MatSnackBar
-    ) { }
+    ) {
+      this.filteredSDGs = this.sdgCtrl.valueChanges.pipe(
+        startWith(null),
+        map((sdg: string | null) => sdg ? this._filter(sdg) : this.allSDGs.slice()));
+    }
 
   ngOnInit(): void {
     this.model = { name: '', hasStartTime: false, enabled: true, participants: [], tags: [], extraUrls:[], sdgs: [] };
@@ -72,7 +90,7 @@ export class CreateSymbioComponent implements OnInit {
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(u => {
-        this.model.participants.push({u_id: u.id, user: u, role: 'moderator'} as Participant); // participant
+        this.model.participants.push({u_id: u.id, user: u, isModerator: true} as Participant); // participant
 
         return this.symbioService.createSymbiocreation(this.model); // node is created in backend
       })
@@ -130,7 +148,7 @@ export class CreateSymbioComponent implements OnInit {
     }
   }
 
-  addSDG(event: MatChipInputEvent): void {
+  /*addSDG(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
@@ -143,7 +161,7 @@ export class CreateSymbioComponent implements OnInit {
     if (input) {
       input.value = '';
     }
-  }
+  }*/
 
   removeSDG(sdg: string): void {
     const index = this.model.sdgs.indexOf(sdg);
@@ -155,6 +173,17 @@ export class CreateSymbioComponent implements OnInit {
 
   onTzSelected(tz) {
     this.eventTz = tz.nameValue;
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.model.sdgs.push(event.option.viewValue);
+    this.sdgInput.nativeElement.value = '';
+    this.sdgCtrl.setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.allSDGs.filter(sdg => sdg.toLowerCase().indexOf(filterValue) >= 0);
   }
 
 }

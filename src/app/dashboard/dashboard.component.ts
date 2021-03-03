@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Symbiocreation } from '../models/symbioTypes';
+import { Symbiocreation, User } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
 import { tap, concatMap } from 'rxjs/operators';
@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
   isModeratorList: boolean[];
 
   isGridViewOn: boolean;
+  totalCount: number;
 
   constructor(
     private symbioService: SymbiocreationService,
@@ -35,40 +36,47 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.sharedService.nextIsLoading(true);
+    let fetchedUser: User = null;
 
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
-      tap(u => this.isGridViewOn = u.isGridViewOn),
-      concatMap(u => this.symbioService.getMySymbiocreations(u.id))
+      concatMap(u => {
+        fetchedUser = u;
+        this.isGridViewOn = u.isGridViewOn;
+        return this.symbioService.countSymbiocreationsByUser(u.id);
+      }),
+      concatMap(count => {
+        this.totalCount = count;
+        return this.symbioService.getMySymbiocreations(fetchedUser.id, 0); // first page
+      }),
     ).subscribe(
       symbios => {
-        this.sharedService.nextIsLoading(false);
-
         this.symbiocreations = symbios;
         // order has to be done in frontend bc of rx backend ?????
         this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
-
-        this.createIsModeratorList();
-    });
+        this.isModeratorList = this.createIsModeratorList(fetchedUser);
+        this.sharedService.nextIsLoading(false);
+      }
+    );
   }
 
-  createIsModeratorList() {
-    for (let s of this.symbiocreations) {
-      this.isModeratorList.push(false);
+  createIsModeratorList(user: User): boolean[] {
+    let isModeratorList = [];
+    for (let i = 0; i < this.symbiocreations.length; i++) {
+      isModeratorList.push(false);
     }
 
-    this.auth.userProfile$.subscribe(u => {
-
-        for (let i = 0; i < this.symbiocreations.length; i++) {
-          for (let j = 0; j < this.symbiocreations[i].participants.length; j++) {
-            if (this.symbiocreations[i].participants[j].user.email === u.email 
-              && this.symbiocreations[i].participants[j].role === 'moderator') {
-              this.isModeratorList[i] = true;
-              break;
-            }
-          }
+    let i = 0;
+    for (let s of this.symbiocreations) {
+      for (let p of s.participants) {
+        if (p.user.email === user.email) {
+          if (p.isModerator) isModeratorList[i] = true;
+          break;
         }
-    });
+      }
+      i++;
+    }
+    return isModeratorList;
   }
 
   toggleViewMode() {
@@ -81,6 +89,27 @@ export class DashboardComponent implements OnInit {
         return this.userService.updateUser(user);
       })
     ).subscribe();
+  }
+
+  onPageFired(event) {
+    this.sharedService.nextIsLoading(true);
+
+    let fetchedUser: User = null;
+
+    this.auth.userProfile$.pipe(
+      concatMap(usrProfile => this.userService.getUserByEmail(usrProfile.email)),
+      concatMap(user => {
+        fetchedUser = user;
+        return this.symbioService.getMySymbiocreations(user.id, event.pageIndex);
+      }),
+    ).subscribe(
+      symbios => {
+        this.symbiocreations = symbios;
+        this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
+        this.isModeratorList = this.createIsModeratorList(fetchedUser);
+        this.sharedService.nextIsLoading(false);
+      }
+    );
   }
 
 }

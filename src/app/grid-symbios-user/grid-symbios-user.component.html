@@ -15,11 +15,14 @@
         </div> 
 
         <div class="centered font-20 gray-900 bold ellipsed-2" style="height: 48px;">
-            <mat-icon [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" matTooltipPosition="above"
-                style="position: relative; top: 4px;">
+            <mat-icon 
+                [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" 
+                matTooltipPosition="above"
+                style="position: relative; top: 4px;"
+                class="font-20 gray-600">
                 {{s.visibility === 'public' ? 'public' : 'lock'}}
             </mat-icon>
-            <a [routerLink]="['/symbiocreation/', s.id]" class="link-hvr-underline">
+            <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 gray-800">
                 {{s.name}}
             </a>
         </div>

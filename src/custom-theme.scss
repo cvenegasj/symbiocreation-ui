@@ -38,6 +38,15 @@ $symbiocreation-ui-theme: mat-light-theme($symbiocreation-ui-primary, $symbiocre
     border-color: mat-color($mat-amber, A700);
 }
 
+.bbox-ambassador {
+    fill: mat-color($mat-amber, A400);
+}
+
+.bbox-name {
+    fill: white;
+    fill-opacity: 0.2;
+}
+
 .accent-bg, .accent-bg:hover {
     background-color: mat-color($symbiocreation-ui-accent, darker) !important;
 }

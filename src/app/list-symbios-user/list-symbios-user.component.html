@@ -15,10 +15,15 @@
 
         <mat-list-item *ngFor="let s of symbiocreations; index as i; last as last" style="margin-top: 70px; margin-bottom: 50px;">
            <div matLine>
-                <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%; padding-left: 5px;">{{s.name}}</a>
+                <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%; padding-left: 5px;">
+                    {{s.name}}
+                </a>
                 <span *ngIf="isModeratorList[i]" class="chip-role small moderator" style="margin-left: 12px;">Moderador</span>
                 
-                <mat-icon class="font-20 gray-600" style="margin-left: 8px;" [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" matTooltipPosition="above">
+                <mat-icon class="font-20 gray-600" 
+                    style="margin-left: 8px;" 
+                    [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" 
+                    matTooltipPosition="above">
                     {{s.visibility === 'public' ? 'public' : 'lock'}}
                 </mat-icon>
 

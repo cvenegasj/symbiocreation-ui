@@ -23,26 +23,26 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Output() parentChanged = new EventEmitter<string[]>();
   @Output() nodeDeleted = new EventEmitter<string>();
   @Output() nodeChangedName = new EventEmitter<string>();
+  @Output() nodeChangedRole = new EventEmitter<string[]>();
   @Output() nodeChangedIdea = new EventEmitter<string>();
 
-  participant: Participant;
-  roleOfLoggedIn: string;
-
-  selectedNode: Node; // useful for getting the id of selected node; used in mouseout event of node
-  selectedNodeElement: any;
-  lastSelectedColor: string;
-  colorOfHovered: string;
+  //participant: Participant;
+  //myAncestries: Node[][];
 
   menuX: number = 0;
   menuY: number = 0;
 
   @Input() data: Node[];
+  @Input() participant: Participant;
+  @Input() myAncestries: Node[][];
+
   groups: Node[];
   dimensions: DimensionsType;
 
   nodes: Node[];
   links: Link[];
   maxNodeHeight: number;
+  nodesMap: Map<string, Node>; // nodeId -> node; useful to make O(1) lookups when deselectedNodes happens
 
   simulation: any;
   wrapper: any;
@@ -83,11 +83,12 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       boundedWidth: Math.max(this.dimensions.width - this.dimensions.marginLeft - this.dimensions.marginRight, 0),
     }
     this.groups = [];
+    this.nodesMap = new Map();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     // remove, create, run
-    if (!changes['data'].isFirstChange()) {
+    if (changes['data'] && !changes['data'].isFirstChange()) {
       this.removeChart();
       this.createChart();
       this.runSimulation();
@@ -97,27 +98,25 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   ngOnInit() {
     //this.updateDimensions();
-
-    // to update selected node
-    this.sharedService.selectedNode$.subscribe(node => { // of type Node extends d3Force.SimulationNodeDatum
-      if (node) {
-        if (this.selectedNode) {
-          this.selectedNodeElement.attr("fill", this.lastSelectedColor);
-        } 
-        // change fill color of selected node
-        this.selectedNodeElement = d3.select('#id' + node.id);
-        this.lastSelectedColor = this.selectedNodeElement.attr("fill");
-        this.selectedNodeElement.attr("fill", '#304FFE');
-      } else {
-        if (this.selectedNode) {
-          this.selectedNodeElement.attr("fill", this.lastSelectedColor);
+    this.sharedService.selectedNodes$
+      .subscribe(nodes => { // of type Node[] extends d3Force.SimulationNodeDatum
+        if (!nodes) return;
+        for (let n of nodes) {
+          let el = d3.select('#id' + n.id);
+          el.attr("fill", '#304FFE');
         }
-        this.selectedNodeElement = null;
-        this.lastSelectedColor = null;
-      }
-
-      this.selectedNode = node;
     });
+
+    this.sharedService.deselectedNodes$
+      .subscribe(nodes => {
+        if (!nodes) return;
+        for (let n of nodes) {
+          let tempNode = this.nodesMap.get(n.id);
+          if (!tempNode) continue; // to avoid using nodes not present in current symbio. Weird behavior.
+          let el = d3.select('#id' + n.id);
+          el.attr("fill", tempNode.color);
+        }
+      });
   }
 
   ngAfterContentInit() {
@@ -163,6 +162,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     //const nodes = root.descendants();
     this.nodes = this.getNodes(this.data);
     //const links = d3.hierarchy(this.data).links();
+    this.nodesMap = this.mapIdToNodes(this.nodes);
 
     this.simulation = d3.forceSimulation(this.nodes)
       .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 55, 90))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
@@ -195,30 +195,69 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .append("g")
       .call(this.drag(this.simulation));
 
+    // node label
+    nodeEnter.append("text")
+      .text(d => d.name)
+      .attr('text-anchor', d => d.role === 'ambassador' ? 'end' : 'middle')
+      .attr('dy', d => -d.r - 17)
+      .call(this.getBBox); // sets the bbox property on d
+    
+    // text background for label
+    nodeEnter.insert('rect', 'text')
+      .attr('x', d => d.bbox.x - 2)
+      .attr('y', d => d.bbox.y - 1)
+      .attr('width', d => d.bbox.width + 4)
+      .attr('height', d => d.bbox.height + 2)
+      .attr('class', 'bbox-name');
+
+        
+    // node label for ambassadors
+    nodeEnter.append("text")
+        .text(d => d.role === 'ambassador' ? 'Embajador' : '')
+        //.style('fill', '#FFAB00')
+        .attr('dx', 5)
+        .attr('dy', d =>  -d.r - 17)
+        .call(this.getBBox); // sets the bbox property on d
+
+    // text background for ambassador labels
+    nodeEnter.insert('rect', 'text')
+        .attr('x', d => d.bbox.x - 4)
+        .attr('y', d => d.bbox.y - 1)
+        .attr('rx', 8) // rounded corners
+        .attr('ry', 8)
+        .attr('width', d => d.bbox.width + 8)
+        .attr('height', d => d.bbox.height + 2)
+        .attr('class', 'bbox-ambassador');
+
+
+    // node label for idea
+    nodeEnter.append("text")
+        .text(d => d.idea ? (d.idea.title.length > 15 ? d.idea.title.substring(0, 15) : d.idea.title) : '(vacío)')
+        .style('fill', '#616161')
+        .style('font-weight', 'bold')
+        .attr('text-anchor', 'middle')
+        .attr('dy', d =>  -d.r - 3)
+        .call(this.getBBox); // sets the bbox property on d
+
+    // text background for idea
+    nodeEnter.insert('rect', 'text')
+        .attr('x', d => d.bbox.x - 2)
+        .attr('y', d => d.bbox.y - 1)
+        .attr('width', d => d.bbox.width + 4)
+        .attr('height', d => d.bbox.height + 2)
+        .attr('class', 'bbox-name');
+
+
     nodeEnter.append("circle")
         .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
         .attr("fill", d => d.color)
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
         .attr('r', d => d.r)
-        .on('click', d => {
-          this.openIdeaDetailSidenav(d.id);
-          this.lastSelectedColor = d.color; // after method call to keep property updated
-        })
+        .on('click', d => this.openIdeaDetailSidenav(d))
         .on('contextmenu', d => this.openNodeContextMenu(d))
-        .on('mouseover', d => {
-          d3.select(d3.event.currentTarget).attr("fill", '#304FFE');
-        })
-        .on('mouseout', d => {
-          if (d.id !== this.selectedNode?.id) {
-            d3.select(d3.event.currentTarget).attr("fill", d.color);
-          }
-        });
-
-    nodeEnter.append("text")
-        .text(d => d.name)
-        .attr('x', d => d.children ? -9 : -9)
-        .attr('y', d =>  -d.r - 3);
+        .on('mouseover', d => d3.select(d3.event.currentTarget).attr("fill", '#304FFE'))
+        .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
 
     this.nodeElements = nodeEnter.merge(this.nodeElements);
 
@@ -231,11 +270,15 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         this.nodeElements
           .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
       });
-
   }
 
+  getBBox(selection) {
+    selection.each(function(d) {
+        d.bbox = this.getBBox();
+    });
+  };
+
   drag = simulation => {
-  
     function dragstarted(d) {
       if (!d3.event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
@@ -263,9 +306,9 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.wrapper.remove();
   }
 
+  // returns a 1d array of all nodes
   getNodes(data: Node[]): Node[] {
     let nodes: Node[] = [];
-    //let i = 0;
     let that = this;
 
     function recurse(node: Node) {
@@ -274,15 +317,12 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       node.color = that.getGradientColor(node.height, that.maxNodeHeight, "#FFFFFF", "#FF4081");
 
       if (node.children) node.children.forEach(recurse);
-      //if (!node.id) node.id = ++i;
       nodes.push(node);
-      //console.log(node);
     }
     // data can have many nodes at root level
     for (let n of data) {
       recurse(n);
     }
-  
     return nodes;
   }
 
@@ -302,7 +342,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     for (let n of data) {
       recurse(n);
     }
-    
     return links;
   }
 
@@ -320,6 +359,14 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       recurse(n);
     }
     return groups;
+  }
+
+  mapIdToNodes(nodes: Node[]): Map<string, Node> {
+    let map = new Map();
+    for (let n of nodes) {
+      map.set(n.id, n);
+    }
+    return map;
   }
 
   zoomed = () => {
@@ -369,19 +416,25 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   // copy of fn in symbiocreation.component.ts
-  openIdeaDetailSidenav(idNode: string) {
-    this.sharedService.nextRole(this.roleOfLoggedIn);
-
-    const node = this.getNode(idNode);
-    
-    this.sharedService.nextEditableIdea(
-          this.roleOfLoggedIn === 'moderator' // if I am moderator
-          || (this.roleOfLoggedIn === 'ambassador' && this.nodeAContainsNodeB(node, this.getMyNode())) // if I am ambassador and descendant of node
+  openIdeaDetailSidenav(node: Node) {
+    let amAmbassadorOfGroup = false;
+    if (this.participant) { // user could be an external viewer
+      for (let lineage of this.myAncestries) {
+        if (this.nodeAContainsNodeB(node, lineage[0]) && lineage[0].role === 'ambassador') {
+          amAmbassadorOfGroup = true;
+          break;
+        }
+      }
+    }
+    // 3 possible conditions to make and idea editable
+    this.sharedService.nextIsIdeaEditable(
+          this.participant?.isModerator // if I am moderator
+          || amAmbassadorOfGroup // if I am ambassador and descendant of group node to edit
           || node.u_id === this.participant?.u_id // if it's my node
     );
-    this.sharedService.nextSelectedNode(node);
+    //this.sharedService.nextSelectedNodes([node]);
 
-    this.router.navigate(['idea', idNode], {relativeTo: this.route});
+    this.router.navigate(['idea', node.id], {relativeTo: this.route});
     this.sidenav.open();
   }
 
@@ -395,7 +448,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.nodeMenuTrigger.openMenu();
   }
 
-  setParentNode(childId: string, parentId: string) {
+  setNodeParent(childId: string, parentId: string) {
     this.parentChanged.emit([childId, parentId]);
   }
 
@@ -407,13 +460,18 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.nodeDeleted.emit(node.id);
   }
 
-  changeNameNode(node: Node) {
+  setNodeName(node: Node) {
     this.nodeChangedName.emit(node.id);
   }
 
+  setNodeRole(node: Node, role: string) {
+    this.nodeChangedRole.emit([node.id, role]);
+  }
+
+  /*
   changeIdeaNode(node: Node) {
     this.nodeChangedIdea.emit(node.id);
-  }
+  } */
 
   getNode(nodeId: string): Node {
     let n: Node = null;
@@ -423,8 +481,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       if (node.id === nodeId) n = node;
     }
     // data can have many nodes at root level
-    for (let i = 0; i < this.data.length; i++) {
-      recurse(this.data[i]);
+    for (let node of this.data) {
+      recurse(node);
     }
     return n;
   }
@@ -448,7 +506,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         current.children.forEach(child => queue.add(child));
       }
     }
-
     return height;
   }
 
@@ -528,21 +585,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     return color;
   }
 
-  getMyNode(): Node {
-    let participant = this.participant;
-    let n: Node = null;
-
-    function recurse(node: Node) {
-      if (node.children) node.children.forEach(recurse);
-      if (node.u_id === participant.u_id) n = node;
-    }
-    // data can have many nodes at root level
-    for (let i = 0; i < this.data.length; i++) {
-      recurse(this.data[i]);
-    }
-    return n;
-  }
-
   nodeAContainsNodeB(nodeA: Node, nodeB: Node): boolean {
     let contains = false;
 
@@ -553,6 +595,20 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     recurse(nodeA);
     return contains;
+  }
+
+  isAmbassadorOfAnyGroupBelow(node: Node): boolean {
+    let isAmbassador = false;
+    const participant = this.participant;
+
+    function recurse(node: Node) {
+      if (node.children) node.children.forEach(recurse);
+      if (node.u_id && node.u_id === participant?.u_id && node.role === 'ambassador') {
+        isAmbassador = true;
+      }
+    }
+    recurse(node);
+    return isAmbassador;
   }
 
 }

@@ -21,7 +21,7 @@
 
             <button routerLink="/create" mat-raised-button color="accent">
                 <mat-icon>add</mat-icon>
-                <span>Crear</span>
+                <span>Nueva simbiocreación</span>
             </button>
         </div>
     </div>
@@ -29,5 +29,13 @@
     
     <app-list-symbios-user *ngIf="!isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-list-symbios-user>
     <app-grid-symbios-user *ngIf="isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-grid-symbios-user> 
+
+    <div class="container-80" style="margin-top: 15px;">
+        <mat-paginator [length]="totalCount"
+              [pageSize]="12"
+              [hidePageSize]="true"
+              (page)="onPageFired($event)">
+        </mat-paginator>
+    </div>
 
 </div>

@@ -1,10 +1,10 @@
-<h1>Confirma esta acción</h1>
+<h1 mat-dialog-title>{{data.title}}</h1>
 <mat-dialog-content>
-    <p>Todos los datos de esta simbiocreación se eliminarán y no serán accesibles nuevamente.</p>
+    <p>{{data.content}}</p>
 </mat-dialog-content>
 
 <mat-dialog-actions>
     <button mat-button mat-dialog-close>{{data.cancelText}}</button>
     <span fxFlex></span>
-    <button mat-flat-button [mat-dialog-close]="true" [color]="data.confirmationColor">{{data.confirmText}}</button>
+    <button mat-flat-button [mat-dialog-close]="true" [color]="data.confirmationColor" cdkFocusInitial>{{data.confirmText}}</button>
 </mat-dialog-actions>

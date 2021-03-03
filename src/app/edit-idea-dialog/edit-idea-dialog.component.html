@@ -3,12 +3,29 @@
 <mat-dialog-content>
     <mat-form-field style="width: 100%;">
       <mat-label>Título</mat-label>
-      <input matInput cdkFocusInitial [(ngModel)]="idea.title" placeholder="Ej. Un robot que limpie la atmósfera.">
+      <input matInput cdkFocusInitial required [(ngModel)]="idea.title" placeholder="Ej. Un robot que limpie la atmósfera.">
     </mat-form-field>
+    
     <mat-form-field style="width: 100%;">
       <mat-label>Descripción</mat-label>
-      <textarea matInput [(ngModel)]="idea.description" placeholder="Descripción larga de mi idea." rows="5"></textarea>
+      <textarea matInput required [(ngModel)]="idea.description" placeholder="Descripción larga de mi idea." rows="5"></textarea>
     </mat-form-field>
+
+    <mat-form-field style="width: 100%;">
+      <mat-chip-list #externalUrlList class="mat-chip-list-stacked">
+          <mat-chip *ngFor="let url of idea.externalUrls" selected color="accent"
+                  [removable]="true" (removed)="removeExternalUrl(url)">
+              {{url}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input style="flex: 1 0 40px;" placeholder="Enlaces externos"
+                  [matChipInputFor]="externalUrlList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="addExternalUrl($event)">
+      </mat-chip-list>
+  </mat-form-field>
+    
     <div class="centered" style="padding-bottom: 25px;">
       <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="openCamera()">
         <mat-icon>camera_alt</mat-icon>
@@ -40,5 +57,5 @@
 <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancelar</button>
     <span fxFlex></span>
-    <button #okButton mat-flat-button color="accent" (click)="onOkClick(okButton)">OK</button>
+    <button #okButton mat-flat-button color="accent" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description">OK</button>
 </mat-dialog-actions>

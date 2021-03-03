@@ -10,17 +10,17 @@ export class SharedService {
     private isLoadingSubject$ = new BehaviorSubject<boolean>(null);
     isLoading$ = this.isLoadingSubject$.asObservable();
 
-    private nodeSubject$ = new BehaviorSubject<Node>(null);
-    node$ = this.nodeSubject$.asObservable();
+    //private sessionIsModeratorSubject$ = new BehaviorSubject<boolean>(false);
+    //sessionIsModerator$ = this.sessionIsModeratorSubject$.asObservable();
 
-    private roleSubject$ = new BehaviorSubject<string>(null);
-    role$ = this.roleSubject$.asObservable();
+    private isIdeaEditableSubject$ = new BehaviorSubject<boolean>(false);
+    isIdeaEditable$ = this.isIdeaEditableSubject$.asObservable();
 
-    private editableIdeaSubject$ = new BehaviorSubject<boolean>(false);
-    editableIdea$ = this.editableIdeaSubject$.asObservable();
+    private selectedNodesSubject$ = new BehaviorSubject<Node[]>(null);
+    selectedNodes$ = this.selectedNodesSubject$.asObservable();
 
-    private selectedNodeSubject$ = new BehaviorSubject<Node>(null);
-    selectedNode$ = this.selectedNodeSubject$.asObservable();
+    private deselectedNodesSubject$ = new BehaviorSubject<Node[]>(null);
+    deselectedNodes$ = this.deselectedNodesSubject$.asObservable();
 
     constructor() {}
 
@@ -28,20 +28,20 @@ export class SharedService {
         this.isLoadingSubject$.next(isLoading);
     }
 
-    nextNode(node: Node) {
-        this.nodeSubject$.next(node);
+    //nextSessionIsModerator(isModerator: boolean) {
+    //    this.sessionIsModeratorSubject$.next(isModerator);
+    //}
+
+    nextIsIdeaEditable(isEditable: boolean) {
+        this.isIdeaEditableSubject$.next(isEditable);
     }
 
-    nextRole(role: string) {
-        this.roleSubject$.next(role);
+    nextSelectedNodes(nodes: Node[]) {
+        this.selectedNodesSubject$.next(nodes);
     }
-
-    nextEditableIdea(editable: boolean) {
-        this.editableIdeaSubject$.next(editable);
-    }
-
-    nextSelectedNode(node: Node) {
-        this.selectedNodeSubject$.next(node);
+    
+    nextDeselectedNodes(nodes: Node[]) {
+        this.deselectedNodesSubject$.next(nodes);
     }
 
 }

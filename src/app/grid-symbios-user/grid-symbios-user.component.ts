@@ -31,15 +31,16 @@ export class GridSymbiosUserComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
-        confirmText: 'Eliminar',
+        title: 'Eliminar simbiocreación',
+        content: '¿Está seguro que desea eliminar esta simbiocreación? Todos los datos se perderán para siempre.',
         cancelText: 'Cancelar',
+        confirmText: 'Eliminar',
         confirmationColor: 'warn'
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-
         this.symbioService.deleteSymbiocreation(id).subscribe(
           res => {
             this.symbiocreations = this.symbiocreations.filter(s => s.id !== id);
@@ -80,16 +81,20 @@ export class GridSymbiosUserComponent implements OnInit {
   getParticipantsToDisplay(participants: Participant[]): Participant[] {
     let selected: Participant[] = [];
     // include moderators w picture
-    for (let p of participants) {
-      if (selected.length < 5 && p.role === 'moderator' && p.user.pictureUrl) selected.push(p);
+    let i = 0;
+    while (i < participants.length && selected.length < 5) {
+      if (participants[i].isModerator && participants[i].user.pictureUrl)
+        selected.push(participants[i]);
+      i++;
     }
 
+    i = 0;
     // fill 5 spots w/ participants
-    for (let p of participants) {
-      if (selected.length < 5 && p.role !== 'moderator' && p.user.pictureUrl) selected.push(p);
+    while (i < participants.length && selected.length < 5) {
+      if (!participants[i].isModerator && participants[i].user.pictureUrl)
+        selected.push(participants[i]);
+      i++;
     }
-
-    //console.log(selected);
     return selected;
   }
 

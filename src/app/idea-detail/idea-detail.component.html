@@ -3,7 +3,7 @@
     
     <span fxFlex></span>
 
-    <button *ngIf="sharedService.editableIdea$ | async" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
+    <button *ngIf="sharedService.isIdeaEditable$ | async" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
         <mat-icon>more_vert</mat-icon>
     </button>
 
@@ -30,7 +30,7 @@
         <p class="centered gray-700 font-15">
             No hay ninguna idea registrada.
         </p>
-        <div class="centered" *ngIf="sharedService.editableIdea$ | async">
+        <div class="centered" *ngIf="sharedService.isIdeaEditable$ | async">
             <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">Registrar idea</button>
         </div>
     </div>
@@ -50,18 +50,20 @@
             </div>
         </div>
     </div>
-    <!--
-    <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea"></mat-divider>
+    
+    <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea?.externalUrls"></mat-divider>
 
-    <div *ngIf="node?.idea">
+    <div *ngIf="node?.idea?.externalUrls">
         <span>Enlaces externos</span>
 
         <ul>
-            <li class="gray-700"><a href="https://google.com" target="_blank">peru.com</a></li>
-            <li class="gray-700"><a href="https://google.com" target="_blank">peru.net</a></li>
+            <li class="gray-700" *ngFor="let url of node.idea.externalUrls">
+                <span [innerHTML]="url | linkify"></span>
+            </li>
         </ul>
     </div>
 
+    <!--
     <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea"></mat-divider>
 
     <div *ngIf="node?.idea">
@@ -73,13 +75,15 @@
             <span class="gray-700 font-15" style="margin-left: 3px;">(26)</span>
         </div>
     </div>
+    -->
 
     <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea"></mat-divider>
 
     <div *ngIf="node?.idea">
-        <span>46 Comentarios</span>
+        <span>{{node.idea.comments ? node.idea.comments.length : '0' }} comentarios</span>
 
-        <div style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+        <!-- Visible to logged-in users -->
+        <div *ngIf="auth.userProfile$ | async" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 10px 15px;">
                 <cl-image [public-id]="'https://avatars0.githubusercontent.com/u/4387876?v=4'" type="fetch" class="img-2">
                     <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
@@ -92,12 +96,12 @@
 
                 <div style="text-align: right;" [hidden]="hiddenCommentButtons">
                     <button mat-button (click)="cancelCommentPost()">Cancelar</button>
-                    <button mat-flat-button color="primary" [disabled]="!comment.trim()">Guardar</button>
+                    <button mat-flat-button (click)="postComment()" color="primary" [disabled]="!comment.trim()">Guardar</button>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 20px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+        <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 0 15px;">
                 <cl-image [public-id]="'https://avatars0.githubusercontent.com/u/4387876?v=4'" type="fetch" class="img-2">
                     <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
@@ -105,54 +109,16 @@
             </div>
             <div fxFlex>
                 <div>
-                    <span class="bold">Carlos Venegas</span>
+                    <span class="bold">{{comment.author.firstName && comment.author.lastName ? comment.author.firstName + ' ' + comment.author.lastName : comment.author.name}}</span>
                 </div>
                 <div>
                     <p>
-                        Esto es un comentario medianamente largo!
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
+                        {{comment.content}}
                     </p>
                 </div>
             </div>
         </div>
 
-        <div style="margin-top: 20px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
-            <div style="width: 70px; padding: 0 15px;">
-                <cl-image [public-id]="'https://avatars0.githubusercontent.com/u/4387876?v=4'" type="fetch" class="img-2">
-                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                </cl-image>
-            </div>
-            <div fxFlex>
-                <div>
-                    <span class="bold">Carlos Venegas</span>
-                </div>
-                <div>
-                    <p>
-                        Esto es un comentario medianamente largo!
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                        Lorem Ipsum
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
-    -->
 
 </div>

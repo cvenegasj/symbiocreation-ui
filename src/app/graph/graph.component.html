@@ -4,24 +4,30 @@
         <ng-template matMenuContent let-node="node">
 
             <button mat-menu-item 
-                (click)="openIdeaDetailSidenav(node.id)">
+                (click)="openIdeaDetailSidenav(node)">
                 Ver idea
             </button>
 
-            <button *ngIf="roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode())) || node.u_id === participant?.u_id"
+            <button *ngIf="participant.isModerator || isAmbassadorOfAnyGroupBelow(node) || node.u_id === participant?.u_id"
                 mat-menu-item 
                 [matMenuTriggerFor]="groupsSubMenu" 
                 [matMenuTriggerData]="{node: node}">
                 Asignar grupo padre
             </button>
 
-            <button *ngIf="!node.u_id && (roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode())))"
+            <button *ngIf="!node.u_id && ( participant.isModerator || isAmbassadorOfAnyGroupBelow(node) )"
                 mat-menu-item 
-                (click)="changeNameNode(node)">
+                (click)="setNodeName(node)">
                 Cambiar nombre
             </button>
 
-            <button *ngIf="!node.u_id && (roleOfLoggedIn === 'moderator' || (roleOfLoggedIn === 'ambassador' && nodeAContainsNodeB(node, getMyNode())))" 
+            <button *ngIf="node.u_id && participant.isModerator && node.role !== 'ambassador'"
+                mat-menu-item 
+                (click)="setNodeRole(node, 'ambassador')">
+                Asignar como embajador
+            </button>
+
+            <button *ngIf="participant.isModerator || isAmbassadorOfAnyGroupBelow(node)" 
                 mat-menu-item 
                 (click)="deleteNode(node)">
                 Eliminar
@@ -31,7 +37,7 @@
 
     <mat-menu #groupsSubMenu="matMenu">
         <ng-template matMenuContent let-node="node">
-            <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="setParentNode(node.id, g.id)"> <!-- filter because a node cannot be its own parent! -->
+            <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="setNodeParent(node.id, g.id)"> <!-- filter because a node cannot be its own parent! -->
                 <span>{{g.name}}</span>
             </button>
         </ng-template>

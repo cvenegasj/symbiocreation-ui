@@ -28,13 +28,15 @@ export class ExploreComponent implements OnInit {
 
   ngOnInit(): void {
     this.sharedService.nextIsLoading(true);
-    this.symbioService.countUpcomingPublicSymbiocreations().subscribe(count => this.totalCount = count);
-    this.symbioService.getUpcomingPublicSymbiocreations(0).subscribe(
-      symbios => {
-        this.sharedService.nextIsLoading(false);
-        this.symbiocreations = symbios;
-      }
-    );
+    this.symbioService.countUpcomingPublicSymbiocreations()
+      .subscribe(count => this.totalCount = count);
+    this.symbioService.getUpcomingPublicSymbiocreations(0)
+      .subscribe(
+        symbios => {
+          this.sharedService.nextIsLoading(false);
+          this.symbiocreations = symbios;
+        }
+      );
   }
 
   filterChanged() {
@@ -44,36 +46,42 @@ export class ExploreComponent implements OnInit {
     switch(this.filter) {
       case "upcoming": {
         this.sharedService.nextIsLoading(true);
-        this.symbioService.countUpcomingPublicSymbiocreations().subscribe(count => this.totalCount = count);
-        this.symbioService.getUpcomingPublicSymbiocreations(0).subscribe(
-          symbios => {
-            this.sharedService.nextIsLoading(false);
-            this.symbiocreations = symbios;
-            console.log(symbios);
-          }
-        );
+        this.symbioService.countUpcomingPublicSymbiocreations()
+          .subscribe(count => this.totalCount = count);
+        this.symbioService.getUpcomingPublicSymbiocreations(0)
+          .subscribe(
+            symbios => {
+              this.sharedService.nextIsLoading(false);
+              this.symbiocreations = symbios;
+              //console.log(symbios);
+            }
+          );
         break;
       }
       case "past": {
         this.sharedService.nextIsLoading(true);
-        this.symbioService.countPastPublicSymbiocreations().subscribe(count => this.totalCount = count);
-        this.symbioService.getPastPublicSymbiocreations(0).subscribe(
-          symbios => {
-            this.sharedService.nextIsLoading(false);
-            this.symbiocreations = symbios;
-          }
-        );
+        this.symbioService.countPastPublicSymbiocreations()
+          .subscribe(count => this.totalCount = count);
+        this.symbioService.getPastPublicSymbiocreations(0)
+          .subscribe(
+            symbios => {
+              this.sharedService.nextIsLoading(false);
+              this.symbiocreations = symbios;
+            }
+          );
         break;
       }
       case "all": {
         this.sharedService.nextIsLoading(true);
-        this.symbioService.countPublicSymbiocreations().subscribe(count => this.totalCount = count);
-        this.symbioService.getAllPublicSymbiocreations(0).subscribe(
-          symbios => {
-            this.sharedService.nextIsLoading(false);
-            this.symbiocreations = symbios;
-          }
-        );
+        this.symbioService.countPublicSymbiocreations()
+          .subscribe(count => this.totalCount = count);
+        this.symbioService.getAllPublicSymbiocreations(0)
+          .subscribe(
+            symbios => {
+              this.sharedService.nextIsLoading(false);
+              this.symbiocreations = symbios;
+            }
+          );
         break;
       }
       default: { 
@@ -97,12 +105,19 @@ export class ExploreComponent implements OnInit {
   getParticipantsToDisplay(participants: Participant[]): Participant[] {
     let selected: Participant[] = [];
     // include moderators w picture
-    for (let p of participants) {
-      if (selected.length < 5 && p.role === 'moderator' && p.user.pictureUrl) selected.push(p);
+    let i = 0;
+    while (i < participants.length && selected.length < 5) {
+      if (participants[i].isModerator && participants[i].user.pictureUrl)
+        selected.push(participants[i]);
+      i++;
     }
+
+    i = 0;
     // fill 5 spots w/ participants
-    for (let p of participants) {
-      if (selected.length < 5 && p.role !== 'moderator' && p.user.pictureUrl) selected.push(p);
+    while (i < participants.length && selected.length < 5) {
+      if (!participants[i].isModerator && participants[i].user.pictureUrl)
+        selected.push(participants[i]);
+      i++;
     }
     return selected;
   }
@@ -121,34 +136,37 @@ export class ExploreComponent implements OnInit {
       case "upcoming": {
         this.sharedService.nextIsLoading(true);
         this.symbiocreations = null;
-        this.symbioService.getUpcomingPublicSymbiocreations(event.pageIndex).subscribe(
-          symbios => {
-            this.sharedService.nextIsLoading(false);
-            this.symbiocreations = symbios;
-          }
-        );
+        this.symbioService.getUpcomingPublicSymbiocreations(event.pageIndex)
+          .subscribe(
+            symbios => {
+              this.sharedService.nextIsLoading(false);
+              this.symbiocreations = symbios;
+            }
+          );
         break;
       }
       case "past": {
         this.sharedService.nextIsLoading(true);
         this.symbiocreations = null;
-        this.symbioService.getPastPublicSymbiocreations(event.pageIndex).subscribe(
-          symbios => {
-            this.sharedService.nextIsLoading(false);
-            this.symbiocreations = symbios;
-          }
-        );
+        this.symbioService.getPastPublicSymbiocreations(event.pageIndex)
+          .subscribe(
+            symbios => {
+              this.sharedService.nextIsLoading(false);
+              this.symbiocreations = symbios;
+            }
+          );
         break;
       }
       case "all": {
         this.sharedService.nextIsLoading(true);
         this.symbiocreations = null;
-        this.symbioService.getAllPublicSymbiocreations(event.pageIndex).subscribe(
-          symbios => {
-            this.sharedService.nextIsLoading(false);
-            this.symbiocreations = symbios;
-          }
-        );
+        this.symbioService.getAllPublicSymbiocreations(event.pageIndex)
+          .subscribe(
+            symbios => {
+              this.sharedService.nextIsLoading(false);
+              this.symbiocreations = symbios;
+            }
+          );
         break;
       }
       default: { 

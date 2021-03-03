@@ -2,7 +2,9 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { SidenavService } from '../services/sidenav.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Node } from '../models/forceGraphTypes';
+import { Comment } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
+import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { SharedService } from '../services/shared.service';
 import { concatMap } from 'rxjs/operators';
@@ -21,7 +23,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
 
   node: Node;
   nameToShow: string;
-  roleOfLoggedIn: string;
+  //sessionIsModerator: boolean = false;
 
   rating: number = 3.5;
   comment: string = '';
@@ -32,6 +34,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     public sidenav: SidenavService,
     private symbioService: SymbiocreationService,
+    private userService: UserService,
     public auth: AuthService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
@@ -40,10 +43,9 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.subscribeToParams();
-    
-    this.sharedService.role$.subscribe(role => {
-      if (role) this.roleOfLoggedIn = role;
-    });
+    /*this.sharedService.sessionIsModerator$.subscribe(isModerator => {
+      if (isModerator) this.sessionIsModerator = isModerator;
+    }); */
   }
 
   ngAfterViewInit() {
@@ -58,9 +60,6 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     ).subscribe(node => { // node injected w user
       this.node = node;
       this.nameToShow = this.node.name;
-      // get nameToShow from db object user
-      //if (this.node.user) this.nameToShow = this.node.user.firstName && this.node.user.lastName ? this.node.user.firstName + ' ' + this.node.user.lastName : this.node.user.name;
-      //else this.nameToShow = this.node.name;
     });
   }
 
@@ -72,7 +71,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     const closed$ = from(this.sidenav.close());
     closed$.subscribe(res => {
       this.router.navigate(['.'], {relativeTo: this.route.parent});
-      this.sharedService.nextSelectedNode(null);
+      //this.sharedService.nextDeselectedNodes([this.node]);
     }); // to avoid blank sidenav on closing
   }
 
@@ -98,8 +97,6 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
       if (idea) {
         this.node.idea = idea; // has id and new idea
         this.symbioService.updateNodeIdea(idSymbio, this.node).subscribe(res => {
-          this.sharedService.nextNode(this.node);
-
           this._snackBar.open('Se registró la idea correctamente.', 'ok', {
             duration: 2000,
           });
@@ -115,6 +112,25 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   cancelCommentPost() {
     this.comment = '';
     this.hiddenCommentButtons = true;
+  }
+
+  postComment() {
+    this.auth.userProfile$.pipe(
+      concatMap(user => this.userService.getUserByEmail(user.email)),
+      concatMap(u => {
+        const newComment: Comment = {u_id: u.id, content: this.comment};
+        const idSymbio = this.route.parent.snapshot.paramMap.get('id');
+        return this.symbioService.createCommentOfIdea(idSymbio, this.node.id, newComment);
+      })
+    ).subscribe(comment => {
+      if (!this.node.idea.comments) {
+        this.node.idea.comments = [];
+      }
+      this.node.idea.comments.push(comment);
+      this._snackBar.open('Se registró tu comentario correctamente.', 'ok', {
+        duration: 2000,
+      });
+    });
   }
 
 }

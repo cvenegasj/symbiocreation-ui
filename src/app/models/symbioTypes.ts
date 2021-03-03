@@ -35,15 +35,21 @@ export interface Symbiocreation {
 export interface Participant {
     u_id: string;
     user?: User;
-    role: string;
-    idea?: Idea;
-    //groupName?: string;
+    isModerator: boolean; /*** */
 }
 
 export interface Idea {
     title?: string;
     description?: string;
     lastModified?: Date;
-    //photoURL?: string;
     imgPublicIds?: string[];
+    externalUrls?: string[];
+    comments?: Comment[];
+}
+
+export interface Comment {
+    u_id: string;
+    author?: User;
+    content: string;
+    lastModified?: Date;
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Idea } from '../models/symbioTypes';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';
 import { Observable, forkJoin } from 'rxjs';
@@ -14,6 +16,8 @@ export class EditIdeaDialogComponent implements OnInit {
 
   idea: Idea = {};
   selectedImgs: ImageSnippet[];
+
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(
     public dialogRef: MatDialogRef<EditIdeaDialogComponent>,
@@ -99,6 +103,33 @@ export class EditIdeaDialogComponent implements OnInit {
   deleteSelectedImg(img: ImageSnippet) {
     const index = this.selectedImgs.indexOf(img);
     this.selectedImgs.splice(index, 1);
+  }
+
+  addExternalUrl(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if (!this.idea.externalUrls) {
+      this.idea.externalUrls = [];
+    }
+
+    // Add the new url
+    if ((value || '').trim()) {
+      this.idea.externalUrls.push(value.trim());
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  removeExternalUrl(url: string): void {
+    const index = this.idea.externalUrls.indexOf(url);
+
+    if (index >= 0) {
+      this.idea.externalUrls.splice(index, 1);
+    }
   }
 }
 

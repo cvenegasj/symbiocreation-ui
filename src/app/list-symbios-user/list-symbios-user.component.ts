@@ -34,15 +34,16 @@ export class ListSymbiosUserComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
-        confirmText: 'Eliminar',
+        title: 'Eliminar simbiocreación',
+        content: '¿Está seguro que desea eliminar esta simbiocreación? Todos los datos se perderán para siempre.',
         cancelText: 'Cancelar',
+        confirmText: 'Eliminar',
         confirmationColor: 'warn'
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-
         this.symbioService.deleteSymbiocreation(id).subscribe(
           res => {
             this.symbiocreations = this.symbiocreations.filter(s => s.id !== id);

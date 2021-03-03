@@ -98,7 +98,6 @@
                             (matChipInputTokenEnd)="addExtraUrl($event)">
                 </mat-chip-list>
             </mat-form-field>
-            
         </div>
 
         <div *ngIf="detailsOpened">
@@ -109,12 +108,17 @@
                         {{sdg}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip>
-                    <input placeholder="ODS"
-                            [matChipInputFor]="sdgList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                            [matChipInputAddOnBlur]="true"
-                            (matChipInputTokenEnd)="addSDG($event)">
+                    <input placeholder="Objetivos de Desarrollo Sostenible"
+                            #sdgInput
+                            [formControl]="sdgCtrl"
+                            [matAutocomplete]="auto"
+                            [matChipInputFor]="sdgList">
                 </mat-chip-list>
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                    <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
+                      {{sdg}}
+                    </mat-option>
+                  </mat-autocomplete>
             </mat-form-field>
         </div>
 

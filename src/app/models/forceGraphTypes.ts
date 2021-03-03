@@ -5,6 +5,7 @@ export interface Node extends d3Force.SimulationNodeDatum {
     id?: string;
     u_id?: string;
     user?: User;
+    role?: string; /*****/
     name?: string;
     idea?: Idea;
     

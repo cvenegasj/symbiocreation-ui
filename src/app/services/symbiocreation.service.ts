@@ -4,7 +4,7 @@ import { catchError, concatMap } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { Symbiocreation, Participant } from '../models/symbioTypes';
+import { Symbiocreation, Participant, Comment, User } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
 
 @Injectable({
@@ -36,15 +36,8 @@ export class SymbiocreationService {
 
     // find mine
     // TODO: shouldn't include any userId 
-    getMySymbiocreations(userId: string): Observable<Symbiocreation[]> {
-        /*return this.auth.userProfile$.pipe(
-            concatMap(u => {
-                console.log(u);
-                let API_URL = `${this.apiUrl}/symbiocreations/getMine/${u.email}`;
-                return this.http.get<Symbiocreation[]>(API_URL);
-            })
-        );*/
-        let API_URL = `${this.apiUrl}/symbiocreations/getMine/${userId}`;
+    getMySymbiocreations(userId: string, page: number): Observable<Symbiocreation[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getMine/${userId}/${page}`;
         return this.http.get<Symbiocreation[]>(API_URL);
     }
 
@@ -64,6 +57,11 @@ export class SymbiocreationService {
     getPastPublicSymbiocreations(page: number): Observable<Symbiocreation[]> {
         let API_URL = `${this.apiUrl}/symbiocreations/getPastPublic/${page}`;
         return this.http.get<Symbiocreation[]>(API_URL);
+    }
+
+    countSymbiocreationsByUser(userId: string): Observable<number> {
+        let API_URL = `${this.apiUrl}/symbiocreations/countByUser/${userId}`;
+        return this.http.get<number>(API_URL);
     }
 
     countPublicSymbiocreations(): Observable<number> {
@@ -118,9 +116,9 @@ export class SymbiocreationService {
     }
 
     // change idea of node
-    updateNodeIdea(symbioId: string, newNode: Node): Observable<Symbiocreation> {
+    updateNodeIdea(symbioId: string, newNode: Node): Observable<Node> {
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/updateNodeIdea`;
-        return this.http.put<Symbiocreation>(API_URL, newNode, {headers: this.headers})
+        return this.http.put<Node>(API_URL, newNode, {headers: this.headers})
             .pipe(
                 catchError(this.error)
             );
@@ -141,9 +139,38 @@ export class SymbiocreationService {
         return this.http.get<Node>(API_URL);
     }
 
+    // get all nodes associated to a user id
+    getNodesByUserId(symbioId: string, userId: string): Observable<Node[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/getNodesByUserId/${userId}`;
+        return this.http.get<Node[]>(API_URL);
+    }
+
+    // create a new comment of an idea
+    createCommentOfIdea(symbioId: string, nodeId: string, comment: Comment): Observable<Comment> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createCommentOfIdea/${nodeId}`;
+        return this.http.put<Comment>(API_URL, comment, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
     createParticipant(symbioId: string, p: Participant): Observable<Symbiocreation> {
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createParticipant`;
         return this.http.post<Symbiocreation>(API_URL, p)
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    createUserNode(symbioId: string, user: User): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/createUserNode`;
+        let nodeName = '';
+        if (user.name) nodeName = user.name;
+        if (user.firstName && user.lastName) nodeName = user.firstName + ' ' + user.lastName;
+        
+        const node: Node = {u_id: user.id, role: 'participant', name: nodeName}; // nodeId is set in backend
+        
+        return this.http.post<Symbiocreation>(API_URL, node)
             .pipe(
                 catchError(this.error)
             );
@@ -184,10 +211,36 @@ export class SymbiocreationService {
             );
     }
 
-    // participant has u_id and new role
-    updateParticipantRole(symbioId: string, participant: Participant): Observable<Symbiocreation> {
-        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/updateParticipantRole`;
+    // set participant as moderator
+    setParticipantAsModerator(symbioId: string, participant: Participant): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/setParticipantAsModerator`;
         return this.http.put<Symbiocreation>(API_URL, participant, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    // node has id and new role
+    updateUserNodeRole(symbioId: string, node: Node): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/updateUserNodeRole`;
+        return this.http.put<Symbiocreation>(API_URL, node, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    // participant has the new value for isModerator
+    updateParticipantIsModerator(symbioId: string, participant: Participant): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/setParticipantIsModerator`;
+        return this.http.put<Symbiocreation>(API_URL, participant, {headers: this.headers})
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
+    deleteParticipant(symbioId: string, u_id: string): Observable<Symbiocreation> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/deleteParticipant/${u_id}`;
+        return this.http.delete<Symbiocreation>(API_URL)
             .pipe(
                 catchError(this.error)
             );

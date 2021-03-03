@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppMaterialModule } from './app-material.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
@@ -31,6 +31,8 @@ import { SymbiocreationDetailComponent } from './symbiocreation-detail/symbiocre
 import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
 import { GridSymbiosUserComponent } from './grid-symbios-user/grid-symbios-user.component';
 import { ListSymbiosUserComponent } from './list-symbios-user/list-symbios-user.component';
+import { IdeaSelectorDialogComponent } from './idea-selector-dialog/idea-selector-dialog.component';
+import { NewIdeaConfirmationDialogComponent } from './new-idea-confirmation-dialog/new-idea-confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { ListSymbiosUserComponent } from './list-symbios-user/list-symbios-user.
     EditSymbiocreationDetailComponent,
     GridSymbiosUserComponent,
     ListSymbiosUserComponent,
+    IdeaSelectorDialogComponent,
+    NewIdeaConfirmationDialogComponent,
     
   ],
   imports: [
@@ -58,6 +62,7 @@ import { ListSymbiosUserComponent } from './list-symbios-user/list-symbios-user.
     AppRoutingModule,
     AppMaterialModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     ClipboardModule,
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),

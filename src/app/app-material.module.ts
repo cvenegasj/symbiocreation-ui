@@ -23,6 +23,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatButtonToggleModule,
     MatProgressBarModule,
     MatPaginatorModule,
+    MatAutocompleteModule,
 
   ],
   exports: [
@@ -78,6 +80,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatButtonToggleModule,
     MatProgressBarModule,
     MatPaginatorModule,
+    MatAutocompleteModule,
     
   ],
 })
