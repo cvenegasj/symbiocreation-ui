@@ -165,8 +165,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.nodesMap = this.mapIdToNodes(this.nodes);
 
     this.simulation = d3.forceSimulation(this.nodes)
-      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 55, 90))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
-      .force('charge', d3.forceManyBody().strength(-50))
+      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 65, 140))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
+      .force('charge', d3.forceManyBody().strength(-40))
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2));
 
     // draw links
@@ -195,11 +195,11 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .append("g")
       .call(this.drag(this.simulation));
 
-    // node label
+    // node label for name
     nodeEnter.append("text")
       .text(d => d.name)
       .attr('text-anchor', d => d.role === 'ambassador' ? 'end' : 'middle')
-      .attr('dy', d => -d.r - 17)
+      .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
       .call(this.getBBox); // sets the bbox property on d
     
     // text background for label
@@ -216,7 +216,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .text(d => d.role === 'ambassador' ? 'Embajador' : '')
         //.style('fill', '#FFAB00')
         .attr('dx', 5)
-        .attr('dy', d =>  -d.r - 17)
+        .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
         .call(this.getBBox); // sets the bbox property on d
 
     // text background for ambassador labels
@@ -232,7 +232,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     // node label for idea
     nodeEnter.append("text")
-        .text(d => d.idea ? (d.idea.title.length > 15 ? d.idea.title.substring(0, 15) : d.idea.title) : '(vacío)')
+        .text(d => d.idea?.title ? (d.idea.title.length > 15 ? d.idea.title.substring(0, 15) + '...' : d.idea.title) : '')
         .style('fill', '#616161')
         .style('font-weight', 'bold')
         .attr('text-anchor', 'middle')
@@ -417,23 +417,25 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   // copy of fn in symbiocreation.component.ts
   openIdeaDetailSidenav(node: Node) {
-    let amAmbassadorOfGroup = false;
     if (this.participant) { // user could be an external viewer
+      let amAmbassadorOfGroup = false;
       for (let lineage of this.myAncestries) {
         if (this.nodeAContainsNodeB(node, lineage[0]) && lineage[0].role === 'ambassador') {
           amAmbassadorOfGroup = true;
           break;
         }
       }
+      // 3 possible conditions to make and idea editable
+      this.sharedService.nextIsIdeaEditable(
+            this.participant.isModerator // if I am moderator
+            || amAmbassadorOfGroup // if I am ambassador and descendant of group node to edit
+            || node.u_id === this.participant.u_id // if it's my node
+      );
+    } else {
+      this.sharedService.nextIsIdeaEditable(false);
     }
-    // 3 possible conditions to make and idea editable
-    this.sharedService.nextIsIdeaEditable(
-          this.participant?.isModerator // if I am moderator
-          || amAmbassadorOfGroup // if I am ambassador and descendant of group node to edit
-          || node.u_id === this.participant?.u_id // if it's my node
-    );
+    
     //this.sharedService.nextSelectedNodes([node]);
-
     this.router.navigate(['idea', node.id], {relativeTo: this.route});
     this.sidenav.open();
   }

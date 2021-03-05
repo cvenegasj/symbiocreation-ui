@@ -505,21 +505,25 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   // function is copied in graph.component.ts
   openIdeaDetailSidenav(node: Node) {
-    let amAmbassadorOfGroup = false;
-    for (let lineage of this.myAncestries) {
-      if (this.nodeAContainsNodeB(node, lineage[0]) && lineage[0].role === 'ambassador') {
-        amAmbassadorOfGroup = true;
-        break;
+    if (this.participant) { // user could be an external viewer
+      let amAmbassadorOfGroup = false;
+      for (let lineage of this.myAncestries) {
+        if (this.nodeAContainsNodeB(node, lineage[0]) && lineage[0].role === 'ambassador') {
+          amAmbassadorOfGroup = true;
+          break;
+        }
       }
+      // 3 possible conditions to make and idea editable
+      this.sharedService.nextIsIdeaEditable(
+            this.participant.isModerator // if I am moderator
+            || amAmbassadorOfGroup // if I am ambassador and descendant of group node to edit
+            || node.u_id === this.participant.u_id // if it's my node
+      );
+    } else {
+      this.sharedService.nextIsIdeaEditable(false);
     }
-    // 3 possible conditions to make and idea editable
-    this.sharedService.nextIsIdeaEditable(
-          this.participant?.isModerator // if I am moderator
-          || amAmbassadorOfGroup // if I am ambassador and descendant of group node to edit
-          || node.u_id === this.participant?.u_id // if it's my node
-    );
+    
     //this.sharedService.nextSelectedNodes([node]);
-
     this.router.navigate(['idea', node.id], {relativeTo: this.route});
     this.sidenav.open();
   }
@@ -615,7 +619,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       width: '600px',
       data: {
         symbio: this.symbiocreation,
-        isModerator: this.participant.isModerator
+        isModerator: this.participant?.isModerator
       }
     });
 

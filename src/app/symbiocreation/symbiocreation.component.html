@@ -31,7 +31,8 @@
 
                     <span *ngIf="participant?.isModerator" class="chip-role moderator">Moderador</span>
 
-                    <button mat-icon-button 
+                    <button *ngIf="participant"
+                        mat-icon-button 
                         [matMenuTriggerFor]="mainMenu"
                         style="position: relative; top: -4px;">
                         <mat-icon class="gray-600">more_vert</mat-icon>

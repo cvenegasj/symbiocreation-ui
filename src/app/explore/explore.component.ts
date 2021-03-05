@@ -17,7 +17,7 @@ export class ExploreComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   symbiocreations: Symbiocreation[];
-  filter: string = 'upcoming';
+  filter: string = 'all';
   totalCount: number;
 
   constructor(
@@ -28,9 +28,9 @@ export class ExploreComponent implements OnInit {
 
   ngOnInit(): void {
     this.sharedService.nextIsLoading(true);
-    this.symbioService.countUpcomingPublicSymbiocreations()
+    this.symbioService.countPublicSymbiocreations()
       .subscribe(count => this.totalCount = count);
-    this.symbioService.getUpcomingPublicSymbiocreations(0)
+    this.symbioService.getAllPublicSymbiocreations(0)
       .subscribe(
         symbios => {
           this.sharedService.nextIsLoading(false);
