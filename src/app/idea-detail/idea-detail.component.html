@@ -83,9 +83,9 @@
         <span>{{node.idea.comments ? node.idea.comments.length : '0' }} comentarios</span>
 
         <!-- Visible to logged-in users -->
-        <div *ngIf="auth.userProfile$ | async" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+        <div *ngIf="auth.userProfile$ | async as profile" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 10px 15px;">
-                <cl-image [public-id]="auth.userProfile.picture" type="fetch" class="img-2">
+                <cl-image [public-id]="profile.picture" type="fetch" class="img-2">
                     <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
                 </cl-image>
             </div>
