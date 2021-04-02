@@ -35,7 +35,7 @@ export interface Symbiocreation {
 export interface Participant {
     u_id: string;
     user?: User;
-    isModerator: boolean; /*** */
+    isModerator: boolean;
 }
 
 export interface Idea {
