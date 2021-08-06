@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -91,7 +91,6 @@ export class CreateSymbioComponent implements OnInit {
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(u => {
         this.model.participants.push({u_id: u.id, user: u, isModerator: true} as Participant); // participant
-
         return this.symbioService.createSymbiocreation(this.model); // node is created in backend
       })
     ).subscribe(res => {

@@ -12,7 +12,7 @@
                 mat-menu-item 
                 [matMenuTriggerFor]="groupsSubMenu" 
                 [matMenuTriggerData]="{node: node}">
-                Asignar grupo padre
+                Asignar grupo
             </button>
 
             <button *ngIf="!node.u_id && ( participant.isModerator || isAmbassadorOfAnyGroupBelow(node) )"

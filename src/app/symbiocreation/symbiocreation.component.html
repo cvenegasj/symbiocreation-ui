@@ -177,7 +177,7 @@
                     <mat-list-item *ngFor="let g of filteredGroups" class="hoveredList1" (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])">
                         <div style="display: inline; width: 205px;" (click)="openIdeaDetailSidenav(g)">
                             <span class="font-13">{{g.name}}</span>
-                            <span class="gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1? 'hijo' : 'hijos'}}</span>
+                            <span class="gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1 ? 'nodo' : 'nodos'}}</span>
                         </div>
                         
                         <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)" mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">

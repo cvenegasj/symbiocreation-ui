@@ -17,8 +17,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.component';
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
-import { Subscription } from 'rxjs';
-import { GraphComponent } from '../graph/graph.component';
 
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 import { MatButton } from '@angular/material/button';
@@ -307,8 +305,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(u => {
-        let participant = {u_id: u.id, user: u, isModerator: false};
-        return this.symbioService.createParticipant(this.symbiocreation.id, participant);
+        this.participant = {u_id: u.id, user: u, isModerator: false};
+        return this.symbioService.createParticipant(this.symbiocreation.id, this.participant);
       })
     ).subscribe(symbio => {
       this._snackBar.open('Se te agregó como participante.', 'ok', {
@@ -440,7 +438,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       width: '350px',
       data: {
         title: 'Eliminar nodo',
-        content: '¿Está seguro que desea eliminar este nodo y su idea?',
+        content: '¿Estás seguro(a) que deseas eliminar este nodo y su idea asociada?',
         cancelText: 'Cancelar',
         confirmText: 'Confirmar',
         confirmationColor: 'warn'
@@ -593,8 +591,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
       data: {
-        title: 'Darme de baja',
-        content: '¿Estás seguro que deseas darte de baja de esta simbiocreación? Tus datos e ideas se perderán para siempre.',
+        title: '¿Seguro(a) que deseas darte de baja?',
+        content: 'Todos tus datos asociados a esta simbiocreación se perderán.',
         cancelText: 'Cancelar',
         confirmText: 'Confirmar',
         confirmationColor: 'warn'

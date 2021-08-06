@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SidenavService } from '../services/sidenav.service';
-import * as d3 from "d3"
+import * as d3 from "d3";
 import { DimensionsType } from '../utils/types';
 import { Node, Link } from '../models/forceGraphTypes';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AuthService } from '../services/auth.service';
-import { SymbiocreationService } from '../services/symbiocreation.service';
 import { SharedService } from '../services/shared.service';
 
 import { Queue } from '../utils/queue';
@@ -62,7 +61,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   constructor(
     private sidenav: SidenavService,
     private auth: AuthService,
-    private symbioService: SymbiocreationService,
     private sharedService: SharedService,
     private router: Router, 
     private route: ActivatedRoute,

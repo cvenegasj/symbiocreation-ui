@@ -114,11 +114,12 @@
                             [matAutocomplete]="auto"
                             [matChipInputFor]="sdgList">
                 </mat-chip-list>
+                
                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                     <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
                       {{sdg}}
                     </mat-option>
-                  </mat-autocomplete>
+                </mat-autocomplete>
             </mat-form-field>
         </div>
 
