@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
@@ -32,7 +32,7 @@ export class CreateSymbioComponent implements OnInit {
   eventTz: string;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  sdgCtrl = new FormControl();
+  sdgCtrl = new UntypedFormControl();
   filteredSDGs: Observable<string[]>;
   allSDGs: string[] = ['1 Fin de la pobreza', '2 Hambre cero', '3 Salud y bienestar', 
     '4 Educación de calidad', '5 Igualdad de género', '6 Agua limpia y saneamiento', 

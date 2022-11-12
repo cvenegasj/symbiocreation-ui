@@ -10,7 +10,6 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CloudinaryModule } from '@cloudinary/angular-5.x';
 import * as  Cloudinary from 'cloudinary-core';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 import { NgxLinkifyjsModule } from 'ngx-linkifyjs';
 
@@ -68,9 +67,7 @@ import { NewIdeaConfirmationDialogComponent } from './new-idea-confirmation-dial
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
     MatMomentDateModule,
     MomentTimezonePickerModule,
-    NgbModule,
     NgxLinkifyjsModule.forRoot(),
-    
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
