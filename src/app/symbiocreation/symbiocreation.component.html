@@ -24,24 +24,35 @@
                     <button mat-icon-button 
                         matTooltip="Ver detalles" 
                         matTooltipPosition="above"
-                        style="position: relative; top: -4px;" 
+                        style="position: relative; top: -4px; left: 3px;" 
                         (click)="openSymbioDetailDialog()">
                         <mat-icon class="gray-600">info</mat-icon>
                     </button>
 
-                    <span *ngIf="participant?.isModerator" class="chip-role moderator">Moderador</span>
+                    <span *ngIf="participant?.isModerator" style="margin-left: 5px;" class="chip-role moderator">Moderador</span>
 
                     <button *ngIf="participant"
                         mat-icon-button 
                         [matMenuTriggerFor]="mainMenu"
-                        style="position: relative; top: -4px;">
+                        style="position: relative; top: -4px; left: 2px;">
                         <mat-icon class="gray-600">more_vert</mat-icon>
                     </button>
 
                     <mat-menu #mainMenu="matMenu">
                         <button mat-menu-item 
                             (click)="leaveSymbiocreation()">
+                            <mat-icon class="gray-600">person_remove</mat-icon>
                             Darme de baja
+                        </button>
+                        <button mat-menu-item 
+                            (click)="downloadParticipantsData()">
+                            <mat-icon class="gray-600">download</mat-icon>
+                            Descargar datos de participantes
+                        </button>
+                        <button mat-menu-item 
+                            (click)="downloadAllData()">
+                            <mat-icon class="gray-600">download</mat-icon>
+                            Descargar todos los datos
                         </button>
                     </mat-menu>
                 </h2>

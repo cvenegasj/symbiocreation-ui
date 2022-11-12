@@ -24,6 +24,8 @@ import { IdeaSelectorDialogComponent } from '../idea-selector-dialog/idea-select
 import { NewIdeaConfirmationDialogComponent } from '../new-idea-confirmation-dialog/new-idea-confirmation-dialog.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
+import { saveAs } from 'file-saver';
+
 @Component({
   selector: 'app-symbiocreation',
   templateUrl: './symbiocreation.component.html',
@@ -622,6 +624,16 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe();
+  }
+
+  downloadParticipantsData() {
+    this.symbioService.downloadParticipantsData(this.symbiocreation.id)
+          .subscribe(blob => saveAs(blob, `symbio-${this.symbiocreation.id}-participants-data.csv`));
+  }
+
+  downloadAllData() {
+    this.symbioService.downloadAllData(this.symbiocreation.id)
+          .subscribe(blob => saveAs(blob, `symbio-${this.symbiocreation.id}-all-data.csv`));
   }
 
   onMouseEnterListItem(nodes: Node[]) {

@@ -246,6 +246,22 @@ export class SymbiocreationService {
             );
     }
 
+    downloadParticipantsData(symbioId: string): Observable<Blob> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/export-participants-data`;
+        return this.http.get(API_URL, {responseType: "blob", headers: {'Accept': 'text/csv'}})
+                .pipe(
+                    catchError(this.error)
+                );
+    }
+
+    downloadAllData(symbioId: string): Observable<any> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/export-all-data`;
+        return this.http.get(API_URL, {responseType: "blob", headers: {'Accept': 'text/csv'}})
+                .pipe(
+                    catchError(this.error)
+                );
+    }
+
     // Handle Errors 
     error(error: HttpErrorResponse) {
         let errorMessage = '';
