@@ -31,7 +31,7 @@
 
                     <span *ngIf="participant?.isModerator" style="margin-left: 5px;" class="chip-role moderator">Moderador</span>
 
-                    <button *ngIf="participant"
+                    <button *ngIf="participant || appUser?.role === 'SUPER_ADMIN'"
                         mat-icon-button 
                         [matMenuTriggerFor]="mainMenu"
                         style="position: relative; top: -4px; left: 2px;">

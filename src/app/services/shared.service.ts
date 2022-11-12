@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Node } from '../models/forceGraphTypes';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SharedService {
+
+    private appUserSubject$ = new ReplaySubject<any>();
+    appUser$ = this.appUserSubject$.asObservable();
 
     private isLoadingSubject$ = new BehaviorSubject<boolean>(null);
     isLoading$ = this.isLoadingSubject$.asObservable();
@@ -23,6 +26,10 @@ export class SharedService {
     deselectedNodes$ = this.deselectedNodesSubject$.asObservable();
 
     constructor() {}
+
+    nextAppUser(user: any) {
+        this.appUserSubject$.next(user);
+    }
 
     nextIsLoading(isLoading: boolean) {
         this.isLoadingSubject$.next(isLoading);
@@ -43,5 +50,4 @@ export class SharedService {
     nextDeselectedNodes(nodes: Node[]) {
         this.deselectedNodesSubject$.next(nodes);
     }
-
 }

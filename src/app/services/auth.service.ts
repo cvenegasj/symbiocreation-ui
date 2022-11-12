@@ -7,11 +7,13 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { UserService } from './user.service';
 import { User } from '../models/symbioTypes';
+import { SharedService } from './shared.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
   // Create an observable of Auth0 instance of client
   auth0Client$ = (from(
     createAuth0Client({
@@ -23,6 +25,7 @@ export class AuthService {
     shareReplay(1), // Every subscription receives the same shared value
     catchError(err => throwError(err))
   );
+
   // Define observables for SDK methods that return promises by default
   // For each Auth0 SDK method, first ensure the client instance is ready
   // concatMap: Using the client instance, call SDK method; SDK returns a promise
@@ -31,19 +34,23 @@ export class AuthService {
     concatMap((client: Auth0Client) => from(client.isAuthenticated())),
     tap(res => this.loggedIn = res)
   );
+
   handleRedirectCallback$ = this.auth0Client$.pipe(
     concatMap((client: Auth0Client) => from(client.handleRedirectCallback()))
   );
+
   // Create subject and public observable of user profile data
   private userProfileSubject$ = new BehaviorSubject<any>(null);
   userProfile$ = this.userProfileSubject$.asObservable();
+
   // Create a local property for login status
   loggedIn: boolean = null;
 
   constructor(
     private router: Router, 
     private location: Location, 
-    private userService: UserService) {
+    private userService: UserService,
+    private sharedService: SharedService) {
     // On initial load, check authentication state with authorization server
     // Set up local auth streams if user is already authenticated
     this.localAuthSetup();
@@ -99,6 +106,7 @@ export class AuthService {
     if (params.includes('code=') && params.includes('state=')) {
       let usr;
       let targetRoute: string; // Path to redirect to after login is processed
+
       const authComplete$ = this.handleRedirectCallback$.pipe(
         // Have client, now call method to handle auth callback redirect
         tap(cbRes => {
@@ -119,13 +127,19 @@ export class AuthService {
         })
       );
 
-      authComplete$.subscribe(u => { // is null if new user
+      authComplete$.subscribe(u => { // is null if user is new
         // update/create user
         if (!u) { // if no object returned
           console.log('new user!');
+
           // create new user
-          let newUser: User = {name: usr.name, firstName: usr.given_name, lastName: usr.family_name, email: usr.email, pictureUrl: usr.picture};
-          this.userService.createUser(newUser).subscribe(res => this.router.navigate([targetRoute]));
+          let newUser: User = {name: usr.name, firstName: usr.given_name, lastName: usr.family_name, 
+                                email: usr.email, pictureUrl: usr.picture, role: 'USER'};
+          
+          this.userService.createUser(newUser).subscribe(createdUser => {
+            this.sharedService.nextAppUser(createdUser);
+            this.router.navigate([targetRoute]);
+          });
         } else {
           console.log('returning user!');
 
@@ -134,7 +148,11 @@ export class AuthService {
           if (usr.family_name) u.lastName = usr.family_name;
           if (usr.picture) u.pictureUrl = usr.picture;
           
-          this.userService.updateUser(u).subscribe(res => this.router.navigate([targetRoute]));
+          this.userService.updateUser(u).subscribe(updatedUser => {
+            // console.log(updatedUser);
+            this.sharedService.nextAppUser(updatedUser);
+            this.router.navigate([targetRoute]);
+          });
         }
       });
       

@@ -4,7 +4,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
 
 import { Node } from '../models/forceGraphTypes';
-import { Symbiocreation, Participant } from '../models/symbioTypes';
+import { Symbiocreation, Participant, User } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
 import { RSocketService } from '../services/rsocket.service';
@@ -33,6 +33,8 @@ import { saveAs } from 'file-saver';
 })
 export class SymbiocreationComponent implements OnInit, OnDestroy {
 
+  appUser?: User;
+
   @ViewChild('sidenav') sidenav: MatSidenav;
 
   //@ViewChild(GraphComponent)
@@ -60,14 +62,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     private userService: UserService,
     public auth: AuthService,
     private rSocketService: RSocketService,
-    private sharedService: SharedService,
+    public sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
-  ) { 
+  ) {
+    this.appUser = null;
     this.participant = null;
   }
 
   ngOnInit() {
+    this.sharedService.appUser$.subscribe(appUser => this.appUser = appUser);
+
     this.getData();
   }
 
@@ -627,11 +632,19 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   downloadParticipantsData() {
+    this._snackBar.open('Generando archivo para descarga...', 'ok', {
+      duration: 2000,
+    });
+
     this.symbioService.downloadParticipantsData(this.symbiocreation.id)
           .subscribe(blob => saveAs(blob, `symbio-${this.symbiocreation.id}-participants-data.csv`));
   }
 
   downloadAllData() {
+    this._snackBar.open('Generando archivo para descarga...', 'ok', {
+      duration: 2000,
+    });
+    
     this.symbioService.downloadAllData(this.symbiocreation.id)
           .subscribe(blob => saveAs(blob, `symbio-${this.symbiocreation.id}-all-data.csv`));
   }
