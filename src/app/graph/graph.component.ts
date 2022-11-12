@@ -82,6 +82,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     }
     this.groups = [];
     this.nodesMap = new Map();
+    this.data = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -1,47 +1,46 @@
-
 // Custom Theming for Angular Material
+@use '~@angular/material' as mat;
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core();
+@include mat.core();
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$symbiocreation-ui-primary: mat-palette($mat-deep-purple, A400, A200, A700);
-$symbiocreation-ui-accent: mat-palette($mat-teal, A200, A100, A400);
+$symbiocreation-ui-primary: mat.define-palette(mat.$deep-purple-palette, A400, A200, A700);
+$symbiocreation-ui-accent: mat.define-palette(mat.$teal-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$symbiocreation-ui-warn: mat-palette($mat-red);
+$symbiocreation-ui-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$symbiocreation-ui-theme: mat-light-theme($symbiocreation-ui-primary, $symbiocreation-ui-accent, $symbiocreation-ui-warn);
+$symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $symbiocreation-ui-accent, $symbiocreation-ui-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($symbiocreation-ui-theme);
+@include mat.all-component-themes($symbiocreation-ui-theme);
 
 .chip-role.moderator {
     //background-color: mat-color($mat-pink, 400);
     //color: mat-contrast($mat-pink, 500);
-    color: mat-color($mat-pink, 400);
-    border-color: mat-color($mat-pink, 400);
+    color: mat.get-color-from-palette(mat.$pink-palette, 400);
+    border-color: mat.get-color-from-palette(mat.$pink-palette, 400);
     position: relative;
     top: -2px;
 }
 
 .chip-role.ambassador {
-    color: mat-color($mat-amber, A700);
-    border-color: mat-color($mat-amber, A700);
+    color: mat.get-color-from-palette(mat.$amber-palette, A700);
+    border-color: mat.get-color-from-palette(mat.$amber-palette, A700);
 }
 
 .bbox-ambassador {
-    fill: mat-color($mat-amber, A400);
+    fill: mat.get-color-from-palette(mat.$amber-palette, A400);
 }
 
 .bbox-name {
@@ -50,19 +49,19 @@ $symbiocreation-ui-theme: mat-light-theme($symbiocreation-ui-primary, $symbiocre
 }
 
 .accent-bg, .accent-bg:hover {
-    background-color: mat-color($symbiocreation-ui-accent, darker) !important;
+    background-color: mat.get-color-from-palette($symbiocreation-ui-accent, darker) !important;
 }
 
 .pink-color {
-    color: mat-color($mat-pink, 400);
+    color: mat.get-color-from-palette(mat.$pink-palette, 400);
 }
 
 .teal-color-1 {
-    color: mat-color($mat-teal, A700);
+    color: mat.get-color-from-palette(mat.$teal-palette, A700);
 }
 
 .pink-bg {
-    background-color: mat-color($mat-pink, 400);
+    background-color: mat.get-color-from-palette(mat.$pink-palette, 400);
 }
 
 /*.card-pink-bg .contrast-color {
