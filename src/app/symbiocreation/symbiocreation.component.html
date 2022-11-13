@@ -184,11 +184,11 @@
                     </mat-form-field>
                 </div>
 
-                <mat-list dense id="groupsSideList">
+                <mat-list id="groupsSideList">
                     <mat-list-item *ngFor="let g of filteredGroups" class="hoveredList1" (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])">
                         <div style="display: inline; width: 205px;" (click)="openIdeaDetailSidenav(g)">
                             <span class="font-13">{{g.name}}</span>
-                            <span class="gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1 ? 'nodo' : 'nodos'}}</span>
+                            <span class="font-13 gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1 ? 'nodo' : 'nodos'}}</span>
                         </div>
                         
                         <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)" mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
@@ -254,7 +254,7 @@
                             <span *ngIf="p.user.firstName && p.user.lastName" class="font-13 list-element-ellipsed">{{p.user.firstName}} {{p.user.lastName}}</span>
                             <span *ngIf="!(p.user.firstName && p.user.lastName)" class="font-13 list-element-ellipsed">{{p.user.name}}</span>
 
-                            <span *ngIf="p.u_id === participant?.u_id" class="font-12 gray-600" style="margin-left: 5px;">(tú)</span>
+                            <span *ngIf="p.u_id === participant?.u_id" class="font-13 gray-600" style="margin-left: 5px;">(tú)</span>
 
                             <br />
 
