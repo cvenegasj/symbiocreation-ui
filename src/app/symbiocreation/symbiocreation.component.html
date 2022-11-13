@@ -184,7 +184,7 @@
                     </mat-form-field>
                 </div>
 
-                <mat-list dense>
+                <mat-list dense id="groupsSideList">
                     <mat-list-item *ngFor="let g of filteredGroups" class="hoveredList1" (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])">
                         <div style="display: inline; width: 205px;" (click)="openIdeaDetailSidenav(g)">
                             <span class="font-13">{{g.name}}</span>
@@ -248,11 +248,11 @@
                     </mat-form-field>
                 </div>
                 
-                <mat-list dense>
+                <mat-list id="participantsSideList">
                     <mat-list-item *ngFor="let p of filteredParticipants" class="hoveredList1" (mouseenter)="onMouseEnterListItem(getNodesByUserId(p.u_id))" (mouseleave)="onMouseLeaveListItem(getNodesByUserId(p.u_id))">
                         <div style="display: inline; width: 205px;" (click)="preOpenIdeaDetailSidenav(p.u_id)">
-                            <span *ngIf="p.user.firstName && p.user.lastName" class="font-13">{{p.user.firstName}} {{p.user.lastName}}</span>
-                            <span *ngIf="!(p.user.firstName && p.user.lastName)" class="font-13">{{p.user.name}}</span>
+                            <span *ngIf="p.user.firstName && p.user.lastName" class="font-13 list-element-ellipsed">{{p.user.firstName}} {{p.user.lastName}}</span>
+                            <span *ngIf="!(p.user.firstName && p.user.lastName)" class="font-13 list-element-ellipsed">{{p.user.name}}</span>
 
                             <span *ngIf="p.u_id === participant?.u_id" class="gray-600" style="margin-left: 5px;">(tú)</span>
 
@@ -297,7 +297,6 @@
                         </button>
                     </ng-template>
                 </mat-menu>
-                
             </mat-expansion-panel>
         </div>
 

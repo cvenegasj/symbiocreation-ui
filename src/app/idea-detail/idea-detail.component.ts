@@ -127,6 +127,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
         this.node.idea.comments = [];
       }
       this.node.idea.comments.push(comment);
+      this.comment = '';
       this._snackBar.open('Se registró tu comentario correctamente.', 'ok', {
         duration: 2000,
       });

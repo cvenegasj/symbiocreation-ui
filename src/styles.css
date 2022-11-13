@@ -47,6 +47,14 @@ a.link-hvr-underline:hover {
     -webkit-box-orient: vertical;
 }
 
+.list-element-ellipsed {
+    display: inline-block;
+    width: 205px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .centered {
     text-align: center;
 }
@@ -342,4 +350,13 @@ cl-image > img.img-2 {
     font-size: 14px;
     line-height: 17px;
     color: #304FFE;
+}
+
+#participantsSideList mat-list-item {
+    padding: 3px 0 !important;
+}
+ 
+#groupsSideList mat-list-item .mat-list-item-content, 
+#participantsSideList mat-list-item .mat-list-item-content {
+    padding: 0 !important;
 }
