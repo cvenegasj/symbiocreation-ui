@@ -68,3 +68,18 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
     color: mat-contrast($mat-pink, 400);
 }*/
 
+div.single-stat-summary span.label {
+    color: mat.get-color-from-palette(mat.$gray-palette, 800);
+}
+
+div.single-stat-summary span.value-1 {
+    color: mat.get-color-from-palette(mat.$teal-palette, A700);
+}
+
+div.single-stat-summary span.value-2 {
+    color: mat.get-color-from-palette(mat.$cyan-palette, 400);
+}
+
+div.single-stat-summary span.value-3 {
+    color: mat.get-color-from-palette(mat.$deep-purple-palette, A200);
+}

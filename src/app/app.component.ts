@@ -26,7 +26,7 @@ export class AppComponent implements AfterViewChecked, OnInit {
   ngOnInit(): void {
     this.auth.isAuthenticated$.pipe(
       concatMap((isAuthenticated: boolean) => {
-        console.log(isAuthenticated);
+        console.log("user is authenticated: " + isAuthenticated);
 
         if (isAuthenticated) {
           return this.auth.userProfile$;

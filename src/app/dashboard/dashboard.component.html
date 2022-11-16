@@ -1,41 +1,10 @@
-<div style="padding: 15px;">
-    <div class="container-80" style="margin-top: 40px; margin-bottom: 15px;">
-        <h2 fxFlex class="font-26 bolder gray-900">Mis simbiocreaciones</h2>
-
-        <div>
-            <button *ngIf="!isGridViewOn"
-                mat-icon-button
-                matTooltip="Vista de cuadrícula" matTooltipPosition="above"
-                style="margin-right: 10px;"
-                (click)="toggleViewMode()">
-                <mat-icon>grid_on</mat-icon>
-            </button>
-
-            <button *ngIf="isGridViewOn"
-                mat-icon-button
-                matTooltip="Vista de lista" matTooltipPosition="above"
-                style="margin-right: 10px;"
-                (click)="toggleViewMode()">
-                <mat-icon>view_list</mat-icon>
-            </button>
-
-            <button routerLink="/create" mat-raised-button color="accent">
-                <mat-icon>add</mat-icon>
-                <span>Nueva simbiocreación</span>
-            </button>
-        </div>
-    </div>
-
+<div fxLayout="row" style="padding: 15px;">
     
-    <app-list-symbios-user *ngIf="!isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-list-symbios-user>
-    <app-grid-symbios-user *ngIf="isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-grid-symbios-user> 
-
-    <div class="container-80" style="margin-top: 15px;">
-        <mat-paginator [length]="totalCount"
-              [pageSize]="12"
-              [hidePageSize]="true"
-              (page)="onPageFired($event)">
-        </mat-paginator>
+    <!-- Side Navigation List -->
+    <app-navlist style="width: 220px; margin-top: 40px;" *ngIf="appUser?.role === 'SUPER_ADMIN'"></app-navlist>
+    
+    <!-- Routed content -->
+    <div fxFlex>
+        <router-outlet></router-outlet>
     </div>
-
 </div>

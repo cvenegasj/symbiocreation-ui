@@ -8,10 +8,17 @@ import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CreateSymbioComponent } from './create-symbio/create-symbio.component';
 import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
+import { StatsOverviewComponent } from './stats-overview/stats-overview.component';
+import { MySymbiocreationsComponent } from './my-symbiocreations/my-symbiocreations.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: 'dashboard/my-symbios', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],
+    children: [
+      { path: 'my-symbios', component: MySymbiocreationsComponent },
+      { path: 'stats-overview', component: StatsOverviewComponent },
+    ]
+  },
   { path: 'explore', component: ExploreComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'symbiocreation/:id', component: SymbiocreationComponent, 

@@ -1,0 +1,35 @@
+<div style="padding: 15px 25px;">
+
+    <h2 class="font-26 bolder gray-900">Estadísticas Resumen</h2>
+
+    <div fxLayout="row" style="margin-top: 40px;">
+        <!-- Summary stats in column -->
+        <div fxLayout="column" fxLayoutGap="8px">
+            <div class="single-stat-summary">
+                <span class="label">Total Simbiocreaciones</span> 
+                <br />
+                <span class="value-1">{{ totalSymbiocreations }}</span>
+            </div>
+            <div class="single-stat-summary">
+                <span class="label">Total Usuarios</span> 
+                <br />
+                <span class="value-2">{{ totalUsers }}</span>
+            </div>
+            <div class="single-stat-summary">
+                <span class="label">Total Ideas</span> 
+                <br />
+                <span class="value-3">{{ totalIdeas }}</span>
+            </div>
+        </div>
+        <!-- Chart with history data -->
+        <div class="line-chart-overview-1" style="margin-left: 10px;">
+            <app-line-chart-growth-history></app-line-chart-growth-history>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; margin-bottom: 15px;">
+        MY SUPER
+
+    </div>
+
+</div>

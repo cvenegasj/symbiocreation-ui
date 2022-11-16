@@ -32,6 +32,10 @@ import { GridSymbiosUserComponent } from './grid-symbios-user/grid-symbios-user.
 import { ListSymbiosUserComponent } from './list-symbios-user/list-symbios-user.component';
 import { IdeaSelectorDialogComponent } from './idea-selector-dialog/idea-selector-dialog.component';
 import { NewIdeaConfirmationDialogComponent } from './new-idea-confirmation-dialog/new-idea-confirmation-dialog.component';
+import { StatsOverviewComponent } from './stats-overview/stats-overview.component';
+import { NavlistComponent } from './navlist/navlist.component';
+import { MySymbiocreationsComponent } from './my-symbiocreations/my-symbiocreations.component';
+import { LineChartGrowthHistoryComponent } from './line-chart-growth-history/line-chart-growth-history.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +58,10 @@ import { NewIdeaConfirmationDialogComponent } from './new-idea-confirmation-dial
     ListSymbiosUserComponent,
     IdeaSelectorDialogComponent,
     NewIdeaConfirmationDialogComponent,
+    StatsOverviewComponent,
+    NavlistComponent,
+    MySymbiocreationsComponent,
+    LineChartGrowthHistoryComponent,
     
   ],
   imports: [

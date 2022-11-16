@@ -1,0 +1,115 @@
+import { Component, OnInit } from '@angular/core';
+import { Symbiocreation, User } from '../models/symbioTypes';
+import { SymbiocreationService } from '../services/symbiocreation.service';
+import { AuthService } from '../services/auth.service';
+import { tap, concatMap } from 'rxjs/operators';
+import { UserService } from '../services/user.service';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { SharedService } from '../services/shared.service';
+
+@Component({
+  selector: 'app-my-symbiocreations',
+  templateUrl: './my-symbiocreations.component.html',
+  styleUrls: ['./my-symbiocreations.component.css']
+})
+export class MySymbiocreationsComponent implements OnInit {
+
+  symbiocreations: Symbiocreation[];
+  isModeratorList: boolean[];
+
+  isGridViewOn: boolean;
+  totalCount: number;
+
+  constructor(
+    private symbioService: SymbiocreationService,
+    private userService: UserService,
+    private auth: AuthService,
+    public sharedService: SharedService,
+    private _snackBar: MatSnackBar,
+    public dialog: MatDialog
+    ) {
+    //this.symbiocreations = [];
+    this.isModeratorList = [];
+  }
+
+  ngOnInit(): void {
+    this.sharedService.nextIsLoading(true);
+    let fetchedUser: User = null;
+
+    this.auth.userProfile$.pipe(
+      concatMap(user => this.userService.getUserByEmail(user.email)),
+      concatMap(u => {
+        fetchedUser = u;
+        this.isGridViewOn = u.isGridViewOn;
+        return this.symbioService.countSymbiocreationsByUser(u.id);
+      }),
+      concatMap(count => {
+        this.totalCount = count;
+        return this.symbioService.getMySymbiocreations(fetchedUser.id, 0); // first page
+      }),
+    ).subscribe(
+      symbios => {
+        this.symbiocreations = symbios;
+        // order has to be done in frontend bc of rx backend ?????
+        this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
+        this.isModeratorList = this.createIsModeratorList(fetchedUser);
+        this.sharedService.nextIsLoading(false);
+      }
+    );
+  }
+
+  createIsModeratorList(user: User): boolean[] {
+    let isModeratorList = [];
+    for (let i = 0; i < this.symbiocreations.length; i++) {
+      isModeratorList.push(false);
+    }
+
+    let i = 0;
+    for (let s of this.symbiocreations) {
+      for (let p of s.participants) {
+        if (p.user.email === user.email) {
+          if (p.isModerator) isModeratorList[i] = true;
+          break;
+        }
+      }
+      i++;
+    }
+    return isModeratorList;
+  }
+
+  toggleViewMode() {
+    this.isGridViewOn = !this.isGridViewOn;
+
+    this.auth.userProfile$.pipe(
+      concatMap(usrProfile => this.userService.getUserByEmail(usrProfile.email)),
+      concatMap(user => {
+        user.isGridViewOn = this.isGridViewOn;
+        return this.userService.updateUser(user);
+      })
+    ).subscribe();
+  }
+
+  onPageFired(event) {
+    this.sharedService.nextIsLoading(true);
+
+    let fetchedUser: User = null;
+
+    this.auth.userProfile$.pipe(
+      concatMap(usrProfile => this.userService.getUserByEmail(usrProfile.email)),
+      concatMap(user => {
+        fetchedUser = user;
+        return this.symbioService.getMySymbiocreations(user.id, event.pageIndex);
+      }),
+    ).subscribe(
+      symbios => {
+        this.symbiocreations = symbios;
+        this.symbiocreations.sort((a, b) => a.lastModified > b.lastModified ? -1 : (a.lastModified < b.lastModified ? 1 : 0));
+        this.isModeratorList = this.createIsModeratorList(fetchedUser);
+        this.sharedService.nextIsLoading(false);
+      }
+    );
+  }
+
+}

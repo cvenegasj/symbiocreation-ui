@@ -267,6 +267,13 @@ ng-moment-timezone-picker div.wrapper {
     height: auto !important;
 }
 
+.container-90 {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+}
+
 .container-80 {
     width: 80%;
     margin-left: auto;
@@ -288,6 +295,10 @@ ng-moment-timezone-picker div.wrapper {
 }
 
 @media screen and (max-width: 959px) {
+    .container-90 {
+        width: 100%;
+    }
+
     .container-80 {
         width: 100%;
     }
@@ -360,3 +371,97 @@ cl-image > img.img-2 {
 #participantsSideList mat-list-item .mat-list-item-content {
     padding: 0 !important;
 }
+
+div.single-stat-summary {
+    border-radius: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d9d8d8;
+    background-color: #f0eef6;
+    padding: 15px 20px 10px;
+    height: 75px;
+    width: 260px;
+}
+
+div.single-stat-summary span.label {
+    font-size: 15px;
+    line-height: 21px;
+    font-weight: 400;
+}
+
+div.single-stat-summary span.value-1,
+div.single-stat-summary span.value-2,
+div.single-stat-summary span.value-3 {
+    font-size: 28px;
+    line-height: 50px;
+    font-weight: 600;
+}
+
+div.line-chart-overview-1 {
+    border-radius: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d9d8d8;
+    background-color: #f0eef6;
+    padding: 15px 20px;
+    height: 290px;
+    width: 600px;
+}
+
+mat-nav-list.main-navlist {
+    background-color: #ededef;
+    border-radius: 5px;
+}
+
+/* AXES */
+/* ticks */
+.axis line {
+    stroke: #aaaaaa;
+    stroke-width: 0;
+    shape-rendering: crispEdges;
+}
+    
+/* axis contour */
+.axis path {
+    stroke: #aaaaaa;
+    stroke-width: 0;
+    shape-rendering: crispEdges;
+}
+    
+/* axis text */
+.axis text {
+    fill: #aaaaaa;
+    font-size: 100%;
+}
+
+/* LINE CHART */
+path.line {
+    fill: none;
+    stroke: #06D6A0;
+}
+
+.label-0 {
+    fill: #06D6A0;
+    /*font-family: Georgia;*/
+    font-size: 80%;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* .label-1 {
+    fill: #FFD166;
+    font-size: 80%;
+    font-weight: bold;
+    text-transform: uppercase;
+} */
+
+.grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+  
+.grid path {
+    stroke-width: 0;
+}
+
