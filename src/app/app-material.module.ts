@@ -24,6 +24,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -81,6 +82,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatProgressBarModule,
     MatPaginatorModule,
     MatAutocompleteModule,
+    MatTabsModule,
     
   ],
 })

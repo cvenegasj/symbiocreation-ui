@@ -83,3 +83,14 @@ div.single-stat-summary span.value-2 {
 div.single-stat-summary span.value-3 {
     color: mat.get-color-from-palette(mat.$deep-purple-palette, A200);
 }
+
+// LINE CHART
+path.line-1 {
+    fill: none;
+    stroke: mat.get-color-from-palette(mat.$teal-palette, A400);;
+}
+
+path.line-2 {
+    fill: none;
+    stroke: mat.get-color-from-palette(mat.$cyan-palette, 500);
+}
