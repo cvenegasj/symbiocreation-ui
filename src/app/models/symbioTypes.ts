@@ -9,6 +9,8 @@ export interface User {
     pictureUrl?: string;
     isGridViewOn?: boolean;
     role?: string;
+
+    score?: number;
 }
 
 export interface Symbiocreation {

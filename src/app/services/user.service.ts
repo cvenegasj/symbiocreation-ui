@@ -45,6 +45,15 @@ export class UserService {
             );
     }
 
+    // // recompute score of a user
+    // recomputeScore(idUser: string): Observable<User> {
+    //     let API_URL = `${this.apiUrl}/users/${idUser}/recompute-scores`;
+    //     return this.http.patch<User>(API_URL, {}, {headers: this.headers})
+    //         .pipe(
+    //             catchError(this.error)
+    //         );
+    // }
+
     // Handle Errors 
     error(error: HttpErrorResponse) {
         let errorMessage = '';

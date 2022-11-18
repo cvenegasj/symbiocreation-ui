@@ -37,6 +37,8 @@ import { NavlistComponent } from './navlist/navlist.component';
 import { MySymbiocreationsComponent } from './my-symbiocreations/my-symbiocreations.component';
 import { LineChartGrowthHistoryComponent } from './line-chart-growth-history/line-chart-growth-history.component';
 import { TopSymbiocreationsRankingComponent } from './top-symbiocreations-ranking/top-symbiocreations-ranking.component';
+import { TopUsersRankingComponent } from './top-users-ranking/top-users-ranking.component';
+import { TopTopicsRankingComponent } from './top-topics-ranking/top-topics-ranking.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +66,8 @@ import { TopSymbiocreationsRankingComponent } from './top-symbiocreations-rankin
     MySymbiocreationsComponent,
     LineChartGrowthHistoryComponent,
     TopSymbiocreationsRankingComponent,
+    TopUsersRankingComponent,
+    TopTopicsRankingComponent,
     
   ],
   imports: [

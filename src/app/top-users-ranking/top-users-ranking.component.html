@@ -1,0 +1,15 @@
+<mat-list>
+    <mat-list-item *ngFor="let user of users; index as i; last as last">
+      <div matLine>
+        <span class="bold font-16 cyan-color-1" style="max-width: 90%; padding-left: 5px;">
+            {{ user.name || user.firstName + " " + user.lastName }}
+        </span>
+      </div>
+
+      <div matLine style="padding-left: 5px;">
+        <span class="font-13 gray-700">Score: {{ user.score }}</span>
+      </div>
+
+      <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+    </mat-list-item>
+</mat-list>
