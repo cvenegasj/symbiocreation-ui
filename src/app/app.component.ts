@@ -3,7 +3,7 @@ import { User } from './models/symbioTypes';
 import { AuthService } from './services/auth.service';
 import { SharedService } from './services/shared.service';
 
-import { concatMap } from 'rxjs/operators';
+import { concatMap, tap } from 'rxjs/operators';
 import { UserService } from './services/user.service';
 import { EMPTY } from 'rxjs';
 
@@ -24,23 +24,27 @@ export class AppComponent implements AfterViewChecked, OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.auth.isAuthenticated$.pipe(
-      concatMap((isAuthenticated: boolean) => {
-        console.log("user is authenticated: " + isAuthenticated);
+    this.auth.isAuthenticated$
+      .pipe(
+        concatMap((isAuthenticated: boolean) => {
+          console.log("user is authenticated: " + isAuthenticated);
+          return isAuthenticated ? this.auth.userProfile$ : EMPTY;
+        }),
+        concatMap(userProfile => userProfile ? this.userService.getUserByEmail(userProfile.email) : EMPTY),
+        tap((appUser: User) => {
+          if (appUser) {
+            this.userService.recomputeScore(appUser.id).subscribe(appUser => {
+              console.log(`Score of user ${appUser.id} was recomputed`);
+            });
+          }
+        }),
+      ).subscribe((appUser: User) => {
+        if (appUser) {
+          console.log("logged in user: " + JSON.stringify(appUser));
 
-        if (isAuthenticated) {
-          return this.auth.userProfile$;
-        } else {
-          return EMPTY;
+          this.sharedService.nextAppUser(appUser);
         }
-      }),
-      concatMap(userProfile => userProfile ? this.userService.getUserByEmail(userProfile.email) : EMPTY),
-    ).subscribe((appUser: User) => {
-      if (appUser) {
-        console.log("logged in user: " + JSON.stringify(appUser));
-        this.sharedService.nextAppUser(appUser);
-      }
-    });
+      });
   }
 
   ngAfterViewChecked(): void {
