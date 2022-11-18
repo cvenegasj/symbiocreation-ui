@@ -31,7 +31,6 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
     color: mat.get-color-from-palette(mat.$pink-palette, 400);
     border-color: mat.get-color-from-palette(mat.$pink-palette, 400);
     position: relative;
-    top: -2px;
 }
 
 .chip-role.ambassador {
