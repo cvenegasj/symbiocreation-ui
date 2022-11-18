@@ -19,20 +19,34 @@ export class AnalyticsService {
     // get total current counts of symbiocreations, users, and ideas
     getCountsSummary(): Observable<number> {
         let API_URL = `${this.apiUrl}/analytics/counts-summary`;
-        return this.http.get<number>(API_URL)
+        return this.http.get<number>(API_URL);
     }
 
-    // get map with all dates and number of symbios created on each date
+    // get ordered array of objects with all dates and number of symbios created on each date
     getSymbioCountsDaily(): Observable<any> {
         let API_URL = `${this.apiUrl}/analytics/symbio-counts-daily-chart`;
-        return this.http.get<any>(API_URL)
+        return this.http.get<any>(API_URL);
     }
 
-    // get map with all dates and number of users created on each date
+    // get ordered array of objects with all dates and number of users created on each date
     getUserCountsDaily(): Observable<any> {
         let API_URL = `${this.apiUrl}/analytics/user-counts-daily-chart`;
-        return this.http.get<any>(API_URL)
+        return this.http.get<any>(API_URL);
     }
+
+    // get ordered array of objects with ranked symbiocreations
+    getTopSymbiocreations(): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/top-symbiocreations`;
+        return this.http.get<any>(API_URL);
+    }
+
+    // get ordered array of objects with ranked users
+    getTopUsers(): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/top-users`;
+        return this.http.get<any>(API_URL);
+    }
+
+
 
     // Handle Errors 
     error(error: HttpErrorResponse) {
