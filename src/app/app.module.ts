@@ -38,7 +38,7 @@ import { MySymbiocreationsComponent } from './my-symbiocreations/my-symbiocreati
 import { LineChartGrowthHistoryComponent } from './line-chart-growth-history/line-chart-growth-history.component';
 import { TopSymbiocreationsRankingComponent } from './top-symbiocreations-ranking/top-symbiocreations-ranking.component';
 import { TopUsersRankingComponent } from './top-users-ranking/top-users-ranking.component';
-import { TopTopicsRankingComponent } from './top-topics-ranking/top-topics-ranking.component';
+import { TrendingTopicsIdeasComponent } from './trending-topics-ideas/trending-topics-ideas.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +67,7 @@ import { TopTopicsRankingComponent } from './top-topics-ranking/top-topics-ranki
     LineChartGrowthHistoryComponent,
     TopSymbiocreationsRankingComponent,
     TopUsersRankingComponent,
-    TopTopicsRankingComponent,
+    TrendingTopicsIdeasComponent,
     
   ],
   imports: [

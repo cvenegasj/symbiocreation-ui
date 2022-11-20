@@ -34,6 +34,12 @@ export class AnalyticsService {
         return this.http.get<any>(API_URL);
     }
 
+    // get AWS Comprehend results of topic modeling with ideas data
+    getTrendingTopicsIdeas(): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/trending-topics-ideas`;
+        return this.http.get<any>(API_URL);
+    }
+
     // get ordered array of objects with ranked symbiocreations
     getTopSymbiocreations(): Observable<any> {
         let API_URL = `${this.apiUrl}/analytics/top-symbiocreations`;
@@ -45,7 +51,6 @@ export class AnalyticsService {
         let API_URL = `${this.apiUrl}/analytics/top-users`;
         return this.http.get<any>(API_URL);
     }
-
 
 
     // Handle Errors 

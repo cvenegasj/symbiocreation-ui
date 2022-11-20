@@ -87,6 +87,10 @@ div.single-stat-summary span.value-3 {
     color: mat.get-color-from-palette(mat.$deep-purple-palette, A200);
 }
 
+.deep-purple-500 {
+    color: mat.get-color-from-palette(mat.$deep-purple-palette, 500);
+}
+
 // LINE CHART in admin stats overview
 path.line-1 {
     fill: none;

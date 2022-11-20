@@ -28,7 +28,7 @@ export class LineChartGrowthHistoryComponent implements OnInit {
   ) {
     this.dimensions = {
       marginTop: 20,
-      marginRight: 40,
+      marginRight: 45,
       marginBottom: 20,
       marginLeft: 40,
       height: 240,
@@ -105,7 +105,7 @@ export class LineChartGrowthHistoryComponent implements OnInit {
     // add the axes last
     // need to reinstantiate the generators
     xAxisGenerator = d3.axisBottom(xScale);
-    yAxisGenerator = d3.axisRight(yScale)/*.tickArguments([5, '~s'])*/;
+    yAxisGenerator = d3.axisRight(yScale).tickFormat(d3.format(".0f"));
 
     const xAxis = this.bounds
       .append("g")

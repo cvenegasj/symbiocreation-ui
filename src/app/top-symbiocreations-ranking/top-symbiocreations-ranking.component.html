@@ -1,7 +1,7 @@
 <mat-list>
     <mat-list-item *ngFor="let item of symbiocreations; index as i; last as last">
       <div matLine>
-        <a [routerLink]="['/symbiocreation/', item.symbiocreation.id]" class="bold font-18 teal-700" style="max-width: 90%; padding-left: 5px;">
+        <a [routerLink]="['/symbiocreation/', item.symbiocreation.id]" class="bold font-20 teal-700" style="max-width: 90%; padding-left: 5px;">
             {{ item.symbiocreation.name }}
         </a>
       </div>
