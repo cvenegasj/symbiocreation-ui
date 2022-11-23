@@ -121,10 +121,19 @@ div.single-stat-my-symbios-4 span.value {
     color: mat.get-color-from-palette(mat.$teal-palette, '200-contrast');
 }
 
+span.symbio-stat-value {
+    display: inline-block;
+    padding: 0 7px;
+    border-width: 1px;
+    border-radius: 5px;
+    background-color: mat.get-color-from-palette(mat.$yellow-palette, A700);
+    color: mat.get-color-from-palette(mat.$yellow-palette, A700-contrast);
+}
+
 // LINE CHART in admin stats overview
 path.line-1 {
     fill: none;
-    stroke: mat.get-color-from-palette(mat.$teal-palette, A400);;
+    stroke: mat.get-color-from-palette(mat.$teal-palette, A400);
 }
 
 path.line-2 {

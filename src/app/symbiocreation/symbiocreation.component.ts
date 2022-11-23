@@ -36,6 +36,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   appUser?: User;
 
   @ViewChild('sidenav') sidenav: MatSidenav;
+  @ViewChild('sidenavAnalytics') sidenavAnalytics: MatSidenav;
 
   //@ViewChild(GraphComponent)
   //private graphComponent: GraphComponent;

@@ -58,8 +58,27 @@ export class AnalyticsService {
         return this.http.get<any>(API_URL);
     }
 
+    // get map with summary counts and stats of user
     getCountsSummaryUser(userId: string): Observable<any> {
         let API_URL = `${this.apiUrl}/analytics/counts-summary-user/${userId}`;
+        return this.http.get<any>(API_URL);
+    }
+
+    // get map with summary counts and stats of symbiocreation
+    getCountsSummarySymbiocreation(symbiocreationId: string): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/counts-summary-symbiocreation/${symbiocreationId}`;
+        return this.http.get<any>(API_URL);
+    }
+
+    // get users ranking (ordered array) of a symbiocreation
+    getUsersRankingSymbiocreation(symbiocreationId: string): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/users-ranking-symbiocreation/${symbiocreationId}`;
+        return this.http.get<any>(API_URL);
+    }
+
+    // get the common terms used in the ideas of a symbiocreation
+    getCommonTermsInSymbiocreation(symbiocreationId: string): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/common-terms-symbiocreation/${symbiocreationId}`;
         return this.http.get<any>(API_URL);
     }
 

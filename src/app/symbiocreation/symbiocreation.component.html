@@ -1,5 +1,19 @@
  <mat-sidenav-container autosize hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
 
+    <div>
+        <!-- Analytics fixed button -->
+        <button mat-mini-fab color="accent" style="position: fixed; bottom: 20px; left: 20px; z-index: 3000;"
+                matTooltip="Ver Estadísticas de Simbiocreación"
+                matTooltipPosition="above"
+                (click)="sidenavAnalytics.open()">
+            <mat-icon>bar_chart</mat-icon>
+        </button>
+    </div>
+    
+    <mat-sidenav *ngIf="symbiocreation" #sidenavAnalytics position="start" style="width: 500px;">
+        <app-symbiocreations-stats [symbiocreationId]="symbiocreation?.id"></app-symbiocreations-stats>
+    </mat-sidenav>
+
     <mat-sidenav #sidenav position="end" [style.width]="sidenavService.isOpenInFullscreen ? '100%' : '470px'">
         <router-outlet></router-outlet>
     </mat-sidenav>
