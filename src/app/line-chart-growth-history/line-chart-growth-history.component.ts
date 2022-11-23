@@ -44,9 +44,9 @@ export class LineChartGrowthHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.analyticsService.getSymbioCountsDaily()
       .subscribe(array => {
-        //console.log(array);
+        // console.log(array);
         this.setLineChartData(array);
-        //console.log(this.data);
+        // console.log(this.data);
         this.cleanAndCreateChart();
       });
   }

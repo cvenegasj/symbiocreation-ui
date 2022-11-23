@@ -55,12 +55,20 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
     color: mat.get-color-from-palette(mat.$pink-palette, 400);
 }
 
+.pink-A200 {
+    color: mat.get-color-from-palette(mat.$pink-palette, A200);
+}
+
 .teal-color-1 {
     color: mat.get-color-from-palette(mat.$teal-palette, A700);
 }
 
 .cyan-color-1 {
     color: mat.get-color-from-palette(mat.$cyan-palette, 600);
+}
+
+.deep-purple-500 {
+    color: mat.get-color-from-palette(mat.$deep-purple-palette, 500);
 }
 
 .pink-bg {
@@ -87,8 +95,30 @@ div.single-stat-summary span.value-3 {
     color: mat.get-color-from-palette(mat.$deep-purple-palette, A200);
 }
 
-.deep-purple-500 {
-    color: mat.get-color-from-palette(mat.$deep-purple-palette, 500);
+// my-symbiocreations component
+
+div.single-stat-my-symbios-1 {
+    background-color: mat.get-color-from-palette(mat.$yellow-palette, A700);
+}
+
+div.single-stat-my-symbios-1 span.label,
+div.single-stat-my-symbios-1 span.value {
+    color: mat.get-color-from-palette(mat.$yellow-palette, A700-contrast);
+}
+
+div.single-stat-my-symbios-2,
+div.single-stat-my-symbios-3,
+div.single-stat-my-symbios-4 {
+    background-color: mat.get-color-from-palette(mat.$teal-palette, 200);
+}
+
+div.single-stat-my-symbios-2 span.label,
+div.single-stat-my-symbios-2 span.value,
+div.single-stat-my-symbios-3 span.label,
+div.single-stat-my-symbios-3 span.value,
+div.single-stat-my-symbios-4 span.label,
+div.single-stat-my-symbios-4 span.value {
+    color: mat.get-color-from-palette(mat.$teal-palette, '200-contrast');
 }
 
 // LINE CHART in admin stats overview

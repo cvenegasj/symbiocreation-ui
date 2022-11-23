@@ -39,6 +39,7 @@ import { LineChartGrowthHistoryComponent } from './line-chart-growth-history/lin
 import { TopSymbiocreationsRankingComponent } from './top-symbiocreations-ranking/top-symbiocreations-ranking.component';
 import { TopUsersRankingComponent } from './top-users-ranking/top-users-ranking.component';
 import { TrendingTopicsIdeasComponent } from './trending-topics-ideas/trending-topics-ideas.component';
+import { RankingUsersPublicComponent } from './ranking-users-public/ranking-users-public.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { TrendingTopicsIdeasComponent } from './trending-topics-ideas/trending-t
     TopSymbiocreationsRankingComponent,
     TopUsersRankingComponent,
     TrendingTopicsIdeasComponent,
+    RankingUsersPublicComponent,
     
   ],
   imports: [

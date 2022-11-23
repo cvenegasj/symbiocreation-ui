@@ -45,9 +45,9 @@ export class UserService {
             );
     }
 
-    // recompute score of a user
-    recomputeScore(idUser: string): Observable<User> {
-        let API_URL = `${this.apiUrl}/users/${idUser}/recompute-score`;
+    // recompute and update score of a user
+    recomputeScoreAndUpdate(idUser: string): Observable<User> {
+        let API_URL = `${this.apiUrl}/users/${idUser}/recompute-score-and-update`;
         return this.http.patch<User>(API_URL, {}, {headers: this.headers})
             .pipe(
                 catchError(this.error)

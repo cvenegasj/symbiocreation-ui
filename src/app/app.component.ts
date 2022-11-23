@@ -3,7 +3,7 @@ import { User } from './models/symbioTypes';
 import { AuthService } from './services/auth.service';
 import { SharedService } from './services/shared.service';
 
-import { concatMap, tap } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 import { UserService } from './services/user.service';
 import { EMPTY } from 'rxjs';
 
@@ -31,16 +31,11 @@ export class AppComponent implements AfterViewChecked, OnInit {
           return isAuthenticated ? this.auth.userProfile$ : EMPTY;
         }),
         concatMap(userProfile => userProfile ? this.userService.getUserByEmail(userProfile.email) : EMPTY),
-        tap((appUser: User) => {
-          if (appUser) {
-            this.userService.recomputeScore(appUser.id).subscribe(appUser => {
-              console.log(`Score of user ${appUser.id} was recomputed`);
-            });
-          }
-        }),
+        concatMap((appUser: User) => appUser ? this.userService.recomputeScoreAndUpdate(appUser.id) : EMPTY),
       ).subscribe((appUser: User) => {
         if (appUser) {
-          console.log("logged in user: " + JSON.stringify(appUser));
+          console.log("Logged in user: " + JSON.stringify(appUser));
+          console.log(`Score of user ${appUser.id} was recomputed`);
 
           this.sharedService.nextAppUser(appUser);
         }

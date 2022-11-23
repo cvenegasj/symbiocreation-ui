@@ -397,6 +397,34 @@ div.single-stat-summary span.value-3 {
     font-weight: 600;
 }
 
+div.single-stat-my-symbios-1,
+div.single-stat-my-symbios-2,
+div.single-stat-my-symbios-3,
+div.single-stat-my-symbios-4 {
+    border-radius: 8px;
+    padding: 10px 15px 7px;
+    height: 65px;
+    width: 180px;
+}
+
+div.single-stat-my-symbios-1 span.label,
+div.single-stat-my-symbios-2 span.label,
+div.single-stat-my-symbios-3 span.label,
+div.single-stat-my-symbios-4 span.label {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+div.single-stat-my-symbios-1 span.value,
+div.single-stat-my-symbios-2 span.value,
+div.single-stat-my-symbios-3 span.value,
+div.single-stat-my-symbios-4 span.value {
+    font-size: 28px;
+    line-height: 50px;
+    font-weight: 600;
+}
+
 div.line-chart-overview-1 {
     border-radius: 10px;
     border-width: 1px;

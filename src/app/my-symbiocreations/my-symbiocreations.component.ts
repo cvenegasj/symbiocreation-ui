@@ -8,6 +8,7 @@ import { UserService } from '../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedService } from '../services/shared.service';
+import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-my-symbiocreations',
@@ -15,6 +16,12 @@ import { SharedService } from '../services/shared.service';
   styleUrls: ['./my-symbiocreations.component.css']
 })
 export class MySymbiocreationsComponent implements OnInit {
+
+  // user stats
+  score: number;
+  totalSymbiocreations: number;
+  totalIdeas: number;
+  totalGroupsAsAmbassador: number;
 
   symbiocreations: Symbiocreation[];
   isModeratorList: boolean[];
@@ -25,6 +32,7 @@ export class MySymbiocreationsComponent implements OnInit {
   constructor(
     private symbioService: SymbiocreationService,
     private userService: UserService,
+    private analyticsService: AnalyticsService,
     private auth: AuthService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
@@ -40,13 +48,20 @@ export class MySymbiocreationsComponent implements OnInit {
 
     this.auth.userProfile$.pipe(
       concatMap(user => this.userService.getUserByEmail(user.email)),
-      concatMap(u => {
-        fetchedUser = u;
-        this.isGridViewOn = u.isGridViewOn;
-        return this.symbioService.countSymbiocreationsByUser(u.id);
+      concatMap(appUser => {
+        fetchedUser = appUser;
+        this.isGridViewOn = appUser.isGridViewOn;
+        // return this.symbioService.countSymbiocreationsByUser(u.id);
+        return this.analyticsService.getCountsSummaryUser(appUser.id);
       }),
-      concatMap(count => {
-        this.totalCount = count;
+      concatMap(countsMap => {
+        this.totalCount = countsMap.symbiocreations;
+
+        this.score = countsMap.score;
+        this.totalSymbiocreations = countsMap.symbiocreations;
+        this.totalIdeas = countsMap.ideas;
+        this.totalGroupsAsAmbassador = countsMap.groupsAsAmbassador;
+
         return this.symbioService.getMySymbiocreations(fetchedUser.id, 0); // first page
       }),
     ).subscribe(

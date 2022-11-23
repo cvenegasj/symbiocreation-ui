@@ -10,6 +10,7 @@ import { CreateSymbioComponent } from './create-symbio/create-symbio.component';
 import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/edit-symbiocreation-detail.component';
 import { StatsOverviewComponent } from './stats-overview/stats-overview.component';
 import { MySymbiocreationsComponent } from './my-symbiocreations/my-symbiocreations.component';
+import { RankingUsersPublicComponent } from './ranking-users-public/ranking-users-public.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard/my-symbios', pathMatch: 'full' },
@@ -20,6 +21,7 @@ const routes: Routes = [
     ]
   },
   { path: 'explore', component: ExploreComponent },
+  { path: 'ranking', component: RankingUsersPublicComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
   { path: 'symbiocreation/:id', component: SymbiocreationComponent, 
     children: [
@@ -28,7 +30,7 @@ const routes: Routes = [
   },
   { path: 'create', component: CreateSymbioComponent, canActivate: [AuthGuard] },
   { path: 'edit/:id', component: EditSymbiocreationDetailComponent },
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: 'dashboard/my-symbios' }
 ];
 
 @NgModule({

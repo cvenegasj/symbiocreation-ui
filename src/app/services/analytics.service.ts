@@ -18,39 +18,52 @@ export class AnalyticsService {
 
     // get total current counts of symbiocreations, users, and ideas
     getCountsSummary(): Observable<number> {
-        let API_URL = `${this.apiUrl}/analytics/counts-summary`;
+        let API_URL = `${this.apiUrl}/analytics/counts-summary-admin`;
         return this.http.get<number>(API_URL);
     }
 
     // get ordered array of objects with all dates and number of symbios created on each date
     getSymbioCountsDaily(): Observable<any> {
-        let API_URL = `${this.apiUrl}/analytics/symbio-counts-daily-chart`;
+        let API_URL = `${this.apiUrl}/analytics/symbio-counts-daily-chart-admin`;
         return this.http.get<any>(API_URL);
     }
 
     // get ordered array of objects with all dates and number of users created on each date
     getUserCountsDaily(): Observable<any> {
-        let API_URL = `${this.apiUrl}/analytics/user-counts-daily-chart`;
+        let API_URL = `${this.apiUrl}/analytics/user-counts-daily-chart-admin`;
         return this.http.get<any>(API_URL);
     }
 
     // get AWS Comprehend results of topic modeling with ideas data
     getTrendingTopicsIdeas(): Observable<any> {
-        let API_URL = `${this.apiUrl}/analytics/trending-topics-ideas`;
+        let API_URL = `${this.apiUrl}/analytics/trending-topics-ideas-admin`;
         return this.http.get<any>(API_URL);
     }
 
     // get ordered array of objects with ranked symbiocreations
     getTopSymbiocreations(): Observable<any> {
-        let API_URL = `${this.apiUrl}/analytics/top-symbiocreations`;
+        let API_URL = `${this.apiUrl}/analytics/top-symbiocreations-admin`;
         return this.http.get<any>(API_URL);
     }
 
-    // get ordered array of objects with ranked users
+    // get ordered array of objects with ranked users (admin access)
     getTopUsers(): Observable<any> {
-        let API_URL = `${this.apiUrl}/analytics/top-users`;
+        let API_URL = `${this.apiUrl}/analytics/top-users-admin`;
         return this.http.get<any>(API_URL);
     }
+
+    // get ordered array of objects with ranked users (public access)
+    getUsersRankingPublic(): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/ranking-users-public`;
+        return this.http.get<any>(API_URL);
+    }
+
+    getCountsSummaryUser(userId: string): Observable<any> {
+        let API_URL = `${this.apiUrl}/analytics/counts-summary-user/${userId}`;
+        return this.http.get<any>(API_URL);
+    }
+
+    
 
 
     // Handle Errors 
