@@ -14,10 +14,10 @@
     </mat-menu>
 
     <button mat-icon-button 
-        [matTooltip]="sidenav.isOpenInFullscreen ? 'Cerrar pantalla completa' : 'Abrir en pantalla completa'" 
+        [matTooltip]="sidenavService.isOpenInFullscreen ? 'Cerrar pantalla completa' : 'Abrir en pantalla completa'" 
         matTooltipPosition="above"
         (click)="toggleFullscreen()">
-        <mat-icon>{{sidenav.isOpenInFullscreen ? 'close_fullscreen' : 'open_in_full'}}</mat-icon>
+        <mat-icon>{{sidenavService.isOpenInFullscreen ? 'close_fullscreen' : 'open_in_full'}}</mat-icon>
     </button>
 
     <button mat-icon-button (click)="closeIdeaDetail()">
@@ -25,7 +25,7 @@
     </button>
 </mat-toolbar>
 
-<div [style.padding]="sidenav.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
+<div [style.padding]="sidenavService.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
     <div *ngIf="!node?.idea">
         <p class="centered gray-700 font-15">
             No hay ninguna idea registrada.
@@ -44,8 +44,8 @@
             <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linkify"></p>
         </div>
 
-        <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0" [fxLayout]="sidenav.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
-            <div *ngFor="let publicId of node.idea.imgPublicIds" [fxFlex]="sidenav.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenav.isOpenInFullscreen ? '10px' : '0'">
+        <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0" [fxLayout]="sidenavService.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
+            <div *ngFor="let publicId of node.idea.imgPublicIds" [fxFlex]="sidenavService.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenavService.isOpenInFullscreen ? '10px' : '0'">
                 <cl-image [public-id]="publicId" style="width: 100%;"></cl-image>
             </div>
         </div>
@@ -83,7 +83,7 @@
         <span>{{node.idea.comments ? node.idea.comments.length : '0' }} comentarios</span>
 
         <!-- Visible to logged-in users -->
-        <div *ngIf="auth.userProfile$ | async as profile" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+        <div *ngIf="auth.userProfile$ | async as profile" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 10px 15px;">
                 <cl-image [public-id]="profile.picture" type="fetch" class="img-2">
                     <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
@@ -101,7 +101,7 @@
             </div>
         </div>
 
-        <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenav.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+        <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 0 15px;">
                 <cl-image [public-id]="comment.author.pictureUrl" type="fetch" class="img-2">
                     <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>

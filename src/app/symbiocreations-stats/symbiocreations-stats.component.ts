@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { AnalyticsService } from '../services/analytics.service';
-import { forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, pipe, concat } from 'rxjs';
+import { SidenavService } from '../services/sidenav.service';
 
 @Component({
   selector: 'app-symbiocreations-stats',
@@ -9,7 +10,7 @@ import { forkJoin } from 'rxjs';
 })
 export class SymbiocreationsStatsComponent implements OnInit {
 
-  @Input() symbiocreationId: string;
+  private _symbiocreationId = new BehaviorSubject<string>(null);
 
   totalUsers: number;
   totalIdeas: number;
@@ -19,22 +20,41 @@ export class SymbiocreationsStatsComponent implements OnInit {
 
   constructor(
     private analyticsService: AnalyticsService,
+    public sidenavService: SidenavService,
   ) { }
 
   ngOnInit(): void {
-    forkJoin({
-      countsSummary: this.analyticsService.getCountsSummarySymbiocreation(this.symbiocreationId),
-      commonTerms: this.analyticsService.getCommonTermsInSymbiocreation(this.symbiocreationId),
-      usersRanking: this.analyticsService.getUsersRankingSymbiocreation(this.symbiocreationId)
-    }).subscribe({
-      next: response => {
-        this.totalUsers = response.countsSummary.users;
-        this.totalIdeas = response.countsSummary.ideas;
-
-        this.commonTermsRanking = response.commonTerms;
-        this.usersRanking = response.usersRanking;
-      }
+    this._symbiocreationId.subscribe(symbiocreationId => {
+      forkJoin({
+        countsSummary: this.analyticsService.getCountsSummarySymbiocreation(symbiocreationId),
+        commonTerms: this.analyticsService.getCommonTermsInSymbiocreation(symbiocreationId),
+        usersRanking: this.analyticsService.getUsersRankingSymbiocreation(symbiocreationId)
+      }).subscribe({
+        next: response => {
+          this.totalUsers = response.countsSummary.users;
+          this.totalIdeas = response.countsSummary.ideas;
+  
+          this.commonTermsRanking = response.commonTerms;
+          this.usersRanking = response.usersRanking;
+        }
+      });
     });
   }
 
+  closeSidenavAnalytics() {
+    from(this.sidenavService.closeSidenavAnalytics())
+      .subscribe();
+  }
+
+  // change data to use getter and setter
+	@Input()
+	set symbiocreationId(value) {
+		// set the latest value for _symbiocreationId BehaviorSubject
+		this._symbiocreationId.next(value);
+	};
+
+	get symbiocreationId() {
+		// get the latest value from _data BehaviorSubject
+		return this._symbiocreationId.getValue();
+	}
 }

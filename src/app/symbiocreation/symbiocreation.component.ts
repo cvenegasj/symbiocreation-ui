@@ -79,6 +79,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     this.sidenavService.setSidenav(this.sidenav);
+    this.sidenavService.setSidenavAnalytics(this.sidenavAnalytics);
   }
 
   ngOnDestroy() {

@@ -8,8 +8,14 @@ export class SidenavService {
     sidenav: MatSidenav;
     isOpenInFullscreen: boolean = false;
 
+    sidenavAnalytics: MatSidenav;
+
     setSidenav(sidenav: MatSidenav) {
         this.sidenav = sidenav;
+    }
+
+    setSidenavAnalytics(sidenavAnalytics: MatSidenav) {
+        this.sidenavAnalytics = sidenavAnalytics;
     }
 
     open() {
@@ -18,6 +24,10 @@ export class SidenavService {
 
     close() {
         return this.sidenav.close();
+    }
+
+    closeSidenavAnalytics() {
+        return this.sidenavAnalytics.close();
     }
 
     toggle(): void {

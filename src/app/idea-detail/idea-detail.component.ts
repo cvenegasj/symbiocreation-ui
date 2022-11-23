@@ -32,7 +32,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
-    public sidenav: SidenavService,
+    public sidenavService: SidenavService,
     private symbioService: SymbiocreationService,
     private userService: UserService,
     public auth: AuthService,
@@ -49,7 +49,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.sidenav.open(), 0); // to allow sidenav to be injected properly
+    setTimeout(() => this.sidenavService.open(), 0); // to allow sidenav to be injected properly
   }
 
   subscribeToParams() {
@@ -64,11 +64,11 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   toggleFullscreen() {
-    this.sidenav.toggleFullscreen();
+    this.sidenavService.toggleFullscreen();
   }
 
   closeIdeaDetail() {
-    const closed$ = from(this.sidenav.close());
+    const closed$ = from(this.sidenavService.close());
     closed$.subscribe(res => {
       this.router.navigate(['.'], {relativeTo: this.route.parent});
       //this.sharedService.nextDeselectedNodes([this.node]);
