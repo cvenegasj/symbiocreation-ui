@@ -7,9 +7,9 @@ import { Symbiocreation } from '../models/symbioTypes';
 @Injectable({
     providedIn: 'root',
 })
-export class SSEService {
+export class SSEService { // Not used. Kept only for future implementations guidance
 
-    private symbioSubject$ = new BehaviorSubject<Symbiocreation>(null);
+    /* private symbioSubject$ = new BehaviorSubject<Symbiocreation>(null);
     symbio$ = this.symbioSubject$.asObservable();
 
     private evtSource: EventSource;
@@ -33,6 +33,6 @@ export class SSEService {
     stopListening() {
         if (this.evtSource) this.evtSource.close();
         this.evtSource = null;
-    }
+    } */
 
 }

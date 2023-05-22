@@ -11,12 +11,16 @@ import { EditSymbiocreationDetailComponent } from './edit-symbiocreation-detail/
 import { StatsOverviewComponent } from './stats-overview/stats-overview.component';
 import { MySymbiocreationsComponent } from './my-symbiocreations/my-symbiocreations.component';
 import { RankingUsersPublicComponent } from './ranking-users-public/ranking-users-public.component';
+import { MyOnedotsComponent } from './my-onedots/my-onedots.component';
+import { CreateOnedotComponent } from './create-onedot/create-onedot.component';
+import { OnedotComponent } from './onedot/onedot.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard/my-symbios', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],
     children: [
       { path: 'my-symbios', component: MySymbiocreationsComponent },
+      { path: 'my-onedots', component: MyOnedotsComponent },
       { path: 'stats-overview', component: StatsOverviewComponent },
     ]
   },
@@ -28,8 +32,10 @@ const routes: Routes = [
       { path: 'idea/:idNode', component: IdeaDetailComponent }
     ] 
   },
+  { path: 'onedot/:id', component: OnedotComponent },
   { path: 'create', component: CreateSymbioComponent, canActivate: [AuthGuard] },
   { path: 'edit/:id', component: EditSymbiocreationDetailComponent },
+  { path: 'create-onedot', component: CreateOnedotComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'dashboard/my-symbios' }
 ];
 

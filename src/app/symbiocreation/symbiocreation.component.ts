@@ -83,13 +83,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    //this.sseSubscription.unsubscribe();
-    //this.sseService.stopListening();
     this.rSocketService.disconnect();
     console.log('ngOnDestroy');
   }
   
-  getData() {
+  getData(): void {
     this.sharedService.nextIsLoading(true);
     const id = this.route.snapshot.paramMap.get('id');
 

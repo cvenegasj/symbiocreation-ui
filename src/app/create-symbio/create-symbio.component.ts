@@ -68,7 +68,7 @@ export class CreateSymbioComponent implements OnInit {
     this.detailsOpened = false;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.model.participants = [];
     this.model.graph = [];
 

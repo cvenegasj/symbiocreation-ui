@@ -41,6 +41,10 @@ import { TopUsersRankingComponent } from './top-users-ranking/top-users-ranking.
 import { TrendingTopicsIdeasComponent } from './trending-topics-ideas/trending-topics-ideas.component';
 import { RankingUsersPublicComponent } from './ranking-users-public/ranking-users-public.component';
 import { SymbiocreationsStatsComponent } from './symbiocreations-stats/symbiocreations-stats.component';
+import { CreateOnedotComponent } from './create-onedot/create-onedot.component';
+import { MyOnedotsComponent } from './my-onedots/my-onedots.component';
+import { OnedotComponent } from './onedot/onedot.component';
+import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +76,10 @@ import { SymbiocreationsStatsComponent } from './symbiocreations-stats/symbiocre
     TrendingTopicsIdeasComponent,
     RankingUsersPublicComponent,
     SymbiocreationsStatsComponent,
+    CreateOnedotComponent,
+    MyOnedotsComponent,
+    OnedotComponent,
+    OnedotGridComponent,
     
   ],
   imports: [

@@ -1,0 +1,16 @@
+<div fxLayout="row" style="height: 100%; padding: 40px 20px 20px;">
+    <div fxFlex="25" *ngIf="participant">
+        <p class="centered gray-700 font-15">
+          Selecciona un color
+        </p>
+        <div class="onedot-color-picker">
+          <span *ngFor="let colorCode of paletteColors; index as i" class="color" 
+            [style.background-color]="colorCode" (click)="colorSelected = i"
+            [class.selected]="i === colorSelected"></span>
+        </div>
+    </div>
+
+    <div #container fxFlex="75">
+
+    </div>
+</div>

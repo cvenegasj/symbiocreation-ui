@@ -1,0 +1,98 @@
+<mat-sidenav-container autosize hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
+
+    <mat-sidenav #sidenav position="end" [style.width]="sidenavService.isOpenInFullscreen ? '100%' : '470px'">
+        <router-outlet></router-outlet>
+    </mat-sidenav>
+
+    <section fxLayout="row" style="height: 100%;">
+
+        <!-- Main area -->
+        <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column">
+
+            <div class="mat-elevation-z3" style="padding: 9px; background-color: white;">
+                <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
+
+                    <span>{{oneDot?.name}}</span>
+
+                    <!-- <button *ngIf="participant || appUser?.role === 'SUPER_ADMIN'"
+                        mat-icon-button 
+                        [matMenuTriggerFor]="mainMenu"
+                        style="position: relative; top: -4px; left: 2px;">
+                        <mat-icon class="gray-600">more_vert</mat-icon>
+                    </button> -->
+
+                    <!-- <mat-menu #mainMenu="matMenu">
+                        <button mat-menu-item 
+                            (click)="leaveSymbiocreation()">
+                            <mat-icon class="gray-600">person_remove</mat-icon>
+                            Darme de baja
+                        </button>
+                        <button mat-menu-item 
+                            (click)="downloadParticipantsData()">
+                            <mat-icon class="gray-600">download</mat-icon>
+                            Descargar datos de participantes
+                        </button>
+                        <button mat-menu-item 
+                            (click)="downloadAllData()">
+                            <mat-icon class="gray-600">download</mat-icon>
+                            Descargar todos los datos
+                        </button>
+                    </mat-menu> -->
+                </h2>
+
+                <div *ngIf="!participant">
+                    <p class="centered">Participa de este One Dot!</p>
+                    <div style="text-align: center;">
+                        <button #btnParticipate mat-raised-button color="accent" (click)="joinOneDot(btnParticipate)">
+                            <span>Participar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div *ngIf="oneDot" style="height: 100%;">
+                <app-onedot-grid
+                    [oneDot]="oneDot"
+                    [participant]="participant"
+                    (gridUpdated)="onGridUpdated($event)">
+                </app-onedot-grid>
+            </div>
+        </div>
+
+        <!-- Side area -->
+        <div fxFlex="23" fxFlex.lt-md="30" class="mat-elevation-z1 container-scrollable">
+
+            <!-- Participantes -->
+            <mat-expansion-panel expanded class="mat-elevation-z0">
+                <mat-expansion-panel-header class="accent-bg">
+                    <mat-panel-title>
+                        Participantes
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{oneDot?.participants.length}}
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div>
+                    <mat-form-field appearance="standard" style="width: 100%;">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput placeholder="Buscar participante..." [(ngModel)]="listFilter1" (keyup.esc)="listFilter1 = ''">
+                    </mat-form-field>
+                </div>
+                
+                <mat-list id="participantsSideList">
+                    <mat-list-item *ngFor="let p of filteredParticipants">
+                        <div style="display: inline; width: 205px;">
+                            <span *ngIf="p.user.firstName && p.user.lastName" class="font-13 list-element-ellipsed">{{p.user.firstName}} {{p.user.lastName}}</span>
+                            <span *ngIf="!(p.user.firstName && p.user.lastName)" class="font-13 list-element-ellipsed">{{p.user.name}}</span>
+
+                            <span *ngIf="p.u_id === participant?.u_id" class="font-13 gray-600" style="margin-left: 5px;">(tú)</span>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+            </mat-expansion-panel>
+        </div>
+
+    </section>
+
+</mat-sidenav-container>
