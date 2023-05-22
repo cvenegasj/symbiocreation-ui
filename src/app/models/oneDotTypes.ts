@@ -6,6 +6,9 @@ export interface OneDot {
     grid: number[][];
     participants: OneDotParticipant[];
     screenshots: number[][][]; 
+
+    createdAt?: Date;
+    lastModifiedAt?: Date;
 }
 
 export interface OneDotParticipant {

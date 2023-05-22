@@ -58,12 +58,13 @@
         </div>
     </div>
 
-    
     <app-list-symbios-user *ngIf="!isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-list-symbios-user>
     <app-grid-symbios-user *ngIf="isGridViewOn" [symbiocreations]="symbiocreations" [isModeratorList]="isModeratorList"></app-grid-symbios-user> 
 
     <div class="container-90" style="margin-top: 15px;">
-        <mat-paginator [length]="totalCount"
+        <mat-paginator 
+              style="background-color: inherit !important;"
+              [length]="totalCount"
               [pageSize]="12"
               [hidePageSize]="true"
               (page)="onPageFired($event)">

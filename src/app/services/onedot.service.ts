@@ -50,6 +50,17 @@ export class OneDotService {
             );
     }
 
+    // find user's one dot games
+    // TODO: shouldn't include any userId 
+    getMyOneDots(userId: string, page: number): Observable<OneDot[]> {
+        let API_URL = `${this.apiUrl}/onedot/getMine/${userId}/${page}`;
+        return this.http.get<OneDot[]>(API_URL);
+    }
+
+    countOneDotsByUser(userId: string): Observable<number> {
+        let API_URL = `${this.apiUrl}/onedot/countByUser/${userId}`;
+        return this.http.get<number>(API_URL);
+    }
 
 
     // Handle Errors 

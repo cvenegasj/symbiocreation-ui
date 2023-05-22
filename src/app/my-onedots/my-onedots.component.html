@@ -11,15 +11,75 @@
         </div>
     </div>
 
+    <div *ngIf="oneDots?.length === 0" class="container-90 centered gray-600" style="margin-top: 15px;">
+        Aún no tienes sesiones de One Dot.
+    </div>
     
-    <!-- <app-list-symbios-user *ngIf="!isGridViewOn" [oneDots]="oneDots"></app-list-symbios-user>  -->
+    <div class="container-90">
+            
+        <mat-list *ngIf="oneDots?.length > 0">
+            <h3 matSubheader>
+                <span fxFlex></span>
+                <span fxFlex="15">Número de participantes</span>
+                <span fxFlex="15">Última modificación</span>
+                <span fxFlex="10px"></span>
+            </h3>
+    
+            <mat-list-item *ngFor="let o of oneDots; index as i; last as last" style="margin-top: 70px; margin-bottom: 50px;">
+               <div matLine>
+                    <a [routerLink]="['/onedot/', o.id]" class="bold font-18 teal-700" style="max-width: 55%; padding-left: 5px;">
+                        {{o.name}}
+                    </a>
+        
+                    <span fxFlex></span>
+                    
+                    <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{o.participants.length}} {{o.nparticipants === 1 ? 'participante' : 'participantes'}}</span>
+                    <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{o.lastModifiedAt | date: 'd MMM y'}}</span>
+                    
+                    <!-- <mat-menu #simbioMenu="matMenu">
+                        <button mat-menu-item (click)="openSymbioDetailDialog(s, isModeratorList[i])">
+                            <mat-icon>info</mat-icon>
+                            <span>Ver más información</span>
+                        </button>
+                        <button *ngIf="isModeratorList[i]" mat-menu-item (click)="changeNameSymbiocreation(s)">
+                            <mat-icon>text_fields</mat-icon>
+                            <span>Cambiar nombre</span>
+                        </button>
+                        <button *ngIf="isModeratorList[i]" mat-menu-item (click)="editSymbiocreationInfo(s)">
+                            <mat-icon>edit</mat-icon>
+                            <span>Editar evento</span>
+                        </button>
+                        <button *ngIf="isModeratorList[i]" mat-menu-item (click)="deleteSymbiocreation(s.id)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Eliminar</span>
+                        </button>
+                    </mat-menu> -->
+               </div>
+    
+               <div matLine style="padding-bottom: 50px;">
+                   <mat-form-field fxFlex="50" style="padding-left: 5px;">
+                        <mat-label>Link para compartir</mat-label>
+                        <input matInput type="text" value="{{environment.localhost}}/onedot/{{o.id}}" readonly>
+                        <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/onedot/{{o.id}}">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                   </mat-form-field>
+               </div>
+    
+               <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+                
+            </mat-list-item>
+         </mat-list>
+    </div>
 
-    <!-- <div class="container-90" style="margin-top: 15px;">
-        <mat-paginator [length]="totalCount"
+    <div class="container-90" style="margin-top: 15px;">
+        <mat-paginator
+              style="background-color: inherit !important;"
+              [length]="oneDotCount"
               [pageSize]="12"
               [hidePageSize]="true"
               (page)="onPageFired($event)">
         </mat-paginator>
-    </div> -->
+    </div>
 
 </div>

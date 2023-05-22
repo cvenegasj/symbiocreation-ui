@@ -35,7 +35,6 @@ export class MySymbiocreationsComponent implements OnInit {
     private analyticsService: AnalyticsService,
     private auth: AuthService,
     public sharedService: SharedService,
-    private _snackBar: MatSnackBar,
     public dialog: MatDialog
     ) {
     //this.symbiocreations = [];
@@ -126,5 +125,4 @@ export class MySymbiocreationsComponent implements OnInit {
       }
     );
   }
-
 }
