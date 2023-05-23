@@ -139,11 +139,14 @@ export class OnedotGridComponent implements OnInit, AfterViewInit, OnChanges {
     this.wrapper
         .attr("width", this.dimensions.width)
         .attr("height", this.dimensions.height);
+    this.removeGridContainer();
+    this.createGridContainer();
+    this.drawGrid();
   }
 
   updateDimensions() {
     const width = this.container.nativeElement.offsetWidth;
-    const height = this.container.nativeElement.offsetHeight; 
+    const height = this.container.nativeElement.offsetHeight;
 
     this.dimensions.width = width;
     this.dimensions.height = height;

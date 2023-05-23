@@ -7,7 +7,7 @@
     <section fxLayout="row" style="height: 100%;">
 
         <!-- Main area -->
-        <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column">
+        <div fxFlex="77" fxFlex.lt-md="70">
 
             <div class="mat-elevation-z3" style="padding: 9px; background-color: white;">
                 <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
@@ -41,7 +41,7 @@
                 </h2>
 
                 <div *ngIf="!participant">
-                    <p class="centered">Participa de este One Dot!</p>
+                    <p class="centered">Participa de este simbio game!</p>
                     <div style="text-align: center;">
                         <button #btnParticipate mat-raised-button color="accent" (click)="joinOneDot(btnParticipate)">
                             <span>Participar</span>

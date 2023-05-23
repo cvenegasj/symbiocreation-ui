@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from '../services/shared.service';
 
 @Component({
   selector: 'app-navlist',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavlistComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public sharedService: SharedService
+  ) { }
 
   ngOnInit(): void {
   }

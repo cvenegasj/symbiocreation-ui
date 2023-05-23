@@ -1,6 +1,6 @@
-<div fxLayout="row" style="height: 100%; padding: 40px 20px 20px;">
+<div fxLayout="row" fxLayout.lt-md="column" style="height: 100%; padding: 30px 20px 20px;">
     <div fxFlex="25" *ngIf="participant">
-        <p class="centered gray-700 font-15">
+        <p fxHide.lt-md class="centered gray-700 font-15">
           Selecciona un color
         </p>
         <div class="onedot-color-picker">
@@ -11,6 +11,5 @@
     </div>
 
     <div #container fxFlex="75">
-
     </div>
 </div>

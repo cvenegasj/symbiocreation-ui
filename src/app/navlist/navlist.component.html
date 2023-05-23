@@ -5,10 +5,13 @@
     </a>
     <a mat-list-item routerLink="/dashboard/my-onedots">
         <mat-icon style="margin-right: 20px;">interests</mat-icon>
-        Mis One Dots
+        Mis Simbio Games
     </a>
-    <a mat-list-item routerLink="/dashboard/stats-overview">
-        <mat-icon style="margin-right: 20px;">bar_chart</mat-icon>
-        Stats Generales
-    </a>
+    <ng-container *ngIf="sharedService.appUser$ | async as appUser">
+        <a *ngIf="appUser?.role === 'SUPER_ADMIN'"
+            mat-list-item routerLink="/dashboard/stats-overview">
+            <mat-icon style="margin-right: 20px;">bar_chart</mat-icon>
+            Stats Generales
+        </a>
+    </ng-container>
 </mat-nav-list>
