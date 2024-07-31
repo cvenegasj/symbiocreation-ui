@@ -25,6 +25,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatChipsModule,
     MatButtonModule,
     MatMenuModule,
-    // MatSidenavModule,
+    MatSidenavModule,
     MatExpansionModule,
     MatInputModule,
     MatSnackBarModule,
@@ -65,7 +66,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatChipsModule,
     MatButtonModule,
     MatMenuModule,
-    // MatSidenavModule,
+    MatSidenavModule,
     MatExpansionModule,
     MatInputModule,
     MatSnackBarModule,
