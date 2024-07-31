@@ -7,7 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSidenavModule } from '@angular/material/sidenav';
+// import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -37,7 +37,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatChipsModule,
     MatButtonModule,
     MatMenuModule,
-    MatSidenavModule,
+    // MatSidenavModule,
     MatExpansionModule,
     MatInputModule,
     MatSnackBarModule,
@@ -65,7 +65,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatChipsModule,
     MatButtonModule,
     MatMenuModule,
-    MatSidenavModule,
+    // MatSidenavModule,
     MatExpansionModule,
     MatInputModule,
     MatSnackBarModule,
