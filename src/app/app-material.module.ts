@@ -18,7 +18,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-//import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -48,7 +48,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     ClipboardModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    //MatMomentDateModule,
+    MatMomentDateModule,
     MatNativeDateModule,
     MatCardModule,
     MatButtonToggleModule,
@@ -76,7 +76,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     ClipboardModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    //MatMomentDateModule,
+    MatMomentDateModule,
     MatNativeDateModule,
     MatCardModule,
     MatButtonToggleModule,
