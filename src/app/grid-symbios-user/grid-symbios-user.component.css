@@ -1,0 +1,14 @@
+
+
+
+@media only screen and (max-width: 768px) {
+
+    .container-symbios{
+        justify-content: center !important;
+    }
+
+    mat-card{
+        margin-right: 0px !important;
+    }
+
+}

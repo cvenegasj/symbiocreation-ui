@@ -1,0 +1,36 @@
+.dashboard-container{
+    padding: 15px;
+    flex-direction: row !important;
+    box-sizing: border-box;
+    display: flex;
+}
+
+app-navlist{
+    width: 220px;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .dashboard-container{
+        flex-direction: column !important;
+    }
+
+    app-navlist{
+        width: inherit;
+
+        mat-nav-list{
+            display: flex;
+            a{
+                .mat-list-item-content{
+                    padding:0px !important;
+                    padding-left: 0;
+                    padding-right: 0;
+                }
+            }
+        }
+
+        
+    }
+
+}

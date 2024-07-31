@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, HostListener  } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
@@ -29,7 +29,7 @@ import { saveAs } from 'file-saver';
 @Component({
   selector: 'app-symbiocreation',
   templateUrl: './symbiocreation.component.html',
-  styleUrls: ['./symbiocreation.component.css']
+  styleUrls: ['./symbiocreation.component.scss']
 })
 export class SymbiocreationComponent implements OnInit, OnDestroy {
 
@@ -55,6 +55,15 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   _listFilter2: string = '';
   filteredGroups: Node[];
 
+  isVisible: boolean = true;
+  sliderStrengthValue: number = 160;
+  sliderDistanceValue: number = 40;
+  sliderOrderValue: number = 4;
+
+  isModalGroupsOpen = false;
+  isModalIdeasOpen = false;
+  isModalOptionsOpen = false;
+
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
@@ -75,6 +84,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.sharedService.appUser$.subscribe(appUser => this.appUser = appUser);
 
     this.getData();
+
+    // this.toggleModalIdeas();
   }
 
   ngAfterViewInit() {
@@ -95,6 +106,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     .pipe(
       tap(s => {
         this.symbiocreation = s;
+        // console.log("this.symbiocreation",this.symbiocreation)
         this.groups = this.getGroups();
         this.filteredParticipants = this.symbiocreation.participants;
         this.filteredGroups = this.groups;
@@ -107,6 +119,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           if (p.user.email === usrProfile.email) {
             this.participant = p;
             this.myAncestries = this.getMyAncestriesCompleted();
+            // console.log("this.myAncestries",this.myAncestries)
             break;
           }
         }
@@ -698,6 +711,67 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   toggleGroupSelectorVisibility(node: Node) {
     const el = document.getElementById(node.id);
     el.hidden = !el.hidden;
+  }
+
+  sliderStrengthChange(){
+    // console.log("this.sliderValue",this.sliderValue)
+  }
+
+  sliderDistanceChange(){
+    // console.log("this.sliderValue",this.sliderValue)
+  }
+
+  sliderOrderChange(){
+    // console.log("this.sliderValue",this.sliderValue)
+  }
+
+  toggleModalIdeas() {
+    this.isModalIdeasOpen = !this.isModalIdeasOpen;
+  }
+
+  closeModalIdeas(event: MouseEvent) {
+    this.isModalIdeasOpen = false;
+  }
+
+  stopPropagation(event: MouseEvent) {
+    event.stopPropagation(); // Esto evita que el clic dentro del modal se propague al fondo
+  }
+
+  toggleModalGroups() {
+    this.isModalGroupsOpen = !this.isModalGroupsOpen;
+  }
+
+  closeModalGroups(event: MouseEvent) {
+    this.isModalGroupsOpen = false;
+  }
+
+  toggleModalOptions() {
+    this.isModalOptionsOpen = !this.isModalOptionsOpen;
+  }
+
+  closeModalOptions(event: MouseEvent) {
+    this.isModalOptionsOpen = false;
+  }
+
+
+  toggleGroupSelectorVisibility2(node: Node) {
+    const el = document.getElementById(node.id+'@');
+    el.hidden = !el.hidden;
+  }
+
+  // creates a new parent node for the node with id nodeId
+  openNewParentGroupDialog2(nodeId: string) {
+    const dialogRef = this.dialog.open(NewGroupDialogComponent, {
+      width: '350px'
+    });
+
+    dialogRef.afterClosed().subscribe(name => {
+      if (name) {
+        const nextLevelNode: Node = {name: name, children: []};
+        this.symbioService.createNextLevelGroup(this.symbiocreation.id, nodeId, nextLevelNode)
+          .subscribe();
+      }
+    });
   }
 
 }

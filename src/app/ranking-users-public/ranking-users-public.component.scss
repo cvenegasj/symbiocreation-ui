@@ -1,0 +1,55 @@
+.container-general{
+    padding: 55px 25px;
+
+    .list-item-ranking{
+        padding-top: 0px;
+        padding-bottom: 20px;
+
+        .list-item-ranking-container{
+            // padding-top: 20px;
+            padding-bottom: 20px !important;
+            .container-number{
+                width: 70px;
+            }
+        }
+    }
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .container-general{
+        padding-left: 0px;
+        padding-right: 0px;
+
+        .container-header{
+            padding-left: 25px;
+        }
+
+        .list-ranking{
+            .list-item-ranking{
+                padding-top: 0px;
+                padding-bottom: 0px;
+                height: inherit;
+
+                .list-item-ranking-container{
+                    padding-top: 20px;
+                    padding-bottom: 20px;
+
+                    .container-number{
+                        width: 50px;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+                    }
+
+                    .container-names{
+                        display: flex; flex-direction: column;word-break: break-all;
+                    }
+                }
+            }
+        }
+
+    }
+
+}

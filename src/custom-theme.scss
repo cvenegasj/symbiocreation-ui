@@ -47,6 +47,11 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
     fill-opacity: 0.2;
 }
 
+.bbox-name2 {
+    fill: white;
+    fill-opacity: 0;
+}
+
 .accent-bg, .accent-bg:hover {
     background-color: mat.get-color-from-palette($symbiocreation-ui-accent, darker) !important;
 }
@@ -140,3 +145,12 @@ path.line-2 {
     fill: none;
     stroke: mat.get-color-from-palette(mat.$cyan-palette, 500);
 }
+
+
+circle{
+    transition: transform 0.3s ease !important;
+  }
+  
+  .hover{
+    transform: scale(1.25) !important;
+  }

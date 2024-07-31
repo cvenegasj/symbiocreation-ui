@@ -1,6 +1,11 @@
 <div style="padding: 15px;">
-    <div class="container-80" style="margin-top: 40px; margin-bottom: 15px;">
+    <div class="container-80 title-container" style="margin-top: 40px; margin-bottom: 15px;">
         <h2 class="font-26 bolder gray-900" style="display: inline-block;">Explora</h2>
+        <mat-paginator [length]="totalCount"
+              [pageSize]="20"
+              [hidePageSize]="true"
+              (page)="onPageFired($event)">
+        </mat-paginator>
     </div>
 
     <div class="container-80">

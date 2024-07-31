@@ -15,6 +15,7 @@ import { EMPTY } from 'rxjs';
 export class AppComponent implements AfterViewChecked, OnInit {
 
   title: string = 'Simbiocreación';
+  toggleVisible: boolean = false;
   
   constructor(
     public auth: AuthService,
@@ -44,5 +45,9 @@ export class AppComponent implements AfterViewChecked, OnInit {
 
   ngAfterViewChecked(): void {
     this.cdr.detectChanges();
+  }
+
+  toggleMenu() {
+    
   }
 }

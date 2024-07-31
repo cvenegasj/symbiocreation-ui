@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Renderer2 } from '@angular/core';
+import { fromEvent, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SidenavService } from '../services/sidenav.service';
 import * as d3 from "d3";
@@ -14,7 +16,7 @@ import { Participant } from '../models/symbioTypes';
 @Component({
   selector: 'app-graph',
   templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.css']
+  styleUrls: ['./graph.component.scss']
 })
 export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, OnChanges {
 
@@ -34,6 +36,9 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Input() data: Node[];
   @Input() participant: Participant;
   @Input() myAncestries: Node[][];
+  @Input() currentStrength: number = 160;
+  @Input() currentDistance: number = 40;
+  @Input() currentOrder: number = 4;
 
   groups: Node[];
   dimensions: DimensionsType;
@@ -56,7 +61,14 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   linkGroup: any;
   textGroup: any;
 
+  @HostListener('window:resize', ['$event'])
+
   @ViewChild('container', {static: true}) container: ElementRef;
+
+
+  private selectedNode = null;
+  private line = null;
+  private selectedNodeCoords = { x: 0, y: 0 };
 
   constructor(
     private sidenav: SidenavService,
@@ -85,6 +97,10 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.data = [];
   }
 
+  public innerWidth: number;
+  public innerHeight: number;
+  private resizeSubscription: Subscription;
+
   ngOnChanges(changes: SimpleChanges): void {
     // remove, create, run
     if (changes['data'] && !changes['data'].isFirstChange()) {
@@ -93,19 +109,34 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       this.runSimulation();
       this.groups = this.getGroups(this.data);
     }
+    else if (changes['currentStrength'] && !changes['data']?.isFirstChange()) {
+      this.updateChargeStrength(changes['currentStrength'].currentValue,this.currentDistance, this.currentOrder);
+    }
+    else if (changes['currentDistance'] && !changes['data']?.isFirstChange()) {
+      this.updateChargeStrength(this.currentStrength,changes['currentDistance'].currentValue, this.currentOrder);
+    }
+    else if (changes['currentOrder'] && !changes['data']?.isFirstChange()) {
+      this.updateChargeStrength(this.currentStrength,this.currentDistance, changes['currentOrder'].currentValue);
+    }
   }
 
   ngOnInit() {
     //this.updateDimensions();
+
+    // Funcion que pinta los nodos desde el modal de grupos al hacer hover
     this.sharedService.selectedNodes$
       .subscribe(nodes => { // of type Node[] extends d3Force.SimulationNodeDatum
+        // console.log("nodes",nodes)
         if (!nodes) return;
         for (let n of nodes) {
           let el = d3.select('#id' + n.id);
-          el.attr("fill", '#304FFE');
+          // el.attr("fill", '#304FFE');
+          el.attr("fill", '#A074FE')
+          .attr("color",'#FFFFFF');
         }
     });
 
+    // Funcion que pinta los nodos desde el modal de grupos al hacer blur
     this.sharedService.deselectedNodes$
       .subscribe(nodes => {
         if (!nodes) return;
@@ -116,6 +147,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
           el.attr("fill", tempNode.color);
         }
       });
+
+    // Escucha el evento de redimensionamiento
+    this.resizeSubscription = fromEvent(window, 'resize').subscribe(() => {
+      this.innerWidth = window.innerWidth;
+      this.innerHeight = window.innerHeight;
+      // console.log(`Width: ${this.innerWidth}, Height: ${this.innerHeight}`);
+    });
   }
 
   ngAfterContentInit() {
@@ -132,14 +170,38 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     }
   }
 
+  ngOnDestroy() {
+    // Cancela la suscripción cuando el componente se destruya
+    if (this.resizeSubscription) {
+      this.resizeSubscription.unsubscribe();
+    }
+  }
+
+  onResize(event: Event) {
+    this.dimensions.width = window.innerWidth;
+    this.dimensions.height = window.innerHeight;
+    // console.log(`Width: ${this.dimensions.width}, Height: ${this.dimensions.height}`);
+  }
+
   createChart() {
     // create chart
+    // console.log("width: ",this.dimensions.width)
+    // console.log("height: ",this.dimensions.height)
+
     this.wrapper = d3.select(this.container.nativeElement)
       .append("svg")
         .attr("width", this.dimensions.width)
         .attr("height", this.dimensions.height)
         .call(d3.zoom().scaleExtent([0.3, 3]).on("zoom", this.zoomed))
         .on("dblclick.zoom", null);
+
+    // Deshabilita el clic derecho dentro del SVG
+    this.wrapper.on('contextmenu', () => {
+      d3.event.preventDefault();
+    });
+
+    // Pintar cuadricula
+    // this.paintGrid()
         
     this.bounds = this.wrapper.append("g")
         .attr("transform", 'translate(' + this.dimensions.marginLeft + 'px, ' + this.dimensions.marginTop + 'px)');
@@ -163,10 +225,18 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     //const links = d3.hierarchy(this.data).links();
     this.nodesMap = this.mapIdToNodes(this.nodes);
 
+    // console.log("this.nodes",this.nodes)
+
     this.simulation = d3.forceSimulation(this.nodes)
-      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 65, 140))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
-      .force('charge', d3.forceManyBody().strength(-40))
-      .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2));
+      .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 130, 140))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
+      .force('charge', d3.forceManyBody().strength(-1*this.currentStrength))
+      .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2))
+      .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.1))
+      .force("collide", d3.forceCollide().radius(this.currentDistance))
+      .force('grid', this.forceCustom())//Mueve a los nodos libres a una esquina
+      // .force('custom', this.circularArrangementForce())
+      ;
+
 
     // draw links
     this.linkElements = this.linkGroup
@@ -178,14 +248,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     const linkEnter = this.linkElements
       .enter()
       .append("line")
-        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10));
+        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10))
+        // .style("stroke","black")
+      ;
 
     this.linkElements = linkEnter.merge(this.linkElements);
     
     // draw nodes
     this.nodeElements = this.nodeGroup
       .selectAll('g')
-      .data(this.nodes);
+      .data(this.nodes)
+      ;
       
     this.nodeElements.exit().remove();
 
@@ -196,67 +269,116 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     // node label for name
     nodeEnter.append("text")
-      .text(d => d.name)
+      // .text(d => d.name)
+      // .text(d => this.extraerNuevoNombre(d.name))
       .attr('text-anchor', d => d.role === 'ambassador' ? 'end' : 'middle')
-      .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
-      .call(this.getBBox); // sets the bbox property on d
-    
-    // text background for label
-    nodeEnter.insert('rect', 'text')
-      .attr('x', d => d.bbox.x - 2)
-      .attr('y', d => d.bbox.y - 1)
-      .attr('width', d => d.bbox.width + 4)
-      .attr('height', d => d.bbox.height + 2)
-      .attr('class', 'bbox-name');
+      .attr('dy', d => d.idea?.title ? 0 : 0)
+      .call(this.getBBox)
+      .each(function(d) {
+        d.bbox = this.getBBox();
+      }) // sets the bbox property on d
+      
 
-        
-    // node label for ambassadors
-    nodeEnter.append("text")
-        .text(d => d.role === 'ambassador' ? 'Embajador' : '')
-        //.style('fill', '#FFAB00')
-        .attr('dx', 5)
-        .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
-        .call(this.getBBox); // sets the bbox property on d
-
-    // text background for ambassador labels
-    nodeEnter.insert('rect', 'text')
-        .attr('x', d => d.bbox.x - 4)
-        .attr('y', d => d.bbox.y - 1)
-        .attr('rx', 8) // rounded corners
-        .attr('ry', 8)
-        .attr('width', d => d.bbox.width + 8)
-        .attr('height', d => d.bbox.height + 2)
-        .attr('class', 'bbox-ambassador');
-
-
-    // node label for idea
-    nodeEnter.append("text")
-        .text(d => d.idea?.title ? (d.idea.title.length > 15 ? d.idea.title.substring(0, 15) + '...' : d.idea.title) : '')
-        .style('fill', '#616161')
-        .style('font-weight', 'bold')
-        .attr('text-anchor', 'middle')
-        .attr('dy', d =>  -d.r - 3)
-        .call(this.getBBox); // sets the bbox property on d
-
-    // text background for idea
-    nodeEnter.insert('rect', 'text')
-        .attr('x', d => d.bbox.x - 2)
-        .attr('y', d => d.bbox.y - 1)
-        .attr('width', d => d.bbox.width + 4)
-        .attr('height', d => d.bbox.height + 2)
-        .attr('class', 'bbox-name');
-
-
-    nodeEnter.append("circle")
+    // Stroke: borde de los nodos
+    nodeEnter.insert("circle","text")
         .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
         .attr("fill", d => d.color)
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
-        .attr('r', d => d.r)
+        .attr('r', d => d.r*3)
         .on('click', d => this.openIdeaDetailSidenav(d))
+        .attr("class", "circle")
+        
         .on('contextmenu', d => this.openNodeContextMenu(d))
-        .on('mouseover', d => d3.select(d3.event.currentTarget).attr("fill", '#304FFE'))
-        .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
+        // .on('mouseover', d => d3.select(d3.event.currentTarget).attr("fill", '#304FFE'))
+        // .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
+
+        .on("mouseover", function() {
+          d3.select(this).classed("hover", true); // Añadir clase 'hover'
+        })
+        .on("mouseout", function() {
+          d3.select(this).classed("hover", false); // Quitar clase 'hover'
+        });
+
+    
+    
+    // node label for ambassadors
+    nodeEnter.append("text")
+        .text(d => d.role === 'ambassador' ? 'Embajador' : '')
+        //.style('fill', '#FFAB00')
+        // .attr('dx', 5)
+        .attr('text-anchor','middle')
+        // .attr('y', d => d.bbox.y - 28)
+        .attr('y', d => d.bbox.y - 10)
+        .attr('dx', 0)
+        .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
+        .call(this.getBBox); // sets the bbox property on d.
+
+    
+    // console.log("this.nodes",this.nodes)
+
+        // text background for ambassador labels
+    nodeEnter
+        .filter(function(d) { return d.role == 'ambassador'; })
+        .insert('rect', "circle + *")
+        .attr('x', d => d.bbox.x - 4)
+        .attr('y', d => d.bbox.y - 1)
+        .attr('rx', 8) // rounded corners
+        .attr('ry', 8)
+        .attr('text-anchor','middle')
+        .attr('width', d => d.bbox.width + 8)
+        .attr('height', d => d.bbox.height + 2)
+        .attr('class', 'bbox-ambassador');//Esta clase da el color de fill
+
+
+
+
+
+    // Texto encima de los circulos
+    nodeEnter.append("text")
+        // .text(d => d.name)
+        .text(d => this.extraerNuevoNombre(d.name))
+        .attr('text-anchor', d => d.role === 'ambassador' ? 'middle' : 'middle')
+        // .attr('text-anchor', 'middle')
+        .style('font-size', d => d.r*1)
+        .attr('dy', d => d.idea?.title ? 0 : 0)
+        .attr("dominant-baseline", "middle")
+        .call(this.getBBox); // sets the bbox property on d
+
+    // text background for idea
+    // nodeEnter.insert('rect', 'text')
+    //     .attr('x', d => d.bbox.x - 2)
+    //     .attr('y', d => d.bbox.y - 1)
+    //     .attr('width', d => d.bbox.width + 4)
+    //     .attr('height', d => d.bbox.height + 2)
+    //     .attr('class', 'bbox-name')
+
+      // text background for idea
+    nodeEnter.append('rect')
+        .attr('x', d => d.bbox.x - 2)
+        .attr('y', d => d.bbox.y - 1)
+        .attr('width', d => d.bbox.width + 4)
+        .attr('height', d => d.bbox.height + 2)
+        .attr('class', 'bbox-name2')
+        .on('contextmenu', d => this.openNodeContextMenu(d))
+      
+
+
+    // node label for idea
+    nodeEnter.append("text")
+        .text(d => d.idea?.title ? (d.idea.title.length > 10 ? d.idea.title.substring(0, 7) + '...' : d.idea.title) : '')
+        .style('fill', '#616161')
+        .style('font-weight', 'bold')
+        .attr('text-anchor', 'middle')
+        .attr('dy', d =>  -d.r - 3)
+        .attr("dominant-baseline", "middle")
+        .style('font-size', d => d.r*1)
+        .call(this.getBBox); // sets the bbox property on d
+
+    
+    
+
+
 
     this.nodeElements = nodeEnter.merge(this.nodeElements);
 
@@ -269,6 +391,12 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         this.nodeElements
           .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
       });
+
+
+      // this.nodes.forEach(node => {
+      //   // node.fx = node.links && node.links.length > 0 ? 500 : 500 + this.dimensions.width / 2;
+      //   // node.fy = node.links && node.links.length > 0 ? 500 : 500 + this.dimensions.height / 2;
+      // });
   }
 
   getBBox(selection) {
@@ -389,6 +517,14 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.wrapper
         .attr("width", this.dimensions.width)
         .attr("height", this.dimensions.height);
+
+    this.dimensions.width = window.innerWidth;
+    this.dimensions.height = window.innerHeight;
+
+    console.log("windows.innerWidth",window.innerWidth)
+    console.log("windows.innerHeight",window.innerHeight)
+
+    // this.paintGrid()
 
     this.runSimulation();
   }
@@ -549,7 +685,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     if (maxHeight <= 1) return from;
 
     const diff = to - from;
-    return diff * ((height - 1) / (maxHeight - 1)) + from;
+    return diff * ((height - 1) / (maxHeight - 1)) + from + 1;
   }
 
   getGradientLinkLength(height: number, maxHeight: number, from: number, to: number): number {
@@ -611,5 +747,114 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     recurse(node);
     return isAmbassador;
   }
+
+  // Obtenemos los primeros 10 digitos del texto
+  extraerNuevoNombre(texto) {
+    let primerosDiezCaracteres = texto.slice(0, 10);
+
+    return primerosDiezCaracteres;
+  }
+
+  // Cambiamos la fuerza al centro del svg que se aplica al usar el slider de fuerza
+  private updateChargeStrength(strength: number, currentDistance: number, currentOrder: number): void {
+    this.simulation.force('charge', d3.forceManyBody()
+      .strength(-1*this.currentStrength))
+      .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2))
+      .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.1))
+      .force("collide", d3.forceCollide().radius(this.currentDistance))
+      // .force('grid', this.forceCustom())
+    this.simulation.alpha(1).restart();  // Re-calienta y reinicia la simulación
+  }
+
+  // Fuerza para reordenar los puntos en una cuadricula
+  // private forceCustom(): any {
+  //   let maxDistance = 100;
+  //   let index = 0;
+  
+  //   return (alpha: number) => {
+  //     let unlinkedNodes = this.nodes.filter((node: any) => !this.links.some((link: any) => link.source.id === node.id || link.target.id === node.id));
+  //     let columns = Math.ceil(Math.sqrt(unlinkedNodes.length)); // Número de columnas basado en el número total de nodos sin enlaces
+  //     let spacing = 100 + maxDistance / columns; // Espacio entre los nodos
+  
+  //     unlinkedNodes.forEach((node: any, i: number) => {
+  //       let row = Math.floor(i / columns);
+  //       let col = i % columns;
+  
+  //       // Calcular la posición objetivo para el nodo
+  //       let targetX = (this.dimensions.width * 3 / 8) + (col * spacing);
+  //       let targetY = (this.dimensions.height * 3 / 8) + (row * spacing);
+  
+  //       // Ajustar las velocidades para mover los nodos hacia la posición objetivo
+  //       node.vx += (targetX - node.x) * alpha;
+  //       node.vy += (targetY - node.y) * alpha;
+  //     });
+  //   };
+  // }
+
+  // Funcion para pintar las lineas verticales y horizontales
+  paintGrid() {
+    let gridSize = 10;
+  
+    // Selecciona o crea el grupo para el grid
+    let gridGroup = this.wrapper.select('.grid-group');
+    if (gridGroup.empty()) {
+      gridGroup = this.wrapper.insert('g', ':first-child').attr('class', 'grid-group');
+    } else {
+      // Limpia las líneas anteriores del grid
+      gridGroup.selectAll('line').remove();
+    }
+  
+    // Dibuja las líneas horizontales
+    for (let y = 0; y <= this.dimensions.height; y += gridSize) {
+      gridGroup.append('line')
+        .attr('x1', 0)
+        .attr('y1', y)
+        .attr('x2', this.dimensions.width)
+        .attr('y2', y)
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 1);
+    }
+  
+    // Dibuja las líneas verticales
+    for (let x = 0; x <= this.dimensions.width; x += gridSize) {
+      gridGroup.append('line')
+        .attr('x1', x)
+        .attr('y1', 0)
+        .attr('x2', x)
+        .attr('y2', this.dimensions.height)
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 1);
+    }
+  }
+
+  // Funcion que pone a los nodos sin enlaces alrededor del centro en forma circular
+  private forceCustom(): any {
+    return (alpha: number) => {
+        // Filtrar los nodos sin enlaces
+        let unlinkedNodes = this.nodes.filter((node: any) => !this.links.some((link: any) => link.source.id === node.id || link.target.id === node.id));
+    
+        // Calcular el radio del círculo
+        let radius = this.currentStrength + Math.min(this.dimensions.width, this.dimensions.height) * this.currentOrder;
+        let centerX = this.dimensions.width / 2;
+        let centerY = this.dimensions.height / 2;
+    
+        // Colocar los nodos en el círculo
+        unlinkedNodes.forEach((node: any, i: number) => {
+        let angle = (i / unlinkedNodes.length) * 2 * Math.PI;
+  
+        // Calcular la posición objetivo para el nodo
+        let targetX = centerX + radius * Math.cos(angle);
+        let targetY = centerY + radius * Math.sin(angle);
+  
+        // Ajustar las velocidades para mover los nodos hacia la posición objetivo
+        node.vx += (targetX - node.x) * alpha * 0.02;
+        node.vy += (targetY - node.y) * alpha * 0.02;
+
+      });
+    };
+  }
+
+
+  
 
 }

@@ -4,35 +4,35 @@
 
         <h2 class="font-26 bolder gray-900">Mis Stats</h2>
 
-        <div style="margin-top: 20px;" fxLayout="row" fxLayoutGap="7px">
-            <div class="single-stat-my-symbios-1">
+        <div class="container-group-symbio" style="margin-top: 20px;padding-bottom: 10px;" fxLayout="row" fxLayoutGap="7px">
+            <div class="single-stat-my-symbios-1 container-item-symbio">
                 <span class="label">Puntaje</span> 
-                <br />
+                <br class="oculto-mobile"/>
                 <span class="value">{{ score }}</span>
             </div>
     
             <div class="single-stat-my-symbios-2">
                 <span class="label">Total Simbiocreaciones</span> 
-                <br />
+                <br class="oculto-mobile"/>
                 <span class="value">{{ totalSymbiocreations }}</span>
             </div>
     
             <div class="single-stat-my-symbios-3">
                 <span class="label">Total Ideas</span> 
-                <br />
+                <br class="oculto-mobile"/>
                 <span class="value">{{ totalIdeas }}</span>
             </div>
     
             <div class="single-stat-my-symbios-4">
                 <span class="label">Grupos como Embajador</span> 
-                <br />
+                <br class="oculto-mobile"/>
                 <span class="value">{{ totalGroupsAsAmbassador }}</span>
             </div>
         </div>
     </div>
 
-    <div class="container-90" style="margin-top: 70px; margin-bottom: 15px;">
-        <h2 fxFlex class="font-26 bolder gray-900">Mis Simbiocreaciones</h2>
+    <div class="container-90 container-my-symbio" style="margin-top: 20px; margin-bottom: 15px;box-sizing: border-box;display: flex;">
+        <h2 class="font-26 bolder gray-900" style="flex: 1 1 0%;">Mis Simbiocreaciones</h2>
 
         <div>
             <button *ngIf="!isGridViewOn"

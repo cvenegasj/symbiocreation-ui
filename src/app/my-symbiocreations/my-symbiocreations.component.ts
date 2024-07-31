@@ -13,7 +13,7 @@ import { AnalyticsService } from '../services/analytics.service';
 @Component({
   selector: 'app-my-symbiocreations',
   templateUrl: './my-symbiocreations.component.html',
-  styleUrls: ['./my-symbiocreations.component.css']
+  styleUrls: ['./my-symbiocreations.component.scss']
 })
 export class MySymbiocreationsComponent implements OnInit {
 

@@ -6,21 +6,21 @@
 <div class="container-90">
         
     <mat-list *ngIf="symbiocreations?.length > 0">
-        <h3 matSubheader>
+        <h3 matSubheader class="oculto-mobile">
             <span fxFlex></span>
             <span fxFlex="15">Número de participantes</span>
             <span fxFlex="15">Última modificación</span>
             <span fxFlex="40px"></span>
         </h3>
 
-        <mat-list-item *ngFor="let s of symbiocreations; index as i; last as last" style="margin-top: 70px; margin-bottom: 50px;">
-           <div matLine>
-                <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%; padding-left: 5px;">
+        <mat-list-item *ngFor="let s of symbiocreations; index as i; last as last" class="symbio-item" style="">
+           <div matLine class="grid-group">
+                <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700 grid-name" style="max-width: 55%; padding-left: 5px;">
                     {{s.name}}
                 </a>
-                <span *ngIf="isModeratorList[i]" class="chip-role small moderator" style="margin-left: 12px;">Moderador</span>
+                <span *ngIf="isModeratorList[i]" class="chip-role small moderator grid-moderator" style="margin-left: 12px;">Moderador</span>
                 
-                <mat-icon class="font-20 gray-600" 
+                <mat-icon class="font-20 gray-600 grid-icon-world" 
                     style="margin-left: 8px;" 
                     [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" 
                     matTooltipPosition="above">
@@ -28,18 +28,19 @@
                 </mat-icon>
 
                 <button mat-icon-button 
-                    matTooltip="Ver más información" matTooltipPosition="above"
-                    style="position: relative; top: -9px;" 
-                    (click)="openSymbioDetailDialog(s, isModeratorList[i])">
+                    matTooltip="Ver más información" matTooltipPosition="above" 
+                    (click)="openSymbioDetailDialog(s, isModeratorList[i])"
+                    class="grid-btn-info"
+                    >
                     <mat-icon class="font-20 gray-600">info</mat-icon>
                 </button>
     
-                <span fxFlex></span>
+                <span fxFlex class="grid-span-todo"></span>
                 
-                <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{s.participants.length}} {{s.nparticipants === 1 ? 'participante' : 'participantes'}} </span>
-                <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{s.lastModified | date: 'd MMM y'}}</span>
+                <span fxFlex="15" class="gray-500 font-14 grid-members" style="padding: 5px;">{{s.participants.length}} {{s.nparticipants === 1 ? 'participante' : 'participantes'}} </span>
+                <span fxFlex="15" class="gray-500 font-14 grid-date" style="padding: 5px;">{{s.lastModified | date: 'd MMM y'}}</span>
                 
-                <button mat-icon-button [matMenuTriggerFor]="simbioMenu">
+                <button mat-icon-button [matMenuTriggerFor]="simbioMenu" class="grid-options">
                     <mat-icon>more_vert</mat-icon>
                 </button>
 
@@ -63,8 +64,8 @@
                 </mat-menu>
            </div>
 
-           <div matLine style="padding-bottom: 50px;">
-               <mat-form-field fxFlex="30" style="padding-left: 5px;">
+           <div matLine class="symbio-item-line" style="">
+               <mat-form-field fxFlex="30" style="" class="share-link">
                     <mat-label>Link para compartir</mat-label>
                     <input matInput type="text" value="{{environment.localhost}}/symbiocreation/{{s.id}}" readonly>
                     <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/symbiocreation/{{s.id}}">
