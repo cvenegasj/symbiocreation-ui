@@ -1,0 +1,48 @@
+.container-group-symbio{
+
+}
+
+.container-my-symbio{
+    margin-top: 70px;
+    margin-bottom: 15px;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .container-group-symbio{
+        max-width: 100%;
+        overflow-x: scroll;
+
+        .single-stat-my-symbios-1,.single-stat-my-symbios-2,.single-stat-my-symbios-3,.single-stat-my-symbios-4{
+            border-radius: 8px;
+            padding: 10px 15px 7px;
+            height: auto;
+            width: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            
+            & > span{
+                width: 130px;
+            }
+    
+        }
+        
+        .container-item-symbio{
+            width: 130px;
+        }
+    
+        .oculto-mobile{
+            display: none;
+        }
+
+    }
+
+    .container-my-symbio{
+        flex-direction: column;
+    }
+    
+    
+
+}

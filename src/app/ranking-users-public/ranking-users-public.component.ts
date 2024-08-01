@@ -5,7 +5,7 @@ import { AnalyticsService } from '../services/analytics.service';
 @Component({
   selector: 'app-ranking-users-public',
   templateUrl: './ranking-users-public.component.html',
-  styleUrls: ['./ranking-users-public.component.css']
+  styleUrls: ['./ranking-users-public.component.scss']
 })
 export class RankingUsersPublicComponent implements OnInit {
 

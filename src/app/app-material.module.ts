@@ -7,7 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSidenavModule } from '@angular/material/sidenav';
+// import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -18,13 +18,14 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-//import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 
 @NgModule({
@@ -47,7 +48,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     ClipboardModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    //MatMomentDateModule,
+    MatMomentDateModule,
     MatNativeDateModule,
     MatCardModule,
     MatButtonToggleModule,
@@ -75,7 +76,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     ClipboardModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    //MatMomentDateModule,
+    MatMomentDateModule,
     MatNativeDateModule,
     MatCardModule,
     MatButtonToggleModule,

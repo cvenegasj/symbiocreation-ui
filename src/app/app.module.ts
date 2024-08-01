@@ -45,6 +45,10 @@ import { CreateOnedotComponent } from './create-onedot/create-onedot.component';
 import { MyOnedotsComponent } from './my-onedots/my-onedots.component';
 import { OnedotComponent } from './onedot/onedot.component';
 import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
+// import { MatSidenavModule } from '@angular/material/sidenav';
+// import {MatGridListModule} from '@angular/material/grid-list';
+// import {CdkAccordionModule} from '@angular/cdk/accordion';
+
 
 @NgModule({
   declarations: [
@@ -94,6 +98,9 @@ import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
     MatMomentDateModule,
     MomentTimezonePickerModule,
     NgxLinkifyjsModule.forRoot(),
+    // MatSidenavModule,
+    // MatGridListModule,
+    // CdkAccordionModule,
   ],
   providers: [
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}

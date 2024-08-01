@@ -1,11 +1,20 @@
 <mat-progress-bar mode="indeterminate" color="accent" *ngIf="sharedService.isLoading$ | async"></mat-progress-bar>
 
 <mat-toolbar color="primary">
-    <a class="no-hover" style="color: white !important;" routerLink="/" style="margin-right: 15px;">{{title}}</a>
 
-    <a class="no-hover" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn">Dashboard</a>
-    <a class="no-hover" mat-button routerLink="/explore" style="margin-left: 10px;">Explora</a>
-    <a class="no-hover" mat-button routerLink="/ranking" style="margin-left: 10px;">Ranking</a>
+    <!-- Boton Menu Mobile -->
+    <a class="no-hover toogle-button only-mobile menu-mobile-btn" mat-button >
+        <button class="float-menu-group" mat-icon-button color="primary" (click)="menuMobile.toggle()">
+            <mat-icon style="color: white;">menu</mat-icon>
+        </button>
+    </a>
+
+    <!-- Menu Desktop -->
+    <div class="only-desktop">
+        <a class="no-hover" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn">Dashboard</a>
+        <a class="no-hover" mat-button routerLink="/explore">Explora</a>
+        <a class="no-hover" mat-button routerLink="/ranking">Ranking</a>
+    </div>
 
     <span fxFlex></span>
 
@@ -29,5 +38,30 @@
         <span>Accede</span>
     </button>
 </mat-toolbar>
+
+<!-- Menu Mobile desplegable -->
+<mat-sidenav #menuMobile class="menu-mobile-container">
+
+    <mat-toolbar color="accent">
+        <span class="ellipsed">Simbiocreación</span>
+        
+        <span fxFlex></span>
+    
+        <button mat-icon-button (click)="menuMobile.close()">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </mat-toolbar>
+    
+    <div class="menu-body">
+
+        <!-- <div> -->
+            <a class="no-hover" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn" (click)="menuMobile.toggle()">Dashboard</a>
+            <a class="no-hover" mat-button routerLink="/explore" (click)="menuMobile.toggle()">Explora</a>
+            <a class="no-hover" mat-button routerLink="/ranking" (click)="menuMobile.toggle()">Ranking</a>
+        <!-- </div> -->
+
+    </div>
+
+</mat-sidenav>
 
 <router-outlet></router-outlet>

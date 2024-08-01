@@ -1,7 +1,7 @@
 <div style="padding: 15px;">
 
-    <div class="container-90" style="margin-top: 70px; margin-bottom: 15px;">
-        <h2 fxFlex class="font-26 bolder gray-900">Mis SymbioGames</h2>
+    <div class="container-90 container-my-games" style="margin-top: 70px; margin-bottom: 15px;box-sizing: border-box;display: flex;">
+        <h2 class="font-26 bolder gray-900" style="flex: 1 1 0%;">Mis SymbioGames</h2>
 
         <div>
             <button routerLink="/create-onedot" mat-raised-button color="primary">
@@ -18,23 +18,23 @@
     <div class="container-90">
             
         <mat-list *ngIf="oneDots?.length > 0">
-            <h3 matSubheader>
+            <h3 matSubheader class="oculto-mobile">
                 <span fxFlex></span>
                 <span fxFlex="15">Número de participantes</span>
                 <span fxFlex="15">Última modificación</span>
                 <span fxFlex="10px"></span>
             </h3>
     
-            <mat-list-item *ngFor="let o of oneDots; index as i; last as last" style="margin-top: 70px; margin-bottom: 50px;">
-               <div matLine>
-                    <a [routerLink]="['/onedot/', o.id]" class="bold font-18 teal-700" style="max-width: 55%; padding-left: 5px;">
+            <mat-list-item *ngFor="let o of oneDots; index as i; last as last" style="margin-top: 70px; margin-bottom: 50px;" class="symbio-item">
+               <div matLine class="grid-group">
+                    <a [routerLink]="['/onedot/', o.id]" class="bold font-18 teal-700 grid-name" style="max-width: 55%; padding-left: 5px;">
                         {{o.name}}
                     </a>
         
                     <span fxFlex></span>
                     
-                    <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{o.participants.length}} {{o.nparticipants === 1 ? 'participante' : 'participantes'}}</span>
-                    <span fxFlex="15" class="gray-500 font-14" style="padding: 5px;">{{o.lastModifiedAt | date: 'd MMM y'}}</span>
+                    <span fxFlex="15" class="gray-500 font-14 grid-members" style="padding: 5px;">{{o.participants.length}} {{o.nparticipants === 1 ? 'participante' : 'participantes'}}</span>
+                    <span fxFlex="15" class="gray-500 font-14 grid-date" style="padding: 5px;">{{o.lastModifiedAt | date: 'd MMM y'}}</span>
                     
                     <!-- <mat-menu #simbioMenu="matMenu">
                         <button mat-menu-item (click)="openSymbioDetailDialog(s, isModeratorList[i])">
@@ -56,8 +56,8 @@
                     </mat-menu> -->
                </div>
     
-               <div matLine style="padding-bottom: 50px;">
-                   <mat-form-field fxFlex="50" style="padding-left: 5px;">
+               <div matLine class="symbio-item-line">
+                   <mat-form-field fxFlex="50" class="share-link">
                         <mat-label>Link para compartir</mat-label>
                         <input matInput type="text" value="{{environment.localhost}}/onedot/{{o.id}}" readonly>
                         <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/onedot/{{o.id}}">

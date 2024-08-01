@@ -1,8 +1,8 @@
-<div class="container-80" style="padding: 55px 25px;">
+<div class="container-80 container-general" style="">
 
-    <h2 class="font-26 bolder gray-900">Top 100 Usuarios</h2>
+    <h2 class="font-26 bolder gray-900 container-header">Top 100 Usuarios</h2>
 
-    <mat-list style="margin-top: 40px;">
+    <mat-list class="list-ranking" style="margin-top: 40px;">
         <!-- <h3 matSubheader>
             <span fxFlex></span>
             <span fxFlex="15">Número de participantes</span>
@@ -10,10 +10,10 @@
             <span fxFlex="40px"></span>
         </h3> -->
 
-        <mat-list-item *ngFor="let user of users; index as i; last as last" style="padding-top: 20px;">
-            <div fxLayout="row" style="padding-bottom: 20px;">
+        <mat-list-item *ngFor="let user of users; index as i; last as last" class="list-item-ranking">
+            <div class="list-item-ranking-container" fxLayout="row">
 
-                <div class="centered" style="width: 70px; padding: 5px;">
+                <div class="centered container-number" style="padding: 5px;">
                     <img *ngIf="i === 0" src="assets/jesus-img.svg" width="25" 
                         style="position: relative; top: 2px;" alt="God icon" />
 
@@ -21,7 +21,7 @@
                 </div>
 
                 <div fxLayout="column">
-                    <div style="padding-left: 5px;">
+                    <div class="container-names" style="padding-left: 5px;">
                         <span class="bold font-18 cyan-color-1">
                             {{ user.name || user.firstName + " " + user.lastName }}
                         </span>

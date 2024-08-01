@@ -1,0 +1,21 @@
+.icon-dashboard{
+    margin-right: 20px;
+}
+
+.icon-interests{
+    margin-right: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .icon-dashboard{
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .icon-interests{
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+}
