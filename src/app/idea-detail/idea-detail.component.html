@@ -41,7 +41,7 @@
         </div>
 
         <div style="margin-top: 30px;">
-            <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linkify"></p>
+            <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linky"></p>
         </div>
 
         <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0" [fxLayout]="sidenavService.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
@@ -58,7 +58,7 @@
 
         <ul>
             <li class="gray-700" *ngFor="let url of node.idea.externalUrls">
-                <span [innerHTML]="url | linkify"></span>
+                <span [innerHTML]="url | linky"></span>
             </li>
         </ul>
     </div>

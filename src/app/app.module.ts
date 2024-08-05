@@ -11,7 +11,7 @@ import { CloudinaryModule } from '@cloudinary/angular-5.x';
 import * as  Cloudinary from 'cloudinary-core';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
-import { NgxLinkifyjsModule } from 'ngx-linkifyjs';
+import { LinkyModule } from 'ngx-linky';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -97,7 +97,7 @@ import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
     CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
     MatMomentDateModule,
     MomentTimezonePickerModule,
-    NgxLinkifyjsModule.forRoot(),
+    LinkyModule,
     // MatSidenavModule,
     // MatGridListModule,
     // CdkAccordionModule,
