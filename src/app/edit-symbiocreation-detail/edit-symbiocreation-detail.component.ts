@@ -4,9 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Symbiocreation } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 
 @Component({
   selector: 'app-edit-symbiocreation-detail',

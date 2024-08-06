@@ -6,7 +6,7 @@ import { SidenavService } from '../services/sidenav.service';
 import * as d3 from "d3";
 import { DimensionsType } from '../utils/types';
 import { Node, Link } from '../models/forceGraphTypes';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
 import { AuthService } from '../services/auth.service';
 import { SharedService } from '../services/shared.service';
 

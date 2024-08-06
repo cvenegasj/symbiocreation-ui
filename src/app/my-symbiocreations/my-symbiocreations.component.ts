@@ -5,8 +5,8 @@ import { AuthService } from '../services/auth.service';
 import { tap, concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SharedService } from '../services/shared.service';
 import { AnalyticsService } from '../services/analytics.service';
 

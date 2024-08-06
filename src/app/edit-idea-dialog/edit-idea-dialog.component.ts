@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Idea } from '../models/symbioTypes';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 import * as moment from 'moment';
 import { SharedService } from '../services/shared.service';

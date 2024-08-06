@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 import * as moment from 'moment';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';

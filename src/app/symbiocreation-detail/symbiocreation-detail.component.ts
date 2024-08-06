@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Symbiocreation } from '../models/symbioTypes';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 
 import * as moment from 'moment-timezone';
 
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { Router } from '@angular/router';
 
 @Component({

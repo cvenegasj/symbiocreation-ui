@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent } from '@angular/material/legacy-autocomplete';
+import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -9,7 +9,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Router } from '@angular/router';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { AuthService } from '../services/auth.service';
 import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
