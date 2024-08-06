@@ -68,7 +68,7 @@
 
         <div *ngIf="detailsOpened">
             <mat-form-field fxFlex>
-                <mat-chip-list #tagList>
+                <mat-chip-set #tagList>
                     <mat-chip *ngFor="let tag of model.tags" selected color="accent"
                             [removable]="true" (removed)="removeTag(tag)">
                         {{tag}}
@@ -79,13 +79,13 @@
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                             [matChipInputAddOnBlur]="true"
                             (matChipInputTokenEnd)="addTag($event)">
-                </mat-chip-list>
+                </mat-chip-set>
             </mat-form-field>
         </div>
 
         <div *ngIf="detailsOpened">
             <mat-form-field fxFlex>
-                <mat-chip-list #extraUrlsList class="mat-chip-list-stacked">
+                <mat-chip-set #extraUrlsList class="mat-chip-list-stacked">
                     <mat-chip *ngFor="let url of model.extraUrls" selected color="accent"
                             [removable]="true" (removed)="removeExtraUrl(url)">
                         {{url}}
@@ -96,13 +96,13 @@
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                             [matChipInputAddOnBlur]="true"
                             (matChipInputTokenEnd)="addExtraUrl($event)">
-                </mat-chip-list>
+                </mat-chip-set>
             </mat-form-field>
         </div>
 
         <div *ngIf="detailsOpened">
             <mat-form-field fxFlex>
-                <mat-chip-list #sdgList>
+                <mat-chip-set #sdgList>
                     <mat-chip *ngFor="let sdg of model.sdgs" selected color="accent"
                             [removable]="true" (removed)="removeSDG(sdg)">
                         {{sdg}}
@@ -113,7 +113,7 @@
                             [formControl]="sdgCtrl"
                             [matAutocomplete]="auto"
                             [matChipInputFor]="sdgList">
-                </mat-chip-list>
+                </mat-chip-set>
                 
                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                     <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">

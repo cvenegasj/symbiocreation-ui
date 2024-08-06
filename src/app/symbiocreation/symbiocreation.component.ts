@@ -12,14 +12,14 @@ import { SharedService } from '../services/shared.service';
 import { concatMap, tap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatSnackBar as MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog as MatDialog } from '@angular/material/dialog';
 import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.component';
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
 
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
-import { MatLegacyButton as MatButton } from '@angular/material/legacy-button';
+import { MatButton } from '@angular/material/button';
 import { IdeaSelectorDialogComponent } from '../idea-selector-dialog/idea-selector-dialog.component';
 import { NewIdeaConfirmationDialogComponent } from '../new-idea-confirmation-dialog/new-idea-confirmation-dialog.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';

@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Idea } from '../models/symbioTypes';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';
@@ -23,7 +23,7 @@ export class EditIdeaDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditIdeaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
-    private imageService: ImageService
+    public imageService: ImageService
   ) {
     if (this.data.idea) this.idea = this.data.idea;
   }

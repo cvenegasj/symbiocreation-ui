@@ -1,12 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
 import * as moment from 'moment';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { Router } from '@angular/router';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
+import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'app-grid-symbios-user',
@@ -21,7 +22,8 @@ export class GridSymbiosUserComponent implements OnInit {
   constructor(
     private router: Router,
     public dialog: MatDialog,
-    private symbioService: SymbiocreationService
+    private symbioService: SymbiocreationService,
+    public imageService: ImageService,
   ) { }
 
   ngOnInit(): void {

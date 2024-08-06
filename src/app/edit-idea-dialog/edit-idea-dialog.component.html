@@ -12,7 +12,7 @@
     </mat-form-field>
 
     <mat-form-field style="width: 100%;">
-      <mat-chip-list #externalUrlList class="mat-chip-list-stacked">
+      <mat-chip-set #externalUrlList class="mat-chip-list-stacked">
           <mat-chip *ngFor="let url of idea.externalUrls" selected color="accent"
                   [removable]="true" (removed)="removeExternalUrl(url)">
               {{url}}
@@ -23,7 +23,7 @@
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                   [matChipInputAddOnBlur]="true"
                   (matChipInputTokenEnd)="addExternalUrl($event)">
-      </mat-chip-list>
+      </mat-chip-set>
   </mat-form-field>
     
     <div class="centered" style="padding-bottom: 25px;">
@@ -44,7 +44,7 @@
     </div>
     
     <div *ngFor="let publicId of idea.imgPublicIds" style="margin-top: 10px;">
-      <cl-image [public-id]="publicId" style="width: 80%;"></cl-image>
+      <advanced-image [cldImg]="imageService.getImage(publicId)" style="width: 80%;"></advanced-image>
       <button mat-button color="warn" (click)="deletePublicId(publicId)">Eliminar</button>
     </div>
 

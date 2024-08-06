@@ -180,17 +180,17 @@
         <div>
             <!--<span *ngIf="data.symbio.tags?.length === 0 || !data.symbio.tags" class="gray-500 font-13">Ninguna</span>-->
 
-            <mat-chip-list aria-label="Tags">
+            <mat-chip-set aria-label="Tags">
                 <mat-chip *ngFor="let tag of data.symbio.tags" selected color="accent">
                     {{tag}}
                 </mat-chip>
-            </mat-chip-list>
+            </mat-chip-set>
         </div>
     </div>
 
     <div *ngIf="editTags">
         <mat-form-field style="width: 100%;">
-            <mat-chip-list #tagList>
+            <mat-chip-set #tagList>
                 <mat-chip *ngFor="let tag of data.symbio.tags" selected color="accent"
                         [removable]="true" (removed)="removeTag(tag)">
                     {{tag}}
@@ -201,7 +201,7 @@
                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                         [matChipInputAddOnBlur]="true"
                         (matChipInputTokenEnd)="addTag($event)">
-            </mat-chip-list>
+            </mat-chip-set>
         </mat-form-field>
 
         <div> 
@@ -229,17 +229,17 @@
         <div>
             <!--<span *ngIf="!data.symbio.extraUrls || data.symbio.extraUrls?.length === 0" class="gray-500 font-13">Ninguna</span>-->
 
-            <mat-chip-list aria-label="Extra URLs">
+            <mat-chip-set aria-label="Extra URLs">
                 <mat-chip *ngFor="let url of data.symbio.extraUrls" selected color="accent">
                     {{url}}
                 </mat-chip>
-              </mat-chip-list>
+              </mat-chip-set>
         </div>
     </div>
 
     <div *ngIf="editExtraUrls">
         <mat-form-field style="width: 100%;">
-            <mat-chip-list #extraUrlsList>
+            <mat-chip-set #extraUrlsList>
                 <mat-chip *ngFor="let url of data.symbio.extraUrls" selected color="accent"
                         [removable]="true" (removed)="removeExtraUrl(url)">
                     {{url}}
@@ -250,7 +250,7 @@
                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                         [matChipInputAddOnBlur]="true"
                         (matChipInputTokenEnd)="addExtraUrl($event)">
-            </mat-chip-list>
+            </mat-chip-set>
         </mat-form-field>
 
         <div> 
@@ -278,17 +278,17 @@
         <div>
             <!--<span *ngIf="data.symbio.sdgs?.length === 0 || !data.symbio.sdgs" class="gray-500 font-13">Ninguna</span> -->
             
-            <mat-chip-list aria-label="ODS">
+            <mat-chip-set aria-label="ODS">
                 <mat-chip *ngFor="let sdg of data.symbio.sdgs" selected color="accent">
                     {{sdg}}
                 </mat-chip>
-              </mat-chip-list>
+            </mat-chip-set>
         </div>
     </div>
 
     <div *ngIf="editSDGs">
         <mat-form-field style="width: 100%;">
-            <mat-chip-list #sdgList>
+            <mat-chip-set #sdgList>
                 <mat-chip *ngFor="let sdg of data.symbio.sdgs" selected color="accent"
                         [removable]="true" (removed)="removeSDG(sdg)">
                     {{sdg}}
@@ -299,7 +299,7 @@
                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                         [matChipInputAddOnBlur]="true"
                         (matChipInputTokenEnd)="addSDG($event)">
-            </mat-chip-list>
+            </mat-chip-set>
         </mat-form-field>
 
         <div> 

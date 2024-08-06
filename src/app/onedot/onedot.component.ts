@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyButton as MatButton } from '@angular/material/legacy-button';
+import { MatButton } from '@angular/material/button';
 import { User } from '../models/symbioTypes';
 import { OneDot, OneDotParticipant } from '../models/oneDotTypes';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,8 +8,8 @@ import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { RSocketService } from '../services/rsocket.service';
 import { SharedService } from '../services/shared.service';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { OneDotService } from '../services/onedot.service';
 import { concatMap, tap } from 'rxjs/operators';

@@ -7,8 +7,7 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
-import { CloudinaryModule } from '@cloudinary/angular-5.x';
-import * as  Cloudinary from 'cloudinary-core';
+import { CloudinaryModule } from '@cloudinary/ng';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 import { LinkyModule } from 'ngx-linky';
@@ -94,7 +93,7 @@ import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
     ReactiveFormsModule,
     HttpClientModule,
     ClipboardModule,
-    CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
+    CloudinaryModule,
     MatMomentDateModule,
     MomentTimezonePickerModule,
     LinkyModule,

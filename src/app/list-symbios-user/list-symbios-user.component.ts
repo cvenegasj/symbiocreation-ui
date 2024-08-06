@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Symbiocreation } from '../models/symbioTypes';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';

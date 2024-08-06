@@ -46,7 +46,7 @@
 
         <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0" [fxLayout]="sidenavService.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
             <div *ngFor="let publicId of node.idea.imgPublicIds" [fxFlex]="sidenavService.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenavService.isOpenInFullscreen ? '10px' : '0'">
-                <cl-image [public-id]="publicId" style="width: 100%;"></cl-image>
+                <advanced-image [cldImg]="imageService.getImage(publicId)" style="width: 100%;"></advanced-image>
             </div>
         </div>
     </div>
@@ -85,9 +85,9 @@
         <!-- Visible to logged-in users -->
         <div *ngIf="auth.userProfile$ | async as profile" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 10px 15px;">
-                <cl-image [public-id]="profile.picture" type="fetch" class="img-2">
-                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                </cl-image>
+                <advanced-image [cldImg]="imageService.getImage(profile.picture)" type="fetch" class="img-2">
+                    <!-- <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation> -->
+                </advanced-image>
             </div>
             <div fxFlex>
                 <mat-form-field style="width: 100%;">
@@ -103,9 +103,9 @@
 
         <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 0 15px;">
-                <cl-image [public-id]="comment.author.pictureUrl" type="fetch" class="img-2">
-                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                </cl-image>
+                <advanced-image [cldImg]="comment.author.pictureUrl" type="fetch" class="img-2">
+                    <!-- <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation> -->
+                </advanced-image>
             </div>
             <div fxFlex>
                 <div>

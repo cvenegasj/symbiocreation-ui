@@ -31,12 +31,12 @@
             style="margin: 20px auto 0; height: 40px; position: relative;" 
             [style.width]="(participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, participantsToDisplay.length) + 'px'">
 
-                <cl-image *ngFor="let p of participantsToDisplay; index as i;" 
-                    [public-id]="p.user.pictureUrl" type="fetch" class="img-1" 
+                <advanced-image *ngFor="let p of participantsToDisplay; index as i;" 
+                    [cldImg]="imageService.getImage(p.user.pictureUrl)" type="fetch" class="img-1" 
                     [style.z-index]="5-i" [style.left]="i*24 + 'px'"
                     [matTooltip]="p.user.name" matTooltipPosition="above">
-                    <cl-transformation height="90" width="90" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                </cl-image>
+                    <!-- <cl-transformation height="90" width="90" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation> -->
+                </advanced-image>
 
                 <span *ngIf="participantsToDisplay.length > 0 && s.participants.length - participantsToDisplay.length > 0" 
                     class="font-12 gray-500" style="position: absolute; top: 10px;" 

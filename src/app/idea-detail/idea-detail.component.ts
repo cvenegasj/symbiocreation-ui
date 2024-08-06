@@ -10,9 +10,10 @@ import { SharedService } from '../services/shared.service';
 import { concatMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
+import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'app-idea-detail',
@@ -38,7 +39,8 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     public auth: AuthService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public imageService: ImageService,
     ) {}
 
   ngOnInit(): void {

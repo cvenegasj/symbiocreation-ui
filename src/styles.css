@@ -366,13 +366,13 @@ ng-moment-timezone-picker div.wrapper {
     display: inline-block !important;
 }
 
-cl-image > img.img-1 {
+advanced-image > img.img-1 {
     width: 40px;
     height: auto;
     position: absolute;
 }
 
-cl-image > img.img-2 {
+advanced-image > img.img-2 {
     width: 43px;
     height: auto;
 }
