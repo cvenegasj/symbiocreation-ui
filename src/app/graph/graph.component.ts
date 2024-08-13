@@ -1,5 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SidenavService } from '../services/sidenav.service';
@@ -192,19 +191,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .append("svg")
         .attr("width", this.dimensions.width)
         .attr("height", this.dimensions.height)
-        .call(d3.zoom().scaleExtent([0.3, 3]).on("zoom", this.zoomed))
-        .on("dblclick.zoom", null);
+        .call(d3.zoom().scaleExtent([0.3, 3])
+        .on("zoom", this.zoomed))
+        .on("dblclick.zoom", null)
+        .on("contextmenu", () => { d3.event.preventDefault(); }); // Deshabilita el menu contextual del navegador dentro del SVG
 
-    // Deshabilita el clic derecho dentro del SVG
-    this.wrapper.on('contextmenu', () => {
-      d3.event.preventDefault();
-    });
 
     // Pintar cuadricula
     // this.paintGrid()
         
     this.bounds = this.wrapper.append("g")
-        .attr("transform", 'translate(' + this.dimensions.marginLeft + 'px, ' + this.dimensions.marginTop + 'px)');
+        .attr("transform", `translate(${this.dimensions.marginLeft} ${this.dimensions.marginTop})`);
 
     this.linkGroup = this.bounds.append('g').attr('class', 'links');
     this.nodeGroup = this.bounds.append('g').attr('class', 'nodes');
@@ -233,9 +230,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2))
       .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.1))
       .force("collide", d3.forceCollide().radius(this.currentDistance))
-      .force('grid', this.forceCustom())//Mueve a los nodos libres a una esquina
+      .force('grid', this.forceCustom()); // Moves unlinked nodes to a corner of the canvas
       // .force('custom', this.circularArrangementForce())
-      ;
 
 
     // draw links
@@ -248,17 +244,14 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     const linkEnter = this.linkElements
       .enter()
       .append("line")
-        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10))
-        // .style("stroke","black")
-      ;
+        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10));
 
     this.linkElements = linkEnter.merge(this.linkElements);
     
     // draw nodes
     this.nodeElements = this.nodeGroup
       .selectAll('g')
-      .data(this.nodes)
-      ;
+      .data(this.nodes);
       
     this.nodeElements.exit().remove();
 
@@ -267,101 +260,44 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       .append("g")
       .call(this.drag(this.simulation));
 
-    // node label for name
-    nodeEnter.append("text")
-      // .text(d => d.name)
-      // .text(d => this.extraerNuevoNombre(d.name))
-      .attr('text-anchor', d => d.role === 'ambassador' ? 'end' : 'middle')
-      .attr('dy', d => d.idea?.title ? 0 : 0)
-      .call(this.getBBox)
-      .each(function(d) {
-        d.bbox = this.getBBox();
-      }) // sets the bbox property on d
-      
 
-    // Stroke: borde de los nodos
-    nodeEnter.insert("circle","text")
+    // Draw node circles
+    nodeEnter.insert("circle")
         .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
         .attr("fill", d => d.color)
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
-        .attr('r', d => d.r*3)
-        .on('click', d => this.openIdeaDetailSidenav(d))
-        .attr("class", "circle")
-        
+        .attr('r', d => d.r * 3)
+        // .attr("class", "circle")
+        .on('click', d => this.openIdeaDetailSidenav(d))  
         .on('contextmenu', d => this.openNodeContextMenu(d))
         // .on('mouseover', d => d3.select(d3.event.currentTarget).attr("fill", '#304FFE'))
         // .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
+        .on("mouseover", () => d3.select(d3.event.currentTarget).classed("hover", true)) // Añadir clase 'hover'
+        .on("mouseout", () => d3.select(d3.event.currentTarget).classed("hover", false)); // Quitar clase 'hover'
 
-        .on("mouseover", function() {
-          d3.select(this).classed("hover", true); // Añadir clase 'hover'
-        })
-        .on("mouseout", function() {
-          d3.select(this).classed("hover", false); // Quitar clase 'hover'
-        });
-
-    
     
     // node label for ambassadors
-    nodeEnter.append("text")
-        .text(d => d.role === 'ambassador' ? 'Embajador' : '')
-        //.style('fill', '#FFAB00')
-        // .attr('dx', 5)
-        .attr('text-anchor','middle')
-        // .attr('y', d => d.bbox.y - 28)
-        .attr('y', d => d.bbox.y - 10)
-        .attr('dx', 0)
-        .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
+    nodeEnter
+        .filter(d => d.role === 'ambassador')
+        .append("text")
+        .text('Embajador')
+        .attr('text-anchor', 'middle')
+        .attr('dy', d => -d.r - 24)
         .call(this.getBBox); // sets the bbox property on d.
 
-    
-    // console.log("this.nodes",this.nodes)
 
-        // text background for ambassador labels
+    // background for ambassador labels
     nodeEnter
-        .filter(function(d) { return d.role == 'ambassador'; })
-        .insert('rect', "circle + *")
+        .filter(d => d.role === 'ambassador')
+        .insert('rect', 'text')
         .attr('x', d => d.bbox.x - 4)
         .attr('y', d => d.bbox.y - 1)
         .attr('rx', 8) // rounded corners
         .attr('ry', 8)
-        .attr('text-anchor','middle')
         .attr('width', d => d.bbox.width + 8)
         .attr('height', d => d.bbox.height + 2)
-        .attr('class', 'bbox-ambassador');//Esta clase da el color de fill
-
-
-
-
-
-    // Texto encima de los circulos
-    nodeEnter.append("text")
-        // .text(d => d.name)
-        .text(d => this.extraerNuevoNombre(d.name))
-        .attr('text-anchor', d => d.role === 'ambassador' ? 'middle' : 'middle')
-        // .attr('text-anchor', 'middle')
-        .style('font-size', d => d.r*1)
-        .attr('dy', d => d.idea?.title ? 0 : 0)
-        .attr("dominant-baseline", "middle")
-        .call(this.getBBox); // sets the bbox property on d
-
-    // text background for idea
-    // nodeEnter.insert('rect', 'text')
-    //     .attr('x', d => d.bbox.x - 2)
-    //     .attr('y', d => d.bbox.y - 1)
-    //     .attr('width', d => d.bbox.width + 4)
-    //     .attr('height', d => d.bbox.height + 2)
-    //     .attr('class', 'bbox-name')
-
-      // text background for idea
-    nodeEnter.append('rect')
-        .attr('x', d => d.bbox.x - 2)
-        .attr('y', d => d.bbox.y - 1)
-        .attr('width', d => d.bbox.width + 4)
-        .attr('height', d => d.bbox.height + 2)
-        .attr('class', 'bbox-name2')
-        .on('contextmenu', d => this.openNodeContextMenu(d))
-      
+        .attr('class', 'bbox-ambassador'); // fill with background color
 
 
     // node label for idea
@@ -370,15 +306,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .style('fill', '#616161')
         .style('font-weight', 'bold')
         .attr('text-anchor', 'middle')
-        .attr('dy', d =>  -d.r - 3)
+        .style('font-size', d => d.r)
+        .attr('dy', d =>  -d.r);
+        
+
+    // node label for name (group name or participant's name)
+    nodeEnter.append("text")
+        .text(d => d.name.substring(0, 11))
+        .attr('text-anchor', 'middle')
         .attr("dominant-baseline", "middle")
-        .style('font-size', d => d.r*1)
-        .call(this.getBBox); // sets the bbox property on d
-
-    
-    
-
-
+        .style('font-size', d => d.r);
+        
 
     this.nodeElements = nodeEnter.merge(this.nodeElements);
 
@@ -389,14 +327,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
           .attr("x2", d => (<Node>d.target).x)
           .attr("y2", d => (<Node>d.target).y);
         this.nodeElements
-          .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
+          .attr("transform", d => `translate(${d.x} ${d.y})`);
       });
-
-
-      // this.nodes.forEach(node => {
-      //   // node.fx = node.links && node.links.length > 0 ? 500 : 500 + this.dimensions.width / 2;
-      //   // node.fy = node.links && node.links.length > 0 ? 500 : 500 + this.dimensions.height / 2;
-      // });
   }
 
   getBBox(selection) {
@@ -498,18 +430,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   zoomed = () => {
     this.bounds.attr("transform", d3.event.transform);
-  }
-
-  toggleChildren(d) {
-    /*if (d3.event.defaultPrevented) return; // ignore drag
-    if (d.children) {
-      d._children = d.children;
-      d.children = null;
-    } else {
-      d.children = d._children;
-      d._children = null;
-    }*/
-    // updateGraph();
   }
 
   @HostListener('window:resize') windowResize() {
@@ -748,13 +668,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     return isAmbassador;
   }
 
-  // Obtenemos los primeros 10 digitos del texto
-  extraerNuevoNombre(texto) {
-    let primerosDiezCaracteres = texto.slice(0, 10);
-
-    return primerosDiezCaracteres;
-  }
-
   // Cambiamos la fuerza al centro del svg que se aplica al usar el slider de fuerza
   private updateChargeStrength(strength: number, currentDistance: number, currentOrder: number): void {
     this.simulation.force('charge', d3.forceManyBody()
@@ -853,8 +766,5 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       });
     };
   }
-
-
-  
 
 }

@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { CloudinaryModule } from '@cloudinary/ng';
-import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 import { LinkyModule } from 'ngx-linky';
 
@@ -102,7 +102,7 @@ import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
     // CdkAccordionModule,
   ],
   providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}, provideMomentDateAdapter()
   ],
   bootstrap: [AppComponent]
 })

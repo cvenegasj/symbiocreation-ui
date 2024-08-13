@@ -61,52 +61,49 @@
 
         <div>
             <mat-form-field fxFlex>
-                <mat-chip-set #tagList>
-                    <mat-chip *ngFor="let tag of symbio.tags" selected color="accent"
-                            [removable]="true" (removed)="removeTag(tag)">
+                <mat-chip-grid #tagList>
+                    <mat-chip-row *ngFor="let tag of symbio.tags" selected color="accent" (removed)="removeTag(tag)">
                         {{tag}}
                         <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
+                    </mat-chip-row>
                     <input placeholder="Tags"
                             [matChipInputFor]="tagList"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                             [matChipInputAddOnBlur]="true"
                             (matChipInputTokenEnd)="addTag($event)">
-                </mat-chip-set>
+                </mat-chip-grid>
             </mat-form-field>
         </div>
 
         <div>
             <mat-form-field fxFlex>
-                <mat-chip-set #extraUrlsList class="mat-chip-list-stacked">
-                    <mat-chip *ngFor="let url of symbio.extraUrls" selected color="accent"
-                            [removable]="true" (removed)="removeExtraUrl(url)">
+                <mat-chip-grid #extraUrlsList class="mat-chip-list-stacked">
+                    <mat-chip-row *ngFor="let url of symbio.extraUrls" selected color="accent" (removed)="removeExtraUrl(url)">
                         {{url}}
                         <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
+                    </mat-chip-row>
                     <input style="flex: 1 0 40px;" placeholder="Extra URLs"
                             [matChipInputFor]="extraUrlsList"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                             [matChipInputAddOnBlur]="true"
                             (matChipInputTokenEnd)="addExtraUrl($event)">
-                </mat-chip-set>
+                </mat-chip-grid>
             </mat-form-field>
         </div>
 
         <div>
             <mat-form-field fxFlex>
-                <mat-chip-set #sdgList>
-                    <mat-chip *ngFor="let sdg of symbio.sdgs" selected color="accent"
-                            [removable]="true" (removed)="removeSDG(sdg)">
+                <mat-chip-grid #sdgList>
+                    <mat-chip-row *ngFor="let sdg of symbio.sdgs" selected color="accent" (removed)="removeSDG(sdg)">
                         {{sdg}}
                         <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
+                    </mat-chip-row>
                     <input placeholder="ODS"
                             [matChipInputFor]="sdgList"
                             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                             [matChipInputAddOnBlur]="true"
                             (matChipInputTokenEnd)="addSDG($event)">
-                </mat-chip-set>
+                </mat-chip-grid>
             </mat-form-field>
         </div>
 

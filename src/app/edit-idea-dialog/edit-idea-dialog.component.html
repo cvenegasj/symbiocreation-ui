@@ -12,18 +12,17 @@
     </mat-form-field>
 
     <mat-form-field style="width: 100%;">
-      <mat-chip-set #externalUrlList class="mat-chip-list-stacked">
-          <mat-chip *ngFor="let url of idea.externalUrls" selected color="accent"
-                  [removable]="true" (removed)="removeExternalUrl(url)">
+      <mat-chip-grid #externalUrlList class="mat-chip-list-stacked">
+          <mat-chip-row *ngFor="let url of idea.externalUrls" selected color="accent" (removed)="removeExternalUrl(url)">
               {{url}}
               <mat-icon matChipRemove>cancel</mat-icon>
-          </mat-chip>
+          </mat-chip-row>
           <input style="flex: 1 0 40px;" placeholder="Enlaces externos"
                   [matChipInputFor]="externalUrlList"
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                   [matChipInputAddOnBlur]="true"
                   (matChipInputTokenEnd)="addExternalUrl($event)">
-      </mat-chip-set>
+      </mat-chip-grid>
   </mat-form-field>
     
     <div class="centered" style="padding-bottom: 25px;">

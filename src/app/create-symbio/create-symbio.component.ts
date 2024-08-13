@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Location } from '@angular/common';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -13,9 +14,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
-//import * as moment from 'moment';
+
 import * as moment from 'moment-timezone';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-create-symbio',
@@ -71,7 +71,6 @@ export class CreateSymbioComponent implements OnInit {
   onSubmit(): void {
     this.model.participants = [];
     this.model.graph = [];
-
     this.model.visibility = this.isPrivate ? 'private' : 'public';
 
     if (this.eventDate) {
