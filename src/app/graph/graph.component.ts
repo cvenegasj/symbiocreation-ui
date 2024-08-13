@@ -26,6 +26,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Output() nodeChangedName = new EventEmitter<string>();
   @Output() nodeChangedRole = new EventEmitter<string[]>();
   @Output() nodeChangedIdea = new EventEmitter<string>();
+  @Output() dblClickNewIdea = new EventEmitter();
 
   //participant: Participant;
   //myAncestries: Node[][];
@@ -106,6 +107,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     if (changes['data'] && !changes['data'].isFirstChange()) {
       this.removeChart();
       this.createChart();
+      // console.log("changes",changes['data'])
+      // console.log("cambios")
       this.runSimulation();
       this.groups = this.getGroups(this.data);
     }
@@ -193,7 +196,9 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr("width", this.dimensions.width)
         .attr("height", this.dimensions.height)
         .call(d3.zoom().scaleExtent([0.3, 3]).on("zoom", this.zoomed))
-        .on("dblclick.zoom", null);
+        .on("dblclick.zoom", null)
+        .on("dblclick", () => this.newIdeaClick())
+        ;
 
     // Deshabilita el clic derecho dentro del SVG
     this.wrapper.on('contextmenu', () => {
@@ -210,6 +215,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.nodeGroup = this.bounds.append('g').attr('class', 'nodes');
   }
 
+
+  getLinksWithAttributes(links: any[]): any[] {
+    return links.map(link => {
+      return {
+        ...link,
+        parent: link.source.id,
+        child: link.target ? link.target.id : 'null'
+      };
+    });
+  }
+
   runSimulation() {
     // get the maximum height of any node, which must belong to a root-level node
     this.maxNodeHeight = 0;
@@ -217,6 +233,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       let temp = this.getNodeHeight(node);
       if (temp > this.maxNodeHeight) this.maxNodeHeight = temp;
     }
+
+    // console.log("this.data",this.data)
 
     //const root = d3.hierarchy(this.data);
     this.links = this.getLinks(this.data);
@@ -237,20 +255,25 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       // .force('custom', this.circularArrangementForce())
       ;
 
+    const linksWithAttributes = this.getLinksWithAttributes(this.links);
 
     // draw links
     this.linkElements = this.linkGroup
       .selectAll('line')
-      .data(this.links);
+      // .data(this.links);
+      .data(linksWithAttributes)
+      ;
     
     this.linkElements.exit().remove();
 
     const linkEnter = this.linkElements
       .enter()
       .append("line")
-        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10))
-        // .style("stroke","black")
-      ;
+      .attr('parent', (d: any) => d.parent)
+      .attr('child', (d: any) => d.child)
+      .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10))
+      // .on('contextmenu', d => this.deleteLine(d.child, 'none'))
+      // .style("stroke","black");
 
     this.linkElements = linkEnter.merge(this.linkElements);
     
@@ -376,7 +399,23 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .call(this.getBBox); // sets the bbox property on d
 
     
-    
+        
+
+
+    // Stroke: borde de los nodos
+    nodeEnter.append("circle","text")
+      .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
+      .attr("fill", "transparent")
+      .attr('r', d => d.r*3)
+      .on('click', d => this.openIdeaDetailSidenav(d))
+      .on('contextmenu', d => this.openNodeContextMenu(d))
+      // .on('click', d => console.log("wa"))
+      .on("mouseover", function(d) {
+        d3.select('#id' + d.id).classed("hover", true); // Añadir clase 'hover' al círculo de color
+      })
+      .on("mouseout", function(d) {
+        d3.select('#id' + d.id).classed("hover", false); // Quitar clase 'hover' del círculo de color
+      });
 
 
 
@@ -834,7 +873,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         let unlinkedNodes = this.nodes.filter((node: any) => !this.links.some((link: any) => link.source.id === node.id || link.target.id === node.id));
     
         // Calcular el radio del círculo
-        let radius = this.currentStrength + Math.min(this.dimensions.width, this.dimensions.height) * this.currentOrder;
+        let radius = this.currentStrength + Math.min(this.dimensions.width, this.dimensions.height) * this.currentOrder/8;
         let centerX = this.dimensions.width / 2;
         let centerY = this.dimensions.height / 2;
     
@@ -855,6 +894,16 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
 
-  
+  newIdeaClick(){
+    this.dblClickNewIdea.emit();
+  }
+
+  deleteLine(childId: string, parentId: string){
+        
+        // console.log('parentId:', parentId);
+        // console.log('childId:', childId);
+        this.parentChanged.emit([childId, parentId]);
+    
+  }
 
 }

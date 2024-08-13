@@ -37,6 +37,9 @@
 
     <mat-menu #groupsSubMenu="matMenu">
         <ng-template matMenuContent let-node="node">
+            <button mat-menu-item (click)="setNodeParent(node.id, 'none')">
+                <span>Sin Grupo</span>
+            </button>
             <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="setNodeParent(node.id, g.id)"> <!-- filter because a node cannot be its own parent! -->
                 <span>{{g.name}}</span>
             </button>

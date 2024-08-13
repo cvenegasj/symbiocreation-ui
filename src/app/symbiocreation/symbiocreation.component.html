@@ -103,21 +103,30 @@
                     (parentChanged)="onParentChanged($event)"
                     (nodeChangedName)="openChangeNodeNameDialog($event)"
                     (nodeChangedRole)="onRoleChanged($event)"
-                    (nodeDeleted)="onNodeDeleted($event)">
+                    (nodeDeleted)="onNodeDeleted($event)"
+                    (dblClickNewIdea)="createUserNode()"
+                    >
                 </app-graph>
             </div>
         </div>
 
-        <!-- <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="isVisible = !isVisible" title="Grupos"> -->
-        <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="toggleModalGroups()" title="Grupos">
+        <button class="float-menu-group btn-new-idea" mat-icon-button color="primary" (click)="showTextBtn()" matTooltip="Nueva Idea" matTooltipPosition="left">
+            <mat-icon style="color: white;">add</mat-icon>
+        </button>
+
+        <div class="animated-text" [ngClass]="{'show': showText}">
+            ¿Agregar una nueva idea?
+        </div>
+
+        <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="toggleModalGroups()" matTooltip="Grupos" matTooltipPosition="left">
             <mat-icon style="color: white;">group</mat-icon>
         </button>
 
-        <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="toggleModalIdeas()" title="Ideas">
+        <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="toggleModalIdeas()" matTooltip="Ideas" matTooltipPosition="left">
             <mat-icon style="color: white;">lightbulb</mat-icon>
         </button>
 
-        <button class="float-menu-group btn-options" mat-icon-button (click)="toggleModalOptions()" title="Opciones">
+        <button class="float-menu-group btn-options" mat-icon-button (click)="toggleModalOptions()"  matTooltip="Opciones" matTooltipPosition="left">
             <mat-icon style="color: white;">settings</mat-icon>
         </button>
 
@@ -206,7 +215,10 @@
                             <div [id]="lineage[0].id" hidden style="margin-top: 5px;">
                                 <mat-form-field appearance="fill">
                                     <mat-label>Seleccionar grupo</mat-label>
-                                    <mat-select [(value)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])">
+                                    <!-- <mat-select [(value)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])"> -->
+                                    <mat-select [(ngModel)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])">
+                                        <mat-option disabled selected>Elija un grupo</mat-option>
+                                        <mat-option value="none">Sin Grupo</mat-option>
                                         <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
                                     </mat-select>
                                 </mat-form-field>
@@ -528,7 +540,7 @@
             <div class="slider-fuerza" >
                 <div>Fuerza</div>
                 <div>
-                    <input type="range" [(ngModel)]="sliderStrengthValue" min="20" max="2000" (input)="sliderStrengthChange()"/>
+                    <input type="range" [(ngModel)]="sliderStrengthValue" min="1" max="2000" (input)="sliderStrengthChange()"/>
                 </div>
             </div>
     

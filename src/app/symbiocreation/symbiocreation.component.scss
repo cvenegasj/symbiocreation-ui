@@ -36,6 +36,11 @@
     border-color: none;
     outline: 0;
     
+    &.btn-new-idea{
+        display: none;
+        background-color: #E91D63;
+        bottom: 153px;
+    }
     &.btn-ideas{
         background-color: #651fff;
         bottom: 103px;
@@ -52,6 +57,34 @@
 }
 
 
+.animated-text {
+    display: none;
+    // display: flex;
+    align-items: center; /* Centra el texto verticalmente */
+    justify-content: center;
+    position: absolute;
+    right: 23px;
+    bottom: 153px;
+    background-color: #FAFAFA;
+    color: #5F656D;
+    border-radius: 4px;
+    border: 1px solid #E91D63;
+    padding: 0 40px; /* Espaciado lateral dentro del contenedor */
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+    height: 40px;
+    text-align: center;
+    transform: translateX(0px);
+    z-index: -1;
+    font-weight: 500;
+}
+
+.animated-text.show {
+    opacity: 1;
+    transform: translateX(-10px); /* Despliega el texto hacia la derecha */
+}
 
 
 

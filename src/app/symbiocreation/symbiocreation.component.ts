@@ -64,6 +64,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   isModalIdeasOpen = false;
   isModalOptionsOpen = false;
 
+  showText: boolean = false;
+
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
@@ -336,6 +338,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   createUserNode() {
+
+    if( !this.participant ){
+      return;
+    }
+
     const dialogRef = this.dialog.open(NewIdeaConfirmationDialogComponent, {
       width: '350px'
     });
@@ -431,16 +438,46 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Funcion cuando se cambia/asigna grupo de una idea desde el control Grupo
+  // Para quitar el grupo de cualquier nodo hay que asignar como grupo 'none'
   onMyGroupChanged(myNode: Node) {
+    console.log("Falla")
+    console.log("myNode",myNode)
+    console.log("this.symbiocreation.id",this.symbiocreation.id)
+    console.log("myNode.id",myNode.id)
+    console.log("this.idGroupSelected",this.idGroupSelected)
+
     this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected ? this.idGroupSelected : 'none')
       .subscribe();
     const el = document.getElementById(myNode.id);
     el.hidden = true;
+
+    this.idGroupSelected = null;
+
   }
 
+  // Funcion cuando se cambia/asigna un grupo a una idea desde el area de trabajo
+  // Funciona
   onParentChanged(nodeIds: string[]) {
+    // console.log("Funciona")
+    // console.log("nodeIds",nodeIds)
+    // console.log("this.symbiocreation.id",this.symbiocreation.id)
+
+    
+    if( nodeIds[1] == 'none' ){
+      this.symbioService.setParentNode(this.symbiocreation.id, nodeIds[0], nodeIds[1])
+      .subscribe();
+
+      this.idGroupSelected = null;
+      return;
+    }
+
     let child = this.getNode(nodeIds[0]);
     let parent = this.getNode(nodeIds[1]);
+
+    // console.log("child",child)
+    // console.log("parent",parent)
+
 
     if (this.nodeAContainsNodeB(child, parent)) {
       this._snackBar.open('No se puede asignar. El grupo padre seleccionado es descendiente del nodo a modificar.', 'ok', {
@@ -451,6 +488,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     this.symbioService.setParentNode(this.symbiocreation.id, nodeIds[0], nodeIds[1])
       .subscribe();
+
+    this.idGroupSelected = null;
   }
 
   onNodeDeleted(nodeId: string) {
@@ -735,6 +774,10 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   stopPropagation(event: MouseEvent) {
     event.stopPropagation(); // Esto evita que el clic dentro del modal se propague al fondo
+  }
+
+  showTextBtn() {
+    this.showText = !this.showText;
   }
 
   toggleModalGroups() {

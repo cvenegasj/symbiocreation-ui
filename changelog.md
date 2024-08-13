@@ -7,3 +7,11 @@
 ✔ Para los diseños mobile, se ha agregado un "media only screen" con max-width: 768px para usar estilos que solo aplicaran para mobile
 ✔ Se ha dejado código comentado para una V2 del popup de ideas para una futura versión
 ✔ Se ha dejado una función comentada para mostrar una cuadricula en el área de trabajo de simbiocreación
+
+# 12/08/24 mramirez
+✔ Se ha agregado la funcionalidad de agregar ideas al hacer doble click
+✔ Se ha agregado menor límite para la fuerza y el orden para los graficos
+✔ Se ha agregado un diseño básico para la información del perfil
+✔ Se ha corregido el error que solo se podia ver el detalle al hacer click en los lugares donde no estan los nombres en los nodos
+✔ Corregido redireccionamiento al ingresar al link /dashboard
+✔ Agregado opción "Sin Grupo" para los nodos
