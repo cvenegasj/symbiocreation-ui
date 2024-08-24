@@ -25,6 +25,8 @@ import { NewIdeaConfirmationDialogComponent } from '../new-idea-confirmation-dia
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 import { saveAs } from 'file-saver';
+import { BehaviorSubject, forkJoin } from 'rxjs';
+import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-symbiocreation',
@@ -58,11 +60,31 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   isVisible: boolean = true;
   sliderStrengthValue: number = 160;
   sliderDistanceValue: number = 40;
-  sliderOrderValue: number = 4;
+  sliderOrderValue: number = 100;
 
   isModalGroupsOpen = false;
   isModalIdeasOpen = false;
   isModalOptionsOpen = false;
+
+  showFloatIdeaMenu: boolean = false;
+  showFloatGroupMenu: boolean = false;
+  showFloatStatMenu: boolean = false;
+
+  isSidenavGroupsOpen = false;
+  GroupOrParticipant: boolean = true;
+  
+  
+  // Stats
+  GroupParticipantStat: number = 1;//1:Group 2:Participant 3:TopUsuario 4: Tendencias
+  isSidenavStatsOpen = false;
+
+  private _symbiocreationId = new BehaviorSubject<string>(null);
+
+  totalUsers: number;
+  totalIdeas: number;
+
+  commonTermsRanking: any[] = [];
+  usersRanking: any[] = [];
 
   constructor(
     private router: Router, 
@@ -74,7 +96,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     private rSocketService: RSocketService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+
+    private analyticsService: AnalyticsService,
   ) {
     this.appUser = null;
     this.participant = null;
@@ -86,6 +110,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.getData();
 
     // this.toggleModalIdeas();
+
+    
   }
 
   ngAfterViewInit() {
@@ -124,6 +150,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           }
         }
       }
+
+      this.searchStats();
 
       this.sharedService.nextIsLoading(false);
       
@@ -336,6 +364,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   createUserNode() {
+
+    if( !this.participant ){
+      return;
+    }
+
     const dialogRef = this.dialog.open(NewIdeaConfirmationDialogComponent, {
       width: '350px'
     });
@@ -431,16 +464,46 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Funcion cuando se cambia/asigna grupo de una idea desde el control Grupo
+  // Para quitar el grupo de cualquier nodo hay que asignar como grupo 'none'
   onMyGroupChanged(myNode: Node) {
+    console.log("Falla")
+    console.log("myNode",myNode)
+    console.log("this.symbiocreation.id",this.symbiocreation.id)
+    console.log("myNode.id",myNode.id)
+    console.log("this.idGroupSelected",this.idGroupSelected)
+
     this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected ? this.idGroupSelected : 'none')
       .subscribe();
     const el = document.getElementById(myNode.id);
     el.hidden = true;
+
+    this.idGroupSelected = null;
+
   }
 
+  // Funcion cuando se cambia/asigna un grupo a una idea desde el area de trabajo
+  // Funciona
   onParentChanged(nodeIds: string[]) {
+    // console.log("Funciona")
+    // console.log("nodeIds",nodeIds)
+    // console.log("this.symbiocreation.id",this.symbiocreation.id)
+
+    
+    if( nodeIds[1] == 'none' ){
+      this.symbioService.setParentNode(this.symbiocreation.id, nodeIds[0], nodeIds[1])
+      .subscribe();
+
+      this.idGroupSelected = null;
+      return;
+    }
+
     let child = this.getNode(nodeIds[0]);
     let parent = this.getNode(nodeIds[1]);
+
+    // console.log("child",child)
+    // console.log("parent",parent)
+
 
     if (this.nodeAContainsNodeB(child, parent)) {
       this._snackBar.open('No se puede asignar. El grupo padre seleccionado es descendiente del nodo a modificar.', 'ok', {
@@ -451,6 +514,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
     this.symbioService.setParentNode(this.symbiocreation.id, nodeIds[0], nodeIds[1])
       .subscribe();
+
+    this.idGroupSelected = null;
   }
 
   onNodeDeleted(nodeId: string) {
@@ -737,6 +802,46 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     event.stopPropagation(); // Esto evita que el clic dentro del modal se propague al fondo
   }
 
+  
+  showFloatIdeaMenuBtn() {
+    this.showFloatGroupMenu = false;
+    this.showFloatStatMenu = false;
+    this.showFloatIdeaMenu = !this.showFloatIdeaMenu;
+  }
+
+  closeIdeaBtn() {
+    this.showFloatIdeaMenu = false;
+  }
+
+  createNewUserIdea() {
+    this.symbioService.createUserNode(this.symbiocreation.id, this.participant.user)
+          .subscribe();
+    this.showFloatIdeaMenu = false;
+  }
+
+
+  showFloatGroupMenuBtn() {
+    this.showFloatIdeaMenu = false;
+    this.showFloatStatMenu = false;
+    this.showFloatGroupMenu = !this.showFloatGroupMenu;
+  }
+
+  closeGroupBtn() {
+    this.showFloatGroupMenu = false;
+  }
+
+
+  showFloatStatMenuBtn() {
+    this.showFloatIdeaMenu = false;
+    this.showFloatGroupMenu = false;
+    this.showFloatStatMenu = !this.showFloatStatMenu;
+  }
+
+  closeStatBtn() {
+    this.showFloatStatMenu = false;
+  }
+
+
   toggleModalGroups() {
     this.isModalGroupsOpen = !this.isModalGroupsOpen;
   }
@@ -772,6 +877,41 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           .subscribe();
       }
     });
+  }
+
+  OpenGroupsSidenav(isGroup:number) {
+    this.showFloatIdeaMenu = false;
+    this.showFloatGroupMenu = false;
+    this.showFloatStatMenu = false;
+    this.GroupParticipantStat = isGroup;
+    this.isSidenavGroupsOpen = !this.isSidenavGroupsOpen;
+  }
+
+  closeSidebarGroupsBtn() {
+    this.isSidenavGroupsOpen = false;
+  }
+
+  searchStats(){
+
+    forkJoin({
+      countsSummary: this.analyticsService.getCountsSummarySymbiocreation(this.symbiocreation?.id),
+      commonTerms: this.analyticsService.getCommonTermsInSymbiocreation(this.symbiocreation?.id),
+      usersRanking: this.analyticsService.getUsersRankingSymbiocreation(this.symbiocreation?.id)
+    }).subscribe({
+      next: response => {
+        this.totalUsers = response.countsSummary.users;
+        this.totalIdeas = response.countsSummary.ideas;
+
+        this.commonTermsRanking = response.commonTerms;
+        this.usersRanking = response.usersRanking;
+
+        console.log("this.totalUsers",this.totalUsers)
+        console.log("this.totalIdeas",this.totalIdeas)
+        console.log("this.commonTermsRanking",this.commonTermsRanking)
+        console.log("this.usersRanking",this.usersRanking)
+      }
+    });
+
   }
 
 }

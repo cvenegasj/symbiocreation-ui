@@ -26,6 +26,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Output() nodeChangedName = new EventEmitter<string>();
   @Output() nodeChangedRole = new EventEmitter<string[]>();
   @Output() nodeChangedIdea = new EventEmitter<string>();
+  @Output() dblClickNewIdea = new EventEmitter();
 
   //participant: Participant;
   //myAncestries: Node[][];
@@ -38,7 +39,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Input() myAncestries: Node[][];
   @Input() currentStrength: number = 160;
   @Input() currentDistance: number = 40;
-  @Input() currentOrder: number = 4;
+  @Input() currentOrder: number = 100;
 
   groups: Node[];
   dimensions: DimensionsType;
@@ -106,6 +107,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     if (changes['data'] && !changes['data'].isFirstChange()) {
       this.removeChart();
       this.createChart();
+      // console.log("changes",changes['data'])
+      // console.log("cambios")
       this.runSimulation();
       this.groups = this.getGroups(this.data);
     }
@@ -193,7 +196,9 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr("width", this.dimensions.width)
         .attr("height", this.dimensions.height)
         .call(d3.zoom().scaleExtent([0.3, 3]).on("zoom", this.zoomed))
-        .on("dblclick.zoom", null);
+        .on("dblclick.zoom", null)
+        .on("dblclick", () => this.newIdeaClick())
+        ;
 
     // Deshabilita el clic derecho dentro del SVG
     this.wrapper.on('contextmenu', () => {
@@ -201,13 +206,24 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     });
 
     // Pintar cuadricula
-    // this.paintGrid()
+    this.paintTinyCirclesGrid()
         
     this.bounds = this.wrapper.append("g")
         .attr("transform", 'translate(' + this.dimensions.marginLeft + 'px, ' + this.dimensions.marginTop + 'px)');
 
     this.linkGroup = this.bounds.append('g').attr('class', 'links');
     this.nodeGroup = this.bounds.append('g').attr('class', 'nodes');
+  }
+
+
+  getLinksWithAttributes(links: any[]): any[] {
+    return links.map(link => {
+      return {
+        ...link,
+        parent: link.source.id,
+        child: link.target ? link.target.id : 'null'
+      };
+    });
   }
 
   runSimulation() {
@@ -218,39 +234,55 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       if (temp > this.maxNodeHeight) this.maxNodeHeight = temp;
     }
 
+    // console.log("this.data",this.data)
+
     //const root = d3.hierarchy(this.data);
     this.links = this.getLinks(this.data);
     //const nodes = root.descendants();
     this.nodes = this.getNodes(this.data);
+    // console.log("this.nodes",this.nodes)
     //const links = d3.hierarchy(this.data).links();
     this.nodesMap = this.mapIdToNodes(this.nodes);
 
     // console.log("this.nodes",this.nodes)
 
+    const nodesWithLinks = this.nodes.filter(node => 
+      (node.r > 24) && this.links.some( (link:any) => link.source.id === node.id || link.target.id === node.id)
+    );
+
     this.simulation = d3.forceSimulation(this.nodes)
       .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 130, 140))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
-      .force('charge', d3.forceManyBody().strength(-1*this.currentStrength))
+      // .force('charge', d3.forceManyBody().strength(-1*this.currentStrength))
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2))
-      .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.1))
-      .force("collide", d3.forceCollide().radius(this.currentDistance))
+      .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.001))
+      // .force("collide", d3.forceCollide().radius(this.currentDistance))
+      .force("collide", d3.forceCollide()
+        .radius( (d:any) => d.r*2 + this.currentDistance)  // Separación basada en el radio del nodo + currentDistance
+      )
       .force('grid', this.forceCustom())//Mueve a los nodos libres a una esquina
+      // .force('center-links', d3.forceRadial(0, this.dimensions.width / 2, this.dimensions.height / 2).strength(d => nodesWithLinks.includes(d) ? 0.1 : 0));// centra los nodos con enlaces
       // .force('custom', this.circularArrangementForce())
       ;
 
+    const linksWithAttributes = this.getLinksWithAttributes(this.links);
 
     // draw links
     this.linkElements = this.linkGroup
       .selectAll('line')
-      .data(this.links);
+      // .data(this.links);
+      .data(linksWithAttributes)
+      ;
     
     this.linkElements.exit().remove();
 
     const linkEnter = this.linkElements
       .enter()
       .append("line")
-        .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10))
-        // .style("stroke","black")
-      ;
+      .attr('parent', (d: any) => d.parent)
+      .attr('child', (d: any) => d.child)
+      .style("stroke-width", d => this.getGradientLinkWidth(d.source.height, this.maxNodeHeight, 1, 10))
+      // .on('contextmenu', d => this.deleteLine(d.child, 'none'))
+      // .style("stroke","black");
 
     this.linkElements = linkEnter.merge(this.linkElements);
     
@@ -376,7 +408,23 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .call(this.getBBox); // sets the bbox property on d
 
     
-    
+        
+
+
+    // Stroke: borde de los nodos
+    nodeEnter.append("circle","text")
+      .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
+      .attr("fill", "transparent")
+      .attr('r', d => d.r*3)
+      .on('click', d => this.openIdeaDetailSidenav(d))
+      .on('contextmenu', d => this.openNodeContextMenu(d))
+      // .on('click', d => console.log("wa"))
+      .on("mouseover", function(d) {
+        d3.select('#id' + d.id).classed("hover", true); // Añadir clase 'hover' al círculo de color
+      })
+      .on("mouseout", function(d) {
+        d3.select('#id' + d.id).classed("hover", false); // Quitar clase 'hover' del círculo de color
+      });
 
 
 
@@ -524,7 +572,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     console.log("windows.innerWidth",window.innerWidth)
     console.log("windows.innerHeight",window.innerHeight)
 
-    // this.paintGrid()
+    this.paintTinyCirclesGrid()
 
     this.runSimulation();
   }
@@ -757,11 +805,21 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
   // Cambiamos la fuerza al centro del svg que se aplica al usar el slider de fuerza
   private updateChargeStrength(strength: number, currentDistance: number, currentOrder: number): void {
+
+    const nodesWithLinks = this.nodes.filter(node => 
+      (node.r > 24) && this.links.some( (link:any) => link.source.id === node.id || link.target.id === node.id)
+    );
+
     this.simulation.force('charge', d3.forceManyBody()
       .strength(-1*this.currentStrength))
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2))
       .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.1))
-      .force("collide", d3.forceCollide().radius(this.currentDistance))
+      // .force("collide", d3.forceCollide().radius(this.currentDistance)) //Antiguo margen de los nodos
+      .force("collide", d3.forceCollide()
+        .radius( (d:any) => d.r*2 + this.currentDistance)  // Separación basada en el radio del nodo + currentDistance
+      )
+      .force('center-links', d3.forceRadial(0, this.dimensions.width / 2, this.dimensions.height / 2).strength(d => nodesWithLinks.includes(d) ? 0.1 : 0));
+
       // .force('grid', this.forceCustom())
     this.simulation.alpha(1).restart();  // Re-calienta y reinicia la simulación
   }
@@ -825,6 +883,32 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr('stroke', '#ccc')
         .attr('stroke-width', 1);
     }
+
+  }
+
+  // Funcion para pintar pequeños circulos en el svg
+  paintTinyCirclesGrid(){
+    let gridSize = 10;
+
+    // Selecciona o crea el grupo para el grid
+    let gridGroup = this.wrapper.select('.grid-group');
+    if (gridGroup.empty()) {
+      gridGroup = this.wrapper.insert('g', ':first-child').attr('class', 'grid-group');
+    } else {
+      // Limpia los elementos anteriores del grid
+      gridGroup.selectAll('circle').remove();
+    }
+
+    // Dibuja los puntos en las intersecciones
+    for (let y = 0; y <= this.dimensions.height; y += gridSize) {
+      for (let x = 0; x <= this.dimensions.width; x += gridSize) {
+        gridGroup.append('circle')
+          .attr('cx', x)
+          .attr('cy', y)
+          .attr('r', 0.5)  // Radio de 0.5px para un punto de 1px de diámetro
+          .attr('fill', '#000000');
+      }
+    }
   }
 
   // Funcion que pone a los nodos sin enlaces alrededor del centro en forma circular
@@ -834,7 +918,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         let unlinkedNodes = this.nodes.filter((node: any) => !this.links.some((link: any) => link.source.id === node.id || link.target.id === node.id));
     
         // Calcular el radio del círculo
-        let radius = this.currentStrength + Math.min(this.dimensions.width, this.dimensions.height) * this.currentOrder;
+        let radius = this.currentOrder*4 + this.currentStrength + Math.min(this.dimensions.width, this.dimensions.height)/4;
         let centerX = this.dimensions.width / 2;
         let centerY = this.dimensions.height / 2;
     
@@ -855,6 +939,16 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
 
-  
+  newIdeaClick(){
+    this.dblClickNewIdea.emit();
+  }
+
+  deleteLine(childId: string, parentId: string){
+        
+        // console.log('parentId:', parentId);
+        // console.log('childId:', childId);
+        this.parentChanged.emit([childId, parentId]);
+    
+  }
 
 }

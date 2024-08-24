@@ -20,7 +20,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-create-symbio',
   templateUrl: './create-symbio.component.html',
-  styleUrls: ['./create-symbio.component.css']
+  styleUrls: ['./create-symbio.component.scss']
 })
 export class CreateSymbioComponent implements OnInit {
 

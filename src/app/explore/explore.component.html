@@ -9,10 +9,10 @@
     </div>
 
     <div class="container-80">
-        <mat-button-toggle-group [(ngModel)]="filter" (change)="filterChanged()">
-            <mat-button-toggle value="all">Todas</mat-button-toggle>
-            <mat-button-toggle value="upcoming">Próximas</mat-button-toggle>
-            <mat-button-toggle value="past">Pasadas</mat-button-toggle>
+        <mat-button-toggle-group [(ngModel)]="filter" (change)="filterChanged()" class="btn-group-explore">
+            <mat-button-toggle class="btn-explore" value="all">Todas</mat-button-toggle>
+            <mat-button-toggle class="btn-explore" value="upcoming">Próximas</mat-button-toggle>
+            <mat-button-toggle class="btn-explore" value="past">Pasadas</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 
@@ -27,12 +27,12 @@
 
             <div class="centered font-13 gray-300 uppercase" style="height: 30px;">
                 <!--<mat-icon *ngIf="s.dateTime" class="font-16">event</mat-icon>-->
-                <span *ngIf="s.dateTime">{{s.dateTime | date : 'E d MMM' : 'UTC'}}</span>
-                <span *ngIf="s.hasStartTime">, {{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
+                <span class="txt-2" *ngIf="s.dateTime">{{s.dateTime | date : 'E d MMM' : 'UTC'}}</span>
+                <span class="txt-2" *ngIf="s.hasStartTime">, {{s.dateTime | date : 'shortTime' : 'UTC'}}</span>
             </div> 
 
             <div class="centered font-20 bold" style="color: white; height: 48px;">
-                <a [routerLink]="['/symbiocreation/', s.id]" class="ellipsed-2 link-hvr-underline">{{s.name}}</a>
+                <a [routerLink]="['/symbiocreation/', s.id]" class="ellipsed-2 link-hvr-underline txt-1">{{s.name}}</a>
             </div>
 
             <div *ngIf="getParticipantsToDisplay(s.participants) as participantsToDisplay" 
@@ -47,7 +47,7 @@
                     </cl-image>
 
                     <span *ngIf="participantsToDisplay.length > 0 && s.participants.length - participantsToDisplay.length > 0" 
-                        class="font-12 gray-300" style="position: absolute; top: 10px;" 
+                        class="font-12 gray-300 txt-2" style="position: absolute; top: 10px;" 
                         [style.left]="(participantsToDisplay.length - 1) * 24 + 45 + 'px'">
                         {{s.participants.length - participantsToDisplay.length}} más
                     </span>
@@ -56,8 +56,8 @@
 
             <div style="margin-top: 20px; height: 30px;">
                 <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="float: left; width: 151px;">
-                    <mat-icon class="font-17 gray-300" style="position: relative; top: 4px;">update</mat-icon>
-                    <span class="font-12 gray-300" style="position: relative; left: -4px;">{{getTimeAgo(s.lastModified)}}</span>
+                    <mat-icon class="font-17 gray-300 txt-2" style="position: relative; top: 4px;">update</mat-icon>
+                    <span class="font-12 gray-300 txt-2" style="position: relative; left: -4px;">{{getTimeAgo(s.lastModified)}}</span>
                 </div>
 
                 <!--<button mat-stroked-button

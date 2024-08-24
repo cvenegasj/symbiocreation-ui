@@ -17,8 +17,9 @@ import { OnedotComponent } from './onedot/onedot.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard/my-symbios', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], 
     children: [
+      { path: '', redirectTo: 'my-symbios', pathMatch: 'full' },
       { path: 'my-symbios', component: MySymbiocreationsComponent },
       { path: 'my-onedots', component: MyOnedotsComponent },
       { path: 'stats-overview', component: StatsOverviewComponent },
