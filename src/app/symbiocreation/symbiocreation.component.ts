@@ -25,6 +25,8 @@ import { NewIdeaConfirmationDialogComponent } from '../new-idea-confirmation-dia
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 import { saveAs } from 'file-saver';
+import { BehaviorSubject, forkJoin } from 'rxjs';
+import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
   selector: 'app-symbiocreation',
@@ -58,13 +60,31 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   isVisible: boolean = true;
   sliderStrengthValue: number = 160;
   sliderDistanceValue: number = 40;
-  sliderOrderValue: number = 4;
+  sliderOrderValue: number = 100;
 
   isModalGroupsOpen = false;
   isModalIdeasOpen = false;
   isModalOptionsOpen = false;
 
-  showText: boolean = false;
+  showFloatIdeaMenu: boolean = false;
+  showFloatGroupMenu: boolean = false;
+  showFloatStatMenu: boolean = false;
+
+  isSidenavGroupsOpen = false;
+  GroupOrParticipant: boolean = true;
+  
+  
+  // Stats
+  GroupParticipantStat: number = 1;//1:Group 2:Participant 3:TopUsuario 4: Tendencias
+  isSidenavStatsOpen = false;
+
+  private _symbiocreationId = new BehaviorSubject<string>(null);
+
+  totalUsers: number;
+  totalIdeas: number;
+
+  commonTermsRanking: any[] = [];
+  usersRanking: any[] = [];
 
   constructor(
     private router: Router, 
@@ -76,7 +96,9 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     private rSocketService: RSocketService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+
+    private analyticsService: AnalyticsService,
   ) {
     this.appUser = null;
     this.participant = null;
@@ -88,6 +110,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.getData();
 
     // this.toggleModalIdeas();
+
+    
   }
 
   ngAfterViewInit() {
@@ -126,6 +150,8 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           }
         }
       }
+
+      this.searchStats();
 
       this.sharedService.nextIsLoading(false);
       
@@ -776,9 +802,45 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     event.stopPropagation(); // Esto evita que el clic dentro del modal se propague al fondo
   }
 
-  showTextBtn() {
-    this.showText = !this.showText;
+  
+  showFloatIdeaMenuBtn() {
+    this.showFloatGroupMenu = false;
+    this.showFloatStatMenu = false;
+    this.showFloatIdeaMenu = !this.showFloatIdeaMenu;
   }
+
+  closeIdeaBtn() {
+    this.showFloatIdeaMenu = false;
+  }
+
+  createNewUserIdea() {
+    this.symbioService.createUserNode(this.symbiocreation.id, this.participant.user)
+          .subscribe();
+    this.showFloatIdeaMenu = false;
+  }
+
+
+  showFloatGroupMenuBtn() {
+    this.showFloatIdeaMenu = false;
+    this.showFloatStatMenu = false;
+    this.showFloatGroupMenu = !this.showFloatGroupMenu;
+  }
+
+  closeGroupBtn() {
+    this.showFloatGroupMenu = false;
+  }
+
+
+  showFloatStatMenuBtn() {
+    this.showFloatIdeaMenu = false;
+    this.showFloatGroupMenu = false;
+    this.showFloatStatMenu = !this.showFloatStatMenu;
+  }
+
+  closeStatBtn() {
+    this.showFloatStatMenu = false;
+  }
+
 
   toggleModalGroups() {
     this.isModalGroupsOpen = !this.isModalGroupsOpen;
@@ -815,6 +877,41 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
           .subscribe();
       }
     });
+  }
+
+  OpenGroupsSidenav(isGroup:number) {
+    this.showFloatIdeaMenu = false;
+    this.showFloatGroupMenu = false;
+    this.showFloatStatMenu = false;
+    this.GroupParticipantStat = isGroup;
+    this.isSidenavGroupsOpen = !this.isSidenavGroupsOpen;
+  }
+
+  closeSidebarGroupsBtn() {
+    this.isSidenavGroupsOpen = false;
+  }
+
+  searchStats(){
+
+    forkJoin({
+      countsSummary: this.analyticsService.getCountsSummarySymbiocreation(this.symbiocreation?.id),
+      commonTerms: this.analyticsService.getCommonTermsInSymbiocreation(this.symbiocreation?.id),
+      usersRanking: this.analyticsService.getUsersRankingSymbiocreation(this.symbiocreation?.id)
+    }).subscribe({
+      next: response => {
+        this.totalUsers = response.countsSummary.users;
+        this.totalIdeas = response.countsSummary.ideas;
+
+        this.commonTermsRanking = response.commonTerms;
+        this.usersRanking = response.usersRanking;
+
+        console.log("this.totalUsers",this.totalUsers)
+        console.log("this.totalIdeas",this.totalIdeas)
+        console.log("this.commonTermsRanking",this.commonTermsRanking)
+        console.log("this.usersRanking",this.usersRanking)
+      }
+    });
+
   }
 
 }

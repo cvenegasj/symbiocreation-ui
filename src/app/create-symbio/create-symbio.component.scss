@@ -1,0 +1,116 @@
+
+
+
+// Nuevo diseño figma - Mayra Ascencio
+
+.container-top{
+    display: flex;
+    justify-content: center;
+}
+
+.container-title{
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-left: 0;
+
+    .subtitle{
+        font-size: 12px;
+        font-weight: 400;
+        color: #5F656D;
+    }
+    .title{
+        font-size: 20px;
+        font-weight: 700;
+        color: #5F656D;
+        letter-spacing: 1px;
+    }
+}
+
+.form-register{
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    width: 60%;
+    margin-top: 40px;
+
+    .container-card{
+        background-color: #FAFAFA;
+        border: 1px solid #E91D63;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+
+    .row-name{
+
+        .form-name{
+            width: 60%;
+        }
+        .checkbox-privado{
+            width: 40%;
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+    }
+
+    .row-place{
+        .form-place{
+            width: 60%;
+            padding-right: 20px;
+        }
+    }
+
+    .row-fecha{
+        .form-fecha{
+            width: 40%;
+        }
+        .form-checkbox{
+            width: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .btn-detail{
+        color: #2758D2;
+    }
+
+    .container-footer{
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+
+        .btn-cancel{
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #5F656D;
+        }
+        .btn-create{
+            background-color: #E91D63;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100px;
+            letter-spacing: 1px;
+            border-radius: 10px;
+            margin-left: 14px;
+        }
+    }
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    .form-register{
+        width: 100%;
+
+        .container-card{
+            padding: 10px;
+        }
+
+    }
+
+}

@@ -1,8 +1,8 @@
-<div class="container-80 container-general" style="">
+<div class="container-80 container-general ranking-users" style="">
 
     <h2 class="font-26 bolder gray-900 container-header">Top 100 Usuarios</h2>
 
-    <mat-list class="list-ranking" style="margin-top: 40px;">
+    <mat-list class="list-ranking">
         <!-- <h3 matSubheader>
             <span fxFlex></span>
             <span fxFlex="15">Número de participantes</span>
@@ -17,21 +17,21 @@
                     <img *ngIf="i === 0" src="assets/jesus-img.svg" width="25" 
                         style="position: relative; top: 2px;" alt="God icon" />
 
-                    <span class="bolder font-26 pink-A200" style="margin-left: 7px;">{{ i + 1 }}</span>
+                    <span class="bolder font-26 pink-A200 index-number">{{ i + 1 }}</span>
                 </div>
 
-                <div fxLayout="column">
+                <div fxLayout="column" class="container-data">
                     <div class="container-names" style="padding-left: 5px;">
-                        <span class="bold font-18 cyan-color-1">
+                        <span class="bold font-18 cyan-color-1 name">
                             {{ user.name || user.firstName + " " + user.lastName }}
                         </span>
-                        <span class="font-13 gray-600" style="margin-left: 2px;">
+                        <span class="font-13 gray-600 email" style="margin-left: 2px;">
                             {{ user.email }}
                           </span>
                     </div>
         
                     <div style="padding-left: 5px;">
-                        <span class="bold font-14 gray-700">PUNTAJE: {{ user.score }}</span>
+                        <span class="bold font-14 gray-700 score">PUNTAJE: {{ user.score }}</span>
                     </div>
                 </div>
             </div>

@@ -36,6 +36,12 @@ export class SymbiocreationsStatsComponent implements OnInit {
   
           this.commonTermsRanking = response.commonTerms;
           this.usersRanking = response.usersRanking;
+
+          // console.log("this.totalUsers",this.totalUsers)
+          // console.log("this.totalIdeas",this.totalIdeas)
+          // console.log("this.commonTermsRanking",this.commonTermsRanking)
+          // console.log("this.usersRanking",this.usersRanking)
+
         }
       });
     });

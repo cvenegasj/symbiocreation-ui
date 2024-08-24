@@ -7,6 +7,16 @@
     margin-bottom: 15px;
 }
 
+.container-item-symbio{
+    margin-right: 7px;
+}
+
+.container-add-symbio{
+    
+    .btn-add-symbio{
+        display: none;
+    }
+}
 
 @media only screen and (max-width: 768px) {
 
@@ -44,5 +54,103 @@
     }
     
     
+
+}
+
+
+// Nuevo diseño figma - Mayra Ascencio
+
+.btn-add-symbio-2{
+    background-color: #E91D63;
+    color: #FFFFFF;
+}
+
+.container-add-symbio{
+    position: absolute;
+    left: 26px;    
+}
+
+.main-title{
+    text-align: center;
+    line-height: 30px !important;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #575757;
+}
+
+.container-group-symbio{
+    display: flex !important;
+    
+
+    .container-item-symbio{
+        color: white;
+        justify-content: space-between;
+        width: 200px;
+        
+        .label{
+            width: auto;
+        }
+        .value{
+            text-align: center;
+            font-size: 30px;
+            width: auto;
+        }
+    }
+
+    .single-stat-my-symbios-1{
+        background-color: #E91D63;
+    }
+
+    .single-stat-my-symbios-2{
+        background-color: #EB71A9;
+    }
+
+    .single-stat-my-symbios-3{
+        background-color: #E596B8;
+    }
+
+    .single-stat-my-symbios-4{
+        background-color: #EECBD2;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    .container-my-symbio{
+        .title-symbio{
+            text-align: center;
+            color: #575757;
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+
+    .container-add-symbio{
+        .btn-add-symbio{
+            border: 1px solid #888888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 34px;
+            width: 34px;
+            mat-icon{
+                font-weight: 900;
+                font-size: 16px;
+                color: #575757;
+            }
+        }
+    }
+
+    .container-group-symbio{
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-gap: 10px !important;
+        justify-items: center !important;
+
+        .container-item-symbio{
+            width: 122px;
+            margin-right: 0;
+        }
+    }
 
 }

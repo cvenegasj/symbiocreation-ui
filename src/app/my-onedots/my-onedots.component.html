@@ -4,7 +4,7 @@
         <h2 class="font-26 bolder gray-900" style="flex: 1 1 0%;">Mis SymbioGames</h2>
 
         <div>
-            <button routerLink="/create-onedot" mat-raised-button color="primary">
+            <button routerLink="/create-onedot" mat-raised-button color="primary" style="background-color: #E91D63;">
                 <mat-icon>add</mat-icon>
                 <span>Nuevo SymbioGame</span>
             </button>
@@ -27,7 +27,7 @@
     
             <mat-list-item *ngFor="let o of oneDots; index as i; last as last" style="margin-top: 70px; margin-bottom: 50px;" class="symbio-item">
                <div matLine class="grid-group">
-                    <a [routerLink]="['/onedot/', o.id]" class="bold font-18 teal-700 grid-name" style="max-width: 55%; padding-left: 5px;">
+                    <a [routerLink]="['/onedot/', o.id]" class="bold font-18 teal-700 grid-name" style="max-width: 55%; padding-left: 5px;color: #287987;">
                         {{o.name}}
                     </a>
         

@@ -15,3 +15,7 @@
 ✔ Se ha corregido el error que solo se podia ver el detalle al hacer click en los lugares donde no estan los nombres en los nodos
 ✔ Corregido redireccionamiento al ingresar al link /dashboard
 ✔ Agregado opción "Sin Grupo" para los nodos
+
+# 12/08/24 mramirez
+✔ Se ha rediseñado la plataforma con el nuevo diseño del figma
+⚠ Pendiente refactorizar código luego de la migración a una versión actual, el código agregado es html css y js, no se han creado nuevos módulos
