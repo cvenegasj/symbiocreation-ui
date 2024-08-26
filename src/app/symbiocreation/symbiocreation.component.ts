@@ -506,7 +506,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
 
     if (this.nodeAContainsNodeB(child, parent)) {
-      this._snackBar.open('No se puede asignar. El grupo padre seleccionado es descendiente del nodo a modificar.', 'ok', {
+      this._snackBar.open('No se puede asignar. El grupo seleccionado es descendiente del nodo a modificar.', 'ok', {
         duration: 2000,
       });
       return;
