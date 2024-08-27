@@ -20,7 +20,7 @@ import * as moment from 'moment-timezone';
 @Component({
   selector: 'app-create-symbio',
   templateUrl: './create-symbio.component.html',
-  styleUrls: ['./create-symbio.component.css']
+  styleUrls: ['./create-symbio.component.scss']
 })
 export class CreateSymbioComponent implements OnInit {
 
@@ -170,6 +170,7 @@ export class CreateSymbioComponent implements OnInit {
   }
 
   onTzSelected(tz) {
+    console.log(tz);
     this.eventTz = tz.nameValue;
   }
 

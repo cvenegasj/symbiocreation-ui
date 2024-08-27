@@ -7,7 +7,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-// import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -26,6 +25,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSliderModule } from '@angular/material/slider';
 
 
 @NgModule({
@@ -55,6 +55,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatProgressBarModule,
     MatPaginatorModule,
     MatAutocompleteModule,
+    MatSliderModule,
 
   ],
   exports: [
@@ -84,6 +85,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatPaginatorModule,
     MatAutocompleteModule,
     MatTabsModule,
+    MatSliderModule,
     
   ],
 })

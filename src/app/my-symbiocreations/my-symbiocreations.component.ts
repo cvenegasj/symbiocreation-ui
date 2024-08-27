@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Symbiocreation, User } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
-import { tap, concatMap } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedService } from '../services/shared.service';
 import { AnalyticsService } from '../services/analytics.service';
@@ -94,11 +93,14 @@ export class MySymbiocreationsComponent implements OnInit {
   }
 
   toggleViewMode() {
+    console.log("was: ", this.isGridViewOn);
     this.isGridViewOn = !this.isGridViewOn;
+    console.log("is: ", this.isGridViewOn);
 
     this.auth.userProfile$.pipe(
       concatMap(usrProfile => this.userService.getUserByEmail(usrProfile.email)),
       concatMap(user => {
+        console.log(user);
         user.isGridViewOn = this.isGridViewOn;
         return this.userService.updateUser(user);
       })

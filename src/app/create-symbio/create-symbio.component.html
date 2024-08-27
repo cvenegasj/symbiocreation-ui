@@ -38,9 +38,10 @@
                 <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
             </mat-form-field>
 
-            <ng-moment-timezone-picker (onselect)="onTzSelected($event)" 
-                            [customPlaceholderText]="'Zona horaria'"
-                            [customNotFoundText]="'No se encontró zona'">
+            <ng-moment-timezone-picker
+            
+                [customPlaceholderText]="'Zona horaria'"
+                [customNotFoundText]="'No se encontró zona'">
             </ng-moment-timezone-picker>
         </div>
 
