@@ -206,7 +206,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     });
 
     // Pintar cuadricula
-    this.paintTinyCirclesGrid()
+    // this.paintTinyCirclesGrid()
         
     this.bounds = this.wrapper.append("g")
         .attr("transform", 'translate(' + this.dimensions.marginLeft + 'px, ' + this.dimensions.marginTop + 'px)');
@@ -318,21 +318,58 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
         .attr('r', d => d.r*3)
-        .on('click', d => this.openIdeaDetailSidenav(d))
         .attr("class", "circle")
-        
-        .on('contextmenu', d => this.openNodeContextMenu(d))
-        // .on('mouseover', d => d3.select(d3.event.currentTarget).attr("fill", '#304FFE'))
-        // .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
+        .attr("filter", "url(#drop-shadow)"); // Agregar filtro solo al primer círculo
 
-        .on("mouseover", function() {
-          d3.select(this).classed("hover", true); // Añadir clase 'hover'
-        })
-        .on("mouseout", function() {
-          d3.select(this).classed("hover", false); // Quitar clase 'hover'
-        });
+
+
+
+
+    const filter = nodeEnter.append("filter")
+        .attr("id", "drop-shadow")
+        .attr("x", "-50%")  // Extiende el área del filtro hacia la izquierda
+        .attr("y", "-50%")  // Extiende el área del filtro hacia arriba
+        .attr("width", "200%")  // Aumenta el ancho del filtro
+        .attr("height", "200%");  // Aumenta la altura del filtro
+    
+    filter.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", 5) // Desenfoque para la sombra
+        .attr("result", "blur");
+    
+    filter.append("feOffset")
+        .attr("in", "blur")
+        .attr("dx", 0)
+        .attr("dy", 0)
+        .attr("result", "offsetBlur");
+    
+    filter.append("feFlood")
+        .attr("flood-color", "#A7A7A7")  // Cambia el color de la sombra (gris claro)
+        .attr("result", "color");
+    
+    filter.append("feComposite")
+        .attr("in", "color")
+        .attr("in2", "offsetBlur")
+        .attr("operator", "in")
+        .attr("result", "shadow");
+    
+    filter.append("feComponentTransfer")
+        .append("feFuncA")
+        .attr("type", "linear")
+        .attr("slope", 0.5);  // Ajusta la opacidad de la sombra (0.5 es 50% opaco)
+    
+    filter.append("feMerge").selectAll("feMergeNode")
+        .data(["shadow", "SourceGraphic"])
+        .enter()
+        .append("feMergeNode")
+        .attr("in", d => d);
+
+
 
     
+
+
+
     
     // node label for ambassadors
     nodeEnter.append("text")
@@ -346,10 +383,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr('dy', d => d.idea?.title ? -d.r - 17 : -d.r - 3)
         .call(this.getBBox); // sets the bbox property on d.
 
-    
-    // console.log("this.nodes",this.nodes)
-
-        // text background for ambassador labels
+    // text background for ambassador labels
     nodeEnter
         .filter(function(d) { return d.role == 'ambassador'; })
         .insert('rect', "circle + *")
@@ -376,14 +410,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr('dy', d => d.idea?.title ? 0 : 0)
         .attr("dominant-baseline", "middle")
         .call(this.getBBox); // sets the bbox property on d
-
-    // text background for idea
-    // nodeEnter.insert('rect', 'text')
-    //     .attr('x', d => d.bbox.x - 2)
-    //     .attr('y', d => d.bbox.y - 1)
-    //     .attr('width', d => d.bbox.width + 4)
-    //     .attr('height', d => d.bbox.height + 2)
-    //     .attr('class', 'bbox-name')
 
       // text background for idea
     nodeEnter.append('rect')
@@ -440,11 +466,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
           .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
       });
 
-
-      // this.nodes.forEach(node => {
-      //   // node.fx = node.links && node.links.length > 0 ? 500 : 500 + this.dimensions.width / 2;
-      //   // node.fy = node.links && node.links.length > 0 ? 500 : 500 + this.dimensions.height / 2;
-      // });
   }
 
   getBBox(selection) {
@@ -572,7 +593,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     console.log("windows.innerWidth",window.innerWidth)
     console.log("windows.innerHeight",window.innerHeight)
 
-    this.paintTinyCirclesGrid()
+    // this.paintTinyCirclesGrid()
 
     this.runSimulation();
   }

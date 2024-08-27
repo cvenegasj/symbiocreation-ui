@@ -16,6 +16,10 @@
 ✔ Corregido redireccionamiento al ingresar al link /dashboard
 ✔ Agregado opción "Sin Grupo" para los nodos
 
-# 12/08/24 mramirez
+# 23/08/24 mramirez
 ✔ Se ha rediseñado la plataforma con el nuevo diseño del figma
 ⚠ Pendiente refactorizar código luego de la migración a una versión actual, el código agregado es html css y js, no se han creado nuevos módulos
+
+# 26/08/24 mramirez
+✔ Quitado puntos en el área de trabajo de las symbiocreaciones
+✔ Agregado sombras para los nodos de las symbiocreaciones
