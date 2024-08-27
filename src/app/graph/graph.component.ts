@@ -260,8 +260,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.linkElements = this.linkGroup
       .selectAll('line')
       // .data(this.links);
-      .data(linksWithAttributes)
-      ;
+      .data(linksWithAttributes);
     
     this.linkElements.exit().remove();
 
@@ -294,6 +293,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
         .attr('r', d => d.r * 3)
+        .attr("filter", "url(#drop-shadow)") // Agregar filtro solo al primer círculo
         // .attr("class", "circle")
         .on('click', d => this.openIdeaDetailSidenav(d))  
         .on('contextmenu', d => this.openNodeContextMenu(d))
@@ -301,6 +301,46 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         // .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
         .on("mouseover", () => d3.select(d3.event.currentTarget).classed("hover", true)) // Añadir clase 'hover'
         .on("mouseout", () => d3.select(d3.event.currentTarget).classed("hover", false)); // Quitar clase 'hover'
+        
+
+    const filter = nodeEnter.append("filter")
+        .attr("id", "drop-shadow")
+        .attr("x", "-50%")  // Extiende el área del filtro hacia la izquierda
+        .attr("y", "-50%")  // Extiende el área del filtro hacia arriba
+        .attr("width", "200%")  // Aumenta el ancho del filtro
+        .attr("height", "200%");  // Aumenta la altura del filtro
+    
+    filter.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", 5) // Desenfoque para la sombra
+        .attr("result", "blur");
+    
+    filter.append("feOffset")
+        .attr("in", "blur")
+        .attr("dx", 0)
+        .attr("dy", 0)
+        .attr("result", "offsetBlur");
+    
+    filter.append("feFlood")
+        .attr("flood-color", "#A7A7A7")  // Cambia el color de la sombra (gris claro)
+        .attr("result", "color");
+    
+    filter.append("feComposite")
+        .attr("in", "color")
+        .attr("in2", "offsetBlur")
+        .attr("operator", "in")
+        .attr("result", "shadow");
+    
+    filter.append("feComponentTransfer")
+        .append("feFuncA")
+        .attr("type", "linear")
+        .attr("slope", 0.5);  // Ajusta la opacidad de la sombra (0.5 es 50% opaco)
+    
+    filter.append("feMerge").selectAll("feMergeNode")
+        .data(["shadow", "SourceGraphic"])
+        .enter()
+        .append("feMergeNode")
+        .attr("in", d => d);
 
     
     // node label for ambassadors
