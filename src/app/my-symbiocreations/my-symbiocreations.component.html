@@ -2,28 +2,38 @@
 
     <div class="container-90" style="margin-top: 20px;">
 
-        <h2 class="font-26 bolder gray-900">Mis Stats</h2>
+        <!-- <h2 class="font-26 bolder gray-900 main-title">Mis Stats</h2> -->
 
-        <div class="container-group-symbio" style="margin-top: 20px;padding-bottom: 10px;" fxLayout="row" fxLayoutGap="7px">
+        <div>
+            <div class="container-add-symbio">
+                <button class="btn-add-symbio" mat-icon-button routerLink="/create" >
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+            <h2 class="font-26 bolder gray-900 main-title">Mis Stats</h2>
+        </div>
+
+
+        <div class="container-group-symbio" style="margin-top: 20px;padding-bottom: 10px;" fxLayout="row">
             <div class="single-stat-my-symbios-1 container-item-symbio">
                 <span class="label">Puntaje</span> 
                 <br class="oculto-mobile"/>
                 <span class="value">{{ score }}</span>
             </div>
     
-            <div class="single-stat-my-symbios-2">
+            <div class="single-stat-my-symbios-2 container-item-symbio">
                 <span class="label">Total Simbiocreaciones</span> 
                 <br class="oculto-mobile"/>
                 <span class="value">{{ totalSymbiocreations }}</span>
             </div>
     
-            <div class="single-stat-my-symbios-3">
+            <div class="single-stat-my-symbios-3 container-item-symbio">
                 <span class="label">Total Ideas</span> 
                 <br class="oculto-mobile"/>
                 <span class="value">{{ totalIdeas }}</span>
             </div>
     
-            <div class="single-stat-my-symbios-4">
+            <div class="single-stat-my-symbios-4 container-item-symbio">
                 <span class="label">Grupos como Embajador</span> 
                 <br class="oculto-mobile"/>
                 <span class="value">{{ totalGroupsAsAmbassador }}</span>
@@ -32,7 +42,7 @@
     </div>
 
     <div class="container-90 container-my-symbio" style="margin-top: 20px; margin-bottom: 15px;box-sizing: border-box;display: flex;">
-        <h2 class="font-26 bolder gray-900" style="flex: 1 1 0%;">Mis Simbiocreaciones</h2>
+        <h2 class="font-26 bolder gray-900 title-symbio" style="flex: 1 1 0%;">Mis Simbiocreaciones</h2>
 
         <div style="display: flex; flex-direction: row; align-items: center;">
             <button *ngIf="!isGridViewOn"
@@ -51,7 +61,7 @@
                 <mat-icon>view_list</mat-icon>
             </button>
 
-            <button routerLink="/create" mat-raised-button color="accent">
+            <button class="btn-add-symbio-2" routerLink="/create" mat-raised-button color="accent">
                 <mat-icon>add</mat-icon>
                 <span>Nueva simbiocreación</span>
             </button>

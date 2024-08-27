@@ -26,12 +26,12 @@
   </mat-form-field>
     
     <div class="centered" style="padding-bottom: 25px;">
-      <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="openCamera()">
+      <button mat-raised-button color="accent" style="margin-right: 5px;background-color: #E91D63; color: #FFFFFF;" (click)="openCamera()">
         <mat-icon>camera_alt</mat-icon>
         <span>Tomar foto</span>
       </button>
 
-      <button mat-raised-button color="accent" (click)="imageInput.click()">
+      <button mat-raised-button color="accent" style="background-color: #E91D63; color: #FFFFFF;" (click)="imageInput.click()">
         <mat-icon>add_photo_alternate</mat-icon>
         <span>Agregar imagen</span>
       </button>
@@ -56,5 +56,5 @@
 <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancelar</button>
     <span fxFlex></span>
-    <button #okButton mat-flat-button color="accent" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description">OK</button>
+    <button #okButton mat-flat-button color="accent" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description" class="btn-ok">OK</button>
 </mat-dialog-actions>

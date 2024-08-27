@@ -1,71 +1,78 @@
-<div style="padding: 15px;">
-    <div class="container-80" style="margin-top: 40px; margin-bottom: 35px;">
-        <h2 class="font-26 bolder gray-900" style="display: inline-block;">Nueva simbiocreación</h2>
-    </div>
+<div style="padding: 15px;" class="container-top">
     
-    <form #form="ngForm" (ngSubmit)="onSubmit()" class="container-60">
-        <div fxLayout="row">
-            <mat-form-field fxFlex="80" style="padding-right: 20px;">
-                <mat-label>Nombre de la simbiocreación</mat-label>
-                <input matInput cdkFocusInitial type="text" required [(ngModel)]="model.name" name="name">
-            </mat-form-field>
+    
+    <form #form="ngForm" (ngSubmit)="onSubmit()" class="container-60 form-register">
 
-            <mat-checkbox fxFlex="20" [(ngModel)]="isPrivate" name="isPrivate">Es un evento privado</mat-checkbox>
-        </div>
+        
 
-        <div>
-            <mat-form-field style="width: 80%; padding-right: 20px;">
-                <mat-label>Lugar</mat-label>
-                <input matInput type="text" [(ngModel)]="model.place" name="place">
-            </mat-form-field>
-        </div>
+        <div class="container-card">
 
-        <div fxLayout="row">
-            <mat-form-field appearance="fill" style="padding-right: 10px;">
-                <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
+            <div class="container-80 container-title">
+                <div class="subtitle">Simbiocreaciones</div>
+                <h2 class="font-26 bolder gray-900 title" style="display: inline-block;">Nueva simbiocreación</h2>
+            </div>
+
+            <div fxLayout="row" class="row-name">
+                <mat-form-field style="padding-right: 20px;" class="form-name">
+                    <mat-label>Nombre de la simbiocreación</mat-label>
+                    <input matInput cdkFocusInitial type="text" required [(ngModel)]="model.name" name="name">
+                </mat-form-field>
+
+                <mat-checkbox fxFlex="20" [(ngModel)]="isPrivate" name="isPrivate" class="checkbox-privado">Privado</mat-checkbox>
+            </div>
+
+            <div class="row-place">
+                <mat-form-field class="form-place">
+                    <mat-label>Lugar</mat-label>
+                    <input matInput type="text" [(ngModel)]="model.place" name="place">
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" class="row-fecha">
+                <mat-form-field appearance="fill" style="padding-right: 10px;" class="form-fecha">
+                    <mat-label>Fecha</mat-label>
+                    <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
 
                 <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
                 <mat-datepicker #datePicker></mat-datepicker>
             </mat-form-field>
 
-            <mat-checkbox fxFlex="20" [(ngModel)]="model.hasStartTime" name="hasStartTime">Establecer hora de inicio</mat-checkbox>
-        </div>
+                <mat-checkbox [(ngModel)]="model.hasStartTime" name="hasStartTime" class="form-checkbox">Establecer hora de inicio</mat-checkbox>
+            </div>
 
-        <div *ngIf="model.hasStartTime" fxLayout="row">
-            <mat-form-field appearance="fill" style="padding-right: 10px;">
-                <mat-label>Hora</mat-label>
-                <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
-            </mat-form-field>
+            <div *ngIf="model.hasStartTime" fxLayout="row">
+                <mat-form-field appearance="fill" style="padding-right: 10px;">
+                    <mat-label>Hora</mat-label>
+                    <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
+                </mat-form-field>
 
-            <ng-moment-timezone-picker
-            
-                [customPlaceholderText]="'Zona horaria'"
-                [customNotFoundText]="'No se encontró zona'">
-            </ng-moment-timezone-picker>
-        </div>
+                <ng-moment-timezone-picker (onselect)="onTzSelected($event)" 
+                                [customPlaceholderText]="'Zona horaria'"
+                                [customNotFoundText]="'No se encontró zona'">
+                </ng-moment-timezone-picker>
+            </div>
 
-        <div>
-            <mat-form-field fxFlex appearance="fill">
-                <mat-label>Descripción</mat-label>
-                <textarea matInput [(ngModel)]="model.description" name="description" rows="9"></textarea>
-            </mat-form-field>
-        </div>
+            <div>
+                <mat-form-field fxFlex appearance="fill">
+                    <mat-label>Descripción</mat-label>
+                    <textarea matInput [(ngModel)]="model.description" name="description" rows="9"></textarea>
+                </mat-form-field>
+            </div>
 
 
-        <!-- More details of event -->
-        <div style="text-align: right;">
-            <button type="button" mat-button color="primary" (click)="detailsOpened = !detailsOpened">
-                {{detailsOpened ? 'Menos' : 'Más'}} detalles
-            </button>
-        </div>
+            <!-- More details of event -->
+            <div style="text-align: right;">
+                <button type="button" mat-button color="primary" (click)="detailsOpened = !detailsOpened" class="btn-detail">
+                    {{detailsOpened ? 'Menos' : 'Más'}} detalles
+                </button>
+            </div>
 
-        <div *ngIf="detailsOpened">
-            <mat-form-field fxFlex>
-                <mat-label>Link con información del evento</mat-label>
-                <input matInput type="url" [(ngModel)]="model.infoUrl" name="infoUrl">
-            </mat-form-field>
-        </div>
+            <div *ngIf="detailsOpened">
+                <mat-form-field fxFlex>
+                    <mat-label>Link con información del evento</mat-label>
+                    <input matInput type="url" [(ngModel)]="model.infoUrl" name="infoUrl">
+                </mat-form-field>
+            </div>
 
         <div *ngIf="detailsOpened">
             <mat-form-field fxFlex>
@@ -121,11 +128,12 @@
             </mat-form-field>
         </div>
 
+        </div>
     
-        <div>
-            <button mat-button type="button" (click)="location.back()">Cancelar</button>
-            <span fxFlex></span>
-            <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid">
+        <div class="container-footer">
+            <button mat-button type="button" (click)="location.back()" class="btn-cancel">Cancelar</button>
+            <!-- <span fxFlex></span> -->
+            <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid" class="btn-create">
                 <span>Crear</span>
             </button>
         </div>

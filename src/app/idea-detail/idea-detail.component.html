@@ -1,5 +1,5 @@
-<mat-toolbar color="accent">
-    <span class="ellipsed">Idea de {{nameToShow}}</span>
+<mat-toolbar class="idea-toolbar" color="accent">
+    <!-- <span class="ellipsed">Idea de {{nameToShow}}</span> -->
     
     <span fxFlex></span>
 
@@ -25,13 +25,18 @@
     </button>
 </mat-toolbar>
 
-<div [style.padding]="sidenavService.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
+<div class="ellipsed idea-name">Idea de {{nameToShow}}</div>
+
+<div class="idea-body" [style.padding]="sidenavService.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
+
+    
+
     <div *ngIf="!node?.idea">
         <p class="centered gray-700 font-15">
             No hay ninguna idea registrada.
         </p>
         <div class="centered" *ngIf="sharedService.isIdeaEditable$ | async">
-            <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">Registrar idea</button>
+            <button class="register-new-idea" mat-flat-button color="primary" (click)="openEditIdeaDialog()">Registrar idea</button>
         </div>
     </div>
 

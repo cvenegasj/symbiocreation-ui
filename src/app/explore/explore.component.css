@@ -17,6 +17,49 @@ mat-paginator {
     }
 }
 
+.btn-group-explore{
+    border:0;
+}
+
+.btn-explore{
+    margin-right: 10px;
+    border-left: 0;
+    border-radius: 5px;
+    background-color: #669491;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 500;
+    width: 100px;
+}
+
+.btn-explore button{
+    letter-spacing: 2px;
+}
+
+.card-1{
+    background-color: #FCFCFC;
+    border: 1px solid #000000;
+    border-radius: 5px;
+}
+
+.txt-1:hover{
+    color: #000000;
+}
+
+.txt-2{
+    color: #b4b4b4;
+}
+
+
+.txt-1{
+    color: #5F656D;
+    font-weight: 700;
+}
+
+.btn-explore.mat-button-toggle-checked{
+    background-color: #287987;
+}
+
 
 @media only screen and (max-width: 768px) {
 
