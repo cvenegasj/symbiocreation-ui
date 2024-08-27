@@ -26,3 +26,61 @@ mat-toolbar.idea-toolbar{
     background-color: #E91D63;
     color: #FFFFFF;
 }
+
+
+// Carrousel
+.carousel-container {
+    position: relative;
+    width: 100%;
+    margin-top: 30px;
+  }
+  
+  .carousel {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+  }
+  
+  .carousel-track {
+    display: flex;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .carousel-item {
+    flex: 0 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .carousel-item cl-image {
+    width: 100%;
+    display: block;
+  }
+  
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
+  .carousel-button.prev {
+    left: 10px;
+  }
+  
+  .carousel-button.next {
+    right: 10px;
+  }
+  
+  .carousel-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
