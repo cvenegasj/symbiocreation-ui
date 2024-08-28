@@ -64,7 +64,7 @@
                  (touchstart)="onMouseDown($event)" (touchend)="onMouseUp()" (touchmove)="onMouseMove($event)">
                 <div class="carousel-track" #carouselTrack>
                     <div class="carousel-item" *ngFor="let publicId of node.idea.imgPublicIds">
-                        <cl-image [public-id]="publicId" style="width: 100%;" draggable="false"></cl-image>
+                        <cl-image [public-id]="publicId" style="width: 90%;" draggable="false"></cl-image>
                     </div>
                 </div>
             </div>

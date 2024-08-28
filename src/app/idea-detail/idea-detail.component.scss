@@ -57,17 +57,17 @@ mat-toolbar.idea-toolbar{
   }
   
   .carousel-item cl-image {
-    width: 100%;
     display: block;
+    text-align: center;
   }
   
   .carousel-button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: transparent;
     border: none;
-    color: white;
+    color: #000000;
     padding: 10px;
     cursor: pointer;
     z-index: 1;
@@ -83,4 +83,5 @@ mat-toolbar.idea-toolbar{
   
   .carousel-button:hover {
     background-color: rgba(0, 0, 0, 0.8);
+    color: #FFFFFF;
   }

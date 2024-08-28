@@ -16,6 +16,7 @@ export class AppComponent implements AfterViewChecked, OnInit {
 
   title: string = 'Simbiocreación';
   toggleVisible: boolean = false;
+  isMenuMobileOpen: boolean = false;
   
   constructor(
     public auth: AuthService,
@@ -49,5 +50,17 @@ export class AppComponent implements AfterViewChecked, OnInit {
 
   toggleMenu() {
     
+  }
+
+  openSidenav(){
+    
+  }
+
+  OpenGroupsSidenav() {
+    this.isMenuMobileOpen = !this.isMenuMobileOpen;
+  }
+
+  closeSidebarGroupsBtn() {
+    this.isMenuMobileOpen = false;
   }
 }

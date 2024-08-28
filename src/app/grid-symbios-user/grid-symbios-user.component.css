@@ -1,4 +1,6 @@
-
+mat-card{
+    border: 1px solid #c9c9c9;
+}
 
 
 @media only screen and (max-width: 768px) {
