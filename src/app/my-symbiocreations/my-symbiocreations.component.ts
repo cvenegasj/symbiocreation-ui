@@ -49,7 +49,7 @@ export class MySymbiocreationsComponent implements OnInit {
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(appUser => {
         fetchedUser = appUser;
-        this.isGridViewOn = appUser.isGridViewOn;
+        this.isGridViewOn = !appUser.isGridViewOn;
         // return this.symbioService.countSymbiocreationsByUser(u.id);
         return this.analyticsService.getCountsSummaryUser(appUser.id);
       }),

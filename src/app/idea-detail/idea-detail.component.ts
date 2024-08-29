@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { SidenavService } from '../services/sidenav.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Node } from '../models/forceGraphTypes';
@@ -29,6 +29,13 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   comment: string = '';
   hiddenCommentButtons: boolean = true;
 
+  // Carrousel
+  @ViewChild('carouselTrack') carouselTrack!: ElementRef;
+  isDragging = false;
+  startX = 0;
+  scrollLeft = 0;
+  dragSpeedMultiplier = 1.5;
+
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
@@ -38,7 +45,8 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     public auth: AuthService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private renderer: Renderer2,
     ) {}
 
   ngOnInit(): void {
@@ -132,6 +140,42 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
         duration: 2000,
       });
     });
+  }
+
+  moveLeft() {
+    const width = this.carouselTrack.nativeElement.clientWidth;
+    this.carouselTrack.nativeElement.scrollLeft -= width;
+  }
+
+  moveRight() {
+    const width = this.carouselTrack.nativeElement.clientWidth;
+    this.carouselTrack.nativeElement.scrollLeft += width;
+  }
+
+  onMouseDown(event: MouseEvent | TouchEvent) {
+    this.isDragging = true;
+    const startX = 'touches' in event ? event.touches[0].pageX : event.pageX;
+    this.startX = startX - this.carouselTrack.nativeElement.offsetLeft;
+    this.scrollLeft = this.carouselTrack.nativeElement.scrollLeft;
+    this.renderer.setStyle(this.carouselTrack.nativeElement, 'cursor', 'grabbing');
+  }
+
+  onMouseLeave() {
+    this.isDragging = false;
+    this.renderer.setStyle(this.carouselTrack.nativeElement, 'cursor', 'grab');
+  }
+
+  onMouseUp() {
+    this.isDragging = false;
+    this.renderer.setStyle(this.carouselTrack.nativeElement, 'cursor', 'grab');
+  }
+
+  onMouseMove(event: MouseEvent | TouchEvent) {
+    if (!this.isDragging) return;
+    event.preventDefault();
+    const x = 'touches' in event ? event.touches[0].pageX : event.pageX;
+    const walk = (x - this.startX) * this.dragSpeedMultiplier; // Aumenta la distancia de desplazamiento
+    this.carouselTrack.nativeElement.scrollLeft = this.scrollLeft - walk;
   }
 
 }

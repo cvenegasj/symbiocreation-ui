@@ -69,13 +69,14 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   showFloatIdeaMenu: boolean = false;
   showFloatGroupMenu: boolean = false;
   showFloatStatMenu: boolean = false;
+  showFloatListIdeaMenu: boolean = false;
 
   isSidenavGroupsOpen = false;
   GroupOrParticipant: boolean = true;
   
   
   // Stats
-  GroupParticipantStat: number = 1;//1:Group 2:Participant 3:TopUsuario 4: Tendencias
+  GroupParticipantStat: number = 1;//1:Group 2:Participant 3:TopUsuario 4:Tendencias 5:ListaIdeas
   isSidenavStatsOpen = false;
 
   private _symbiocreationId = new BehaviorSubject<string>(null);
@@ -819,6 +820,16 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.showFloatIdeaMenu = false;
   }
 
+
+  showFloatListIdeaMenuBtn() {
+    this.showFloatIdeaMenu = false;
+    this.showFloatStatMenu = false;
+    this.showFloatListIdeaMenu = !this.showFloatListIdeaMenu;
+  }
+
+  closeListIdeaBtn() {
+    this.showFloatListIdeaMenu = false;
+  }
 
   showFloatGroupMenuBtn() {
     this.showFloatIdeaMenu = false;
