@@ -15,7 +15,7 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $symbiocreation-ui-primary: mat.define-palette(mat.$cyan-palette, 800, 600, A700);
-$symbiocreation-ui-accent: mat.define-palette(mat.$purple-palette, A400, A100, A700);
+$symbiocreation-ui-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 // The warn palette is optional (defaults to red).
 $symbiocreation-ui-warn: mat.define-palette(mat.$red-palette);
 
@@ -148,4 +148,9 @@ circle {
   
 .hover{
     transform: scale(1.25) !important;
+}
+
+// create-symbio component
+.form-register > .container-card {
+     border: 1px solid mat.get-color-from-palette($symbiocreation-ui-accent);
 }

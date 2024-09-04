@@ -36,7 +36,7 @@ export class MySymbiocreationsComponent implements OnInit {
     public sharedService: SharedService,
     public dialog: MatDialog
     ) {
-    //this.symbiocreations = [];
+    // this.symbiocreations = [];
     this.isModeratorList = [];
   }
 
@@ -93,14 +93,11 @@ export class MySymbiocreationsComponent implements OnInit {
   }
 
   toggleViewMode() {
-    console.log("was: ", this.isGridViewOn);
     this.isGridViewOn = !this.isGridViewOn;
-    console.log("is: ", this.isGridViewOn);
 
     this.auth.userProfile$.pipe(
       concatMap(usrProfile => this.userService.getUserByEmail(usrProfile.email)),
       concatMap(user => {
-        console.log(user);
         user.isGridViewOn = this.isGridViewOn;
         return this.userService.updateUser(user);
       })

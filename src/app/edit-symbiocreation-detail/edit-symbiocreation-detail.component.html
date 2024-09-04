@@ -38,8 +38,7 @@
                 <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
             </mat-form-field>
 
-            <ng-moment-timezone-picker
-                            (onselect)="onTzSelected($event)" 
+            <ng-moment-timezone-picker [(ngModel)]="eventTz" name="eventTz"
                             [customPlaceholderText]="'Zona horaria'"
                             [customNotFoundText]="'No se encontró zona'">
             </ng-moment-timezone-picker>
@@ -98,12 +97,19 @@
                         {{sdg}}
                         <mat-icon matChipRemove>cancel</mat-icon>
                     </mat-chip-row>
-                    <input placeholder="ODS"
+                    <input placeholder="Objetivos de Desarrollo Sostenible"
+                            #sdgInput
+                            [formControl]="sdgCtrl"
+                            [matAutocomplete]="auto"
                             [matChipInputFor]="sdgList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                            [matChipInputAddOnBlur]="true"
-                            (matChipInputTokenEnd)="addSDG($event)">
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
                 </mat-chip-grid>
+
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                    <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
+                      {{sdg}}
+                    </mat-option>
+                </mat-autocomplete>
             </mat-form-field>
         </div>
 

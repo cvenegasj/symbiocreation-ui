@@ -16,6 +16,7 @@ import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
 import * as moment from 'moment-timezone';
+import { TZone } from 'moment-timezone-picker';
 
 @Component({
   selector: 'app-create-symbio',
@@ -29,7 +30,7 @@ export class CreateSymbioComponent implements OnInit {
   
   eventDate: moment.Moment;
   eventTime: any;
-  eventTz: string;
+  eventTz: TZone;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   sdgCtrl = new UntypedFormControl();
@@ -63,7 +64,6 @@ export class CreateSymbioComponent implements OnInit {
     this.isPrivate = false;
 
     this.eventTime = '12:00';
-    this.eventTz = 'UTC';
 
     this.detailsOpened = false;
   }
@@ -81,7 +81,7 @@ export class CreateSymbioComponent implements OnInit {
         this.model.dateTime.setUTCHours(this.eventTime.split(':')[0]);
         this.model.dateTime.setUTCMinutes(this.eventTime.split(':')[1]);
 
-        this.model.timeZone = this.eventTz;
+        this.model.timeZone = this.eventTz.name;
       }
     }
     
@@ -167,11 +167,6 @@ export class CreateSymbioComponent implements OnInit {
     if (index >= 0) {
       this.model.sdgs.splice(index, 1);
     }
-  }
-
-  onTzSelected(tz) {
-    console.log(tz);
-    this.eventTz = tz.nameValue;
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {

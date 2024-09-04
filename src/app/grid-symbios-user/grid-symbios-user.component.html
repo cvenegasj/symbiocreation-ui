@@ -31,11 +31,11 @@
             style="margin: 20px auto 0; height: 40px; position: relative;" 
             [style.width]="(participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, participantsToDisplay.length) + 'px'">
 
-                <advanced-image *ngFor="let p of participantsToDisplay; index as i;" 
-                    [cldImg]="imageService.getImage(p.user.pictureUrl)" type="fetch" class="img-1" 
+                <advanced-image *ngFor="let p of participantsToDisplay; index as i;"
+                    [cldImg]="usersToImagesMap.get(p.u_id)" 
+                    class="img-1"
                     [style.z-index]="5-i" [style.left]="i*24 + 'px'"
                     [matTooltip]="p.user.name" matTooltipPosition="above">
-                    <!-- <cl-transformation height="90" width="90" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation> -->
                 </advanced-image>
 
                 <span *ngIf="participantsToDisplay.length > 0 && s.participants.length - participantsToDisplay.length > 0" 
@@ -46,9 +46,10 @@
 
         </div>
 
-        <div style="margin-top: 20px; height: 30px;">
-            <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="float: left; width: 151px;">
-                <mat-icon class="font-17 gray-500" style="position: relative; top: 4px;">update</mat-icon>
+        <div style="margin-top: 20px; height: 30px;" fxLayout="row">
+
+            <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="max-width: 151px; display: flex; align-items: center;" fxFlex>
+                <mat-icon class="font-17 gray-500">update</mat-icon>
                 <span class="font-12 gray-500" style="position: relative; left: -4px;">{{getTimeAgo(s.lastModified)}}</span>
             </div>
 
@@ -58,7 +59,7 @@
                     Ver detalles
             </button> -->
 
-            <div style="float: right; width: 40px; height: 30px;">
+            <div fxFlex="30px">
                 <button mat-icon-button
                         [matMenuTriggerFor]="simbioMenu"
                         style="position: relative; top: -5px;">

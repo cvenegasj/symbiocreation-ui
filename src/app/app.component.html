@@ -11,7 +11,7 @@
 
     <!-- Menu Desktop -->
     <div class="only-desktop">
-        <a class="no-hover" routerLink="/" style="display: flex; align-items: center; margin-right: 15px;">{{title}}</a>
+        <a class="no-hover bold font-18" routerLink="/" style="display: flex; align-items: center; margin-right: 15px;">{{title}}</a>
         <a class="no-hover" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn">Dashboard</a>
         <a class="no-hover" mat-button routerLink="/explore">Explora</a>
         <a class="no-hover" mat-button routerLink="/ranking">Ranking</a>
@@ -41,20 +41,20 @@
 </mat-toolbar>
 
 
-<!-- <mat-toolbar class="menu-mobile">
+<mat-toolbar class="menu-mobile">
     <div class="header">
         <a routerLink="/">
             <img src="assets/images/logo_symbio_2024.png" alt="">
         </a>
-        <span class="btn-menu">
+        <span class="btn-menu" (click)="menuMobile.toggle()">
             <mat-icon>account_circle</mat-icon>
         </span>
     </div>
-</mat-toolbar> -->
+</mat-toolbar>
 
 
 <!-- Menu Mobile desplegable -->
-<mat-sidenav #menuMobile class="menu-mobile-container">
+<mat-sidenav #menuMobile class="menu-mobile-container" [(opened)]="isMenuMobileOpen">
 
     <mat-toolbar color="accent" style="background-color: #287987;">
         <span class="ellipsed" style="color: #FFFFFF;">Simbiocreación</span>
@@ -68,9 +68,11 @@
     
     <div class="menu-body">
 
-        <a class="no-hover" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn" (click)="menuMobile.toggle()">Dashboard</a>
-        <a class="no-hover" mat-button routerLink="/explore" (click)="menuMobile.toggle()">Explora</a>
-        <a class="no-hover" mat-button routerLink="/ranking" (click)="menuMobile.toggle()">Ranking</a>
+        <a class="no-hover menu-item-mobile menu-profile" mat-button routerLink="/profile" *ngIf="auth.loggedIn" (click)="menuMobile.close()">Mi Perfil</a>
+        <a class="no-hover menu-item-mobile menu-dashboard" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn" (click)="menuMobile.close()">Dashboard</a>
+        <a class="no-hover menu-item-mobile menu-explore" mat-button routerLink="/explore" (click)="menuMobile.close()">Explora</a>
+        <a class="no-hover menu-item-mobile menu-ranking" mat-button routerLink="/ranking" (click)="menuMobile.close()">Ranking</a>
+        <button class="no-hover menu-item-mobile menu-logout" mat-icon-button (click)="auth.logout()" >Salir</button>
 
     </div>
 

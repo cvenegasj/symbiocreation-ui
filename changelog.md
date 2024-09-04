@@ -23,3 +23,13 @@
 # 26/08/24 mramirez
 ✔ Quitado puntos en el área de trabajo de las symbiocreaciones
 ✔ Agregado sombras para los nodos de las symbiocreaciones
+
+# 27/08/24 mramirez
+✔ Cambiado diseño del contenedor de Mi(s) Ideas de las symbiocreaciones
+✔ Agregado Carousel desktop y mobile para mostrar las imagenes adjuntas de cada idea
+
+# 28/08/24 mramirez
+✔ Agregado Menu nuevo para versión mobile
+✔ Corregido colores de los bordes de explora y mis symbiocreaciones
+✔ Cambiado el modo default de la lista de mis simbiocreaciones, del modo lista al modo tarjetas
+✔ Corregido diseño del Carousel

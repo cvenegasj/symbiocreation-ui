@@ -12,43 +12,36 @@ mat-toolbar{
     display: none;
 }
 .menu-mobile{
-    display: flex;
+    display: none;
+    padding: 0;
 }
 .only-desktop{
     display: flex;
 }
-
-.menu-mobile-container{
-    width: 70%;
-}
-
-
-
 .menu-mobile-container{
     transform: none;
     visibility: visible;
-    position: absolute;
+    // position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     height: 100%;
     z-index: 10;
-    max-width: 70%;
+    width: 100%;
+    // max-width: 70%;
 }
 
 .menu-body{
     padding: 35px 25px 25px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     
     a{
         font-size: 20px;
         padding-top:5px;
         padding-bottom:5px;
     }
-}
-
-.menu-mobile{
-    padding: 0;
 }
 
 .header{
@@ -78,10 +71,48 @@ mat-toolbar{
     }
 }
 
+.menu-item-mobile{
+    border-radius: 20px;
+    width: 250px;
+    color: #FFFFFF;
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 400;
+    height: 46px;
+    &:hover{
+        color: #FFFFFF;
+    }
+}
+
+.menu-profile{
+    color: #5F656D;
+    margin-bottom: 26px;
+    background-color: #FAFAFA;
+    border: 1px solid #287987;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover{
+        color: #5F656D;
+    }
+}
+.menu-dashboard{
+    background-color: #287987;
+}
+.menu-explore{
+    background-color: #669491;
+}
+.menu-ranking{
+    background-color: #9DA8A1;
+}
+.menu-logout{
+    background-color: #BABDC1;
+}
+
 @media (max-width: 768px) {
 
     .menu-desktop{
-        // display: none !important;
+        display: none !important;
     }
 
     .only-desktop{
