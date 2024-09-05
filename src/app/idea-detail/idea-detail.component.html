@@ -29,8 +29,6 @@
 
 <div class="idea-body" [style.padding]="sidenavService.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
 
-    
-
     <div *ngIf="!node?.idea">
         <p class="centered gray-700 font-15">
             No hay ninguna idea registrada.
@@ -59,18 +57,18 @@
         <!-- Carrusel de imágenes -->
         <div class="carousel-container" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0">
             <button class="carousel-button prev" (click)="moveLeft()">&#10094;</button>
+
             <div class="carousel"
                  (mousedown)="onMouseDown($event)" (mouseleave)="onMouseLeave()" (mouseup)="onMouseUp()" (mousemove)="onMouseMove($event)"
                  (touchstart)="onMouseDown($event)" (touchend)="onMouseUp()" (touchmove)="onMouseMove($event)">
                 <div class="carousel-track" #carouselTrack>
                     <div class="carousel-item" *ngFor="let publicId of node.idea.imgPublicIds">
-                        <!-- <cl-image [public-id]="publicId" style="width: 90%;" draggable="false"></cl-image> -->
+                        <advanced-image [cldImg]="imageService.getImage(publicId)" style="width: 90%;" draggable="false"></advanced-image>
                     </div>
                 </div>
             </div>
             <button class="carousel-button next" (click)="moveRight()">&#10095;</button>
         </div>
-
 
     </div>
     

@@ -27,23 +27,21 @@
             </a>
         </div>
 
-        <div *ngIf="getParticipantsToDisplay(s.participants) as participantsToDisplay" 
-            style="margin: 20px auto 0; height: 40px; position: relative;" 
-            [style.width]="(participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, participantsToDisplay.length) + 'px'">
+        <div style="margin: 20px auto 0; height: 40px; position: relative;" 
+            [style.width]="(s.participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, s.participantsToDisplay.length) + 'px'">
 
-                <advanced-image *ngFor="let p of participantsToDisplay; index as i;"
-                    [cldImg]="usersToImagesMap.get(p.u_id)" 
+                <advanced-image *ngFor="let p of s.participantsToDisplay; index as i;"
+                    [cldImg]="p.user.cloudinaryImage" 
                     class="img-1"
                     [style.z-index]="5-i" [style.left]="i*24 + 'px'"
                     [matTooltip]="p.user.name" matTooltipPosition="above">
                 </advanced-image>
 
-                <span *ngIf="participantsToDisplay.length > 0 && s.participants.length - participantsToDisplay.length > 0" 
+                <span *ngIf="s.participantsToDisplay.length > 0 && s.participants.length - s.participantsToDisplay.length > 0" 
                     class="font-12 gray-500" style="position: absolute; top: 10px;" 
-                    [style.left]="(participantsToDisplay.length - 1) * 24 + 45 + 'px'">
-                    {{s.participants.length - participantsToDisplay.length}} más
+                    [style.left]="(s.participantsToDisplay.length - 1) * 24 + 45 + 'px'">
+                    {{s.participants.length - s.participantsToDisplay.length}} más
                 </span>
-
         </div>
 
         <div style="margin-top: 20px; height: 30px;" fxLayout="row">

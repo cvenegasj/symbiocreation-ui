@@ -24,8 +24,6 @@ export class GridSymbiosUserComponent implements OnChanges {
   @Input() symbiocreations: Symbiocreation[];
   @Input() isModeratorList: boolean[];
 
-  usersToImagesMap = new Map<string, CloudinaryImage>;
-
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -35,16 +33,7 @@ export class GridSymbiosUserComponent implements OnChanges {
 
   ngOnChanges(): void {
     if (this.symbiocreations) {
-      this.symbiocreations.forEach(symbio => {
-        symbio.participants?.forEach(p => {
-          let cldImg = this.imageService.getImage(p.user.pictureUrl)
-              .setDeliveryType('fetch')
-              .format('auto')
-              .resize(fill().width(90).height(90).gravity(focusOn(FocusOn.face()))) 
-              .roundCorners(byRadius(50));
-          this.usersToImagesMap.set(p.u_id, cldImg);
-        });
-      });
+      this.symbiocreations.forEach(symbio => symbio.participantsToDisplay = this.getParticipantsToDisplay(symbio.participants));
     }
   }
 
@@ -101,21 +90,27 @@ export class GridSymbiosUserComponent implements OnChanges {
 
   getParticipantsToDisplay(participants: Participant[]): Participant[] {
     let selected: Participant[] = [];
+
     // include moderators w picture
     let i = 0;
     while (i < participants.length && selected.length < 5) {
-      if (participants[i].isModerator && participants[i].user.pictureUrl)
+      if (participants[i].isModerator && participants[i].user.pictureUrl) {
+        participants[i].user.cloudinaryImage = this.getThumbnailFromUrl(participants[i].user.pictureUrl);
         selected.push(participants[i]);
+      }
       i++;
     }
 
     i = 0;
     // fill 5 spots w/ participants
     while (i < participants.length && selected.length < 5) {
-      if (!participants[i].isModerator && participants[i].user.pictureUrl)
+      if (!participants[i].isModerator && participants[i].user.pictureUrl) {
+        participants[i].user.cloudinaryImage = this.getThumbnailFromUrl(participants[i].user.pictureUrl);
         selected.push(participants[i]);
+      }
       i++;
     }
+
     return selected;
   }
 
@@ -126,6 +121,14 @@ export class GridSymbiosUserComponent implements OnChanges {
   getTimeAgo(lastModified: number): string {
     moment.locale('es');
     return moment(lastModified).fromNow();
+  }
+
+  getThumbnailFromUrl(url: string): CloudinaryImage {
+    return this.imageService.getImage(url)
+              .setDeliveryType('fetch')
+              .format('auto')
+              .resize(fill().width(90).height(90).gravity(focusOn(FocusOn.face()))) 
+              .roundCorners(byRadius(50));
   }
 
 }
