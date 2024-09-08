@@ -14,8 +14,6 @@ export class ImageService {
     // Create a Cloudinary instance and set your cloud name.
     cloudinary = new Cloudinary({cloud: { 
         cloudName: 'dymje6shc',
-        // apiKey: '692442619767592',
-        // apiSecret: 'HIFAZlkuiHm8pZMJ5lIgRg8sWfo'
      }});
 
     constructor(

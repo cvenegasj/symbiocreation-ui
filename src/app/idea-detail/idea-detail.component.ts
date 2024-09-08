@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
 import { ImageService } from '../services/image.service';
+import { CloudinaryImage } from '@cloudinary/url-gen';
 
 @Component({
   selector: 'app-idea-detail',
@@ -47,12 +48,13 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog,
-    public imageService: ImageService,
+    private imageService: ImageService,
     public renderer: Renderer2,
     ) {}
 
   ngOnInit(): void {
     this.subscribeToParams();
+    
     /*this.sharedService.sessionIsModerator$.subscribe(isModerator => {
       if (isModerator) this.sessionIsModerator = isModerator;
     }); */
@@ -67,9 +69,14 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
 
     this.route.params.pipe(
       concatMap(routeParams => this.symbioService.getNodeById(idSymbio, routeParams.idNode))
-    ).subscribe(node => { // node injected w user
+    )
+    .subscribe(node => { // node injected w user
       this.node = node;
       this.nameToShow = this.node.name;
+
+      if (this.node.idea?.imgPublicIds) {
+        this.node.idea.cloudinaryImages = this.toCloudinaryImages(this.node.idea.imgPublicIds);
+      }
     });
   }
 
@@ -99,20 +106,30 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
       width: '550px',
       data: {
         name: this.nameToShow,
-        idea: this.node.idea
+        idea: structuredClone(this.node.idea) // deep copy
       }
     });
 
     dialogRef.afterClosed().subscribe(idea => {
       if (idea) {
-        this.node.idea = idea; // has id and new idea
-        this.symbioService.updateNodeIdea(idSymbio, this.node).subscribe(res => {
-          this._snackBar.open('Se registró la idea correctamente.', 'ok', {
-            duration: 2000,
+        this.node.idea = idea;
+        
+        if (this.node.idea.imgPublicIds) {
+          this.node.idea.cloudinaryImages = this.toCloudinaryImages(this.node.idea.imgPublicIds);
+        }
+
+        this.symbioService.updateNodeIdea(idSymbio, this.node)
+          .subscribe(res => {
+            this._snackBar.open('Se registró la idea correctamente.', 'ok', {
+              duration: 2000,
+            });
           });
-        });
       }
     });
+  }
+
+  toCloudinaryImages(publicIds: string[]): CloudinaryImage[] {
+    return publicIds.map(publicId => this.imageService.getImage(publicId).format('auto').quality('auto'));
   }
 
   onRateChange(rating: number) {

@@ -6,6 +6,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';
 import { Observable, forkJoin } from 'rxjs';
+import { CloudinaryImage } from '@cloudinary/url-gen';
 
 @Component({
   selector: 'app-edit-idea-dialog',
@@ -23,9 +24,14 @@ export class EditIdeaDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditIdeaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
-    public imageService: ImageService
+    private imageService: ImageService
   ) {
-    if (this.data.idea) this.idea = this.data.idea;
+    if (this.data.idea) {
+      this.idea = this.data.idea;
+
+      const cloudinaryImages = this.idea.imgPublicIds?.map(publicId => this.imageService.getImage(publicId).format('auto').quality('auto'));
+      this.idea.cloudinaryImages = cloudinaryImages;
+    }
   }
 
   ngOnInit(): void {
@@ -43,7 +49,7 @@ export class EditIdeaDialogComponent implements OnInit {
       observables.push(this.imageService.uploadImage(img.file));
     } 
 
-    if (observables.length == 0) {
+    if (observables.length === 0) {
       this.dialogRef.close(this.idea);
       return;
     }
@@ -53,14 +59,17 @@ export class EditIdeaDialogComponent implements OnInit {
         if (!this.idea.imgPublicIds) {
           this.idea.imgPublicIds = [];
         }
+
         for (let item of res) {
           this.idea.imgPublicIds.push(item.public_id);
         }
       },
       err => {
+        console.log('error');
         console.error(err);
       },
       () => {
+        console.log('complete');
         this.dialogRef.close(this.idea);
       }
     );
@@ -95,9 +104,9 @@ export class EditIdeaDialogComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  deletePublicId(publicId: string) {
-    const index = this.idea.imgPublicIds.indexOf(publicId);
+  deletePublicId(index: number) {
     this.idea.imgPublicIds.splice(index, 1);
+    this.idea.cloudinaryImages.splice(index, 1);
   }
 
   deleteSelectedImg(img: ImageSnippet) {

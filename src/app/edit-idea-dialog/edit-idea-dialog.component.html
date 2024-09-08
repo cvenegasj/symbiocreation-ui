@@ -42,9 +42,9 @@
               (change)="processFile(imageInput)">
     </div>
     
-    <div *ngFor="let publicId of idea.imgPublicIds" style="margin-top: 10px;">
-      <advanced-image [cldImg]="imageService.getImage(publicId)" style="width: 80%;"></advanced-image>
-      <button mat-button color="warn" (click)="deletePublicId(publicId)">Eliminar</button>
+    <div *ngFor="let cloudinaryImg of idea.cloudinaryImages; index as i" style="margin-top: 10px;">
+      <advanced-image [cldImg]="cloudinaryImg" width="100%" height="auto"></advanced-image>
+      <button mat-button color="warn" (click)="deletePublicId(i)">Eliminar</button>
     </div>
 
     <div *ngFor="let img of selectedImgs" style="margin-top: 10px;">

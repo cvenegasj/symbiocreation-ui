@@ -140,20 +140,17 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       }),
       concatMap(s => this.auth.userProfile$),
     ).subscribe(usrProfile => {
-      //console.log(usrProfile);
       if (this.auth.loggedIn) {
         for (let p of this.symbiocreation.participants) {
           if (p.user.email === usrProfile.email) {
             this.participant = p;
             this.myAncestries = this.getMyAncestriesCompleted();
-            // console.log("this.myAncestries",this.myAncestries)
             break;
           }
         }
       }
 
       this.searchStats();
-
       this.sharedService.nextIsLoading(false);
       
       // connect to socket for updates
@@ -915,11 +912,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
         this.commonTermsRanking = response.commonTerms;
         this.usersRanking = response.usersRanking;
-
-        console.log("this.totalUsers",this.totalUsers)
-        console.log("this.totalIdeas",this.totalIdeas)
-        console.log("this.commonTermsRanking",this.commonTermsRanking)
-        console.log("this.usersRanking",this.usersRanking)
       }
     });
 

@@ -1,4 +1,4 @@
-<mat-toolbar class="idea-toolbar" color="accent">
+<mat-toolbar class="idea-toolbar">
     <!-- <span class="ellipsed">Idea de {{nameToShow}}</span> -->
     
     <span fxFlex></span>
@@ -47,26 +47,20 @@
             <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linky"></p>
         </div>
 
-        <!-- Galeria de imágenes antigua -->
-        <!-- <div style="margin-top: 30px;" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0" [fxLayout]="sidenavService.isOpenInFullscreen ? 'row wrap' : 'column wrap'" fxLayoutGap="10px">
-            <div *ngFor="let publicId of node.idea.imgPublicIds" [fxFlex]="sidenavService.isOpenInFullscreen ? '48' : '100'" [style.padding-top]="sidenavService.isOpenInFullscreen ? '10px' : '0'">
-                <advanced-image [cldImg]="imageService.getImage(publicId)" style="width: 100%;"></advanced-image>
-            </div>
-        </div> -->
-
         <!-- Carrusel de imágenes -->
-        <div class="carousel-container" *ngIf="node.idea.imgPublicIds && node.idea.imgPublicIds.length > 0">
+        <div class="carousel-container" *ngIf="node.idea.imgPublicIds?.length > 0">
             <button class="carousel-button prev" (click)="moveLeft()">&#10094;</button>
 
             <div class="carousel"
                  (mousedown)="onMouseDown($event)" (mouseleave)="onMouseLeave()" (mouseup)="onMouseUp()" (mousemove)="onMouseMove($event)"
                  (touchstart)="onMouseDown($event)" (touchend)="onMouseUp()" (touchmove)="onMouseMove($event)">
                 <div class="carousel-track" #carouselTrack>
-                    <div class="carousel-item" *ngFor="let publicId of node.idea.imgPublicIds">
-                        <advanced-image [cldImg]="imageService.getImage(publicId)" style="width: 90%;" draggable="false"></advanced-image>
+                    <div class="carousel-item" *ngFor="let cloudinaryImg of node.idea.cloudinaryImages">
+                        <advanced-image [cldImg]="cloudinaryImg" width="100%" height="auto"></advanced-image>
                     </div>
                 </div>
             </div>
+
             <button class="carousel-button next" (click)="moveRight()">&#10095;</button>
         </div>
 
@@ -106,9 +100,9 @@
         <!-- Visible to logged-in users -->
         <div *ngIf="auth.userProfile$ | async as profile" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 10px 15px;">
-                <advanced-image [cldImg]="imageService.getImage(profile.picture)" type="fetch" class="img-2">
-                    <!-- <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation> -->
-                </advanced-image>
+                <!-- <advanced-image [cldImg]="imageService.getImage(profile.picture)" type="fetch" class="img-2">
+                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
+                </advanced-image> -->
             </div>
             <div fxFlex>
                 <mat-form-field style="width: 100%;">
@@ -124,9 +118,9 @@
 
         <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
             <div style="width: 70px; padding: 0 15px;">
-                <advanced-image [cldImg]="comment.author.pictureUrl" type="fetch" class="img-2">
-                    <!-- <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation> -->
-                </advanced-image>
+                <!-- <advanced-image [cldImg]="comment.author.pictureUrl" type="fetch" class="img-2">
+                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
+                </advanced-image> -->
             </div>
             <div fxFlex>
                 <div>

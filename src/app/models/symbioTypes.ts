@@ -52,6 +52,7 @@ export interface Idea {
     imgPublicIds?: string[];
     externalUrls?: string[];
     comments?: Comment[];
+    cloudinaryImages?: CloudinaryImage[];
 }
 
 export interface Comment {

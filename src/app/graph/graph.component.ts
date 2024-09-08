@@ -507,8 +507,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.dimensions.width = window.innerWidth;
     this.dimensions.height = window.innerHeight;
 
-    console.log("windows.innerWidth",window.innerWidth)
-    console.log("windows.innerHeight",window.innerHeight)
+    // console.log("windows.innerWidth", window.innerWidth)
+    // console.log("windows.innerHeight", window.innerHeight)
 
     // this.paintTinyCirclesGrid()
 

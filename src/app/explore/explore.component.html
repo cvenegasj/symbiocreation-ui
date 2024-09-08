@@ -53,23 +53,18 @@
             </div>
 
             <div style="margin-top: 20px; height: 30px;">
-                <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="float: left; width: 151px;">
-                    <mat-icon class="font-17 gray-300 txt-2" style="position: relative; top: 4px;">update</mat-icon>
+                <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="max-width: 151px; display: flex; align-items: center;" fxFlex>
+                    <mat-icon class="font-17 gray-300 txt-2">update</mat-icon>
                     <span class="font-12 gray-300 txt-2" style="position: relative; left: -4px;">{{getTimeAgo(s.lastModified)}}</span>
                 </div>
 
-                <!--<button mat-stroked-button
-                        class="gray-300"
-                        (click)="viewSymbiocreationDetail(s)">
-                        Ver detalles
-                </button> -->
-                <div style="float: right; width: 40px; height: 30px;">
+                <div fxFlex="30px">
                     <button class="infoButton"
                             mat-icon-button 
                             matTooltip="Ver más información" matTooltipPosition="above"
                             style="position: relative; top: -5px;" 
                             (click)="openSymbioDetailDialog(s)">
-                            <mat-icon class="font-20 gray-300">info</mat-icon>
+                            <mat-icon class="font-20 gray-400">info</mat-icon>
                     </button>
                 </div>
             </div>
