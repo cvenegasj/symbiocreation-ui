@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, AfterContentInit, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SidenavService } from '../services/sidenav.service';
@@ -17,7 +17,7 @@ import { Participant } from '../models/symbioTypes';
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.scss']
 })
-export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, OnChanges {
+export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('nodeMenuTrigger') nodeMenuTrigger: MatMenuTrigger;
   @Output() parentChanged = new EventEmitter<string[]>();
@@ -26,9 +26,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @Output() nodeChangedRole = new EventEmitter<string[]>();
   @Output() nodeChangedIdea = new EventEmitter<string>();
   @Output() dblClickNewIdea = new EventEmitter();
-
-  //participant: Participant;
-  //myAncestries: Node[][];
 
   menuX: number = 0;
   menuY: number = 0;
@@ -46,7 +43,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   nodes: Node[];
   links: Link[];
   maxNodeHeight: number;
-  nodesMap: Map<string, Node>; // nodeId -> node; useful to make O(1) lookups when deselectedNodes happens
+  nodesMap: Map<string, Node>; // <nodeId: node>; useful to make O(1) lookups when deselectedNodes happens
 
   simulation: any;
   wrapper: any;
@@ -64,11 +61,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   @HostListener('window:resize', ['$event'])
 
   @ViewChild('container', {static: true}) container: ElementRef;
-
-
-  private selectedNode = null;
-  private line = null;
-  private selectedNodeCoords = { x: 0, y: 0 };
 
   constructor(
     private sidenav: SidenavService,
@@ -106,19 +98,17 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     if (changes['data'] && !changes['data'].isFirstChange()) {
       this.removeChart();
       this.createChart();
-      // console.log("changes",changes['data'])
-      // console.log("cambios")
       this.runSimulation();
       this.groups = this.getGroups(this.data);
     }
     else if (changes['currentStrength'] && !changes['data']?.isFirstChange()) {
-      this.updateChargeStrength(changes['currentStrength'].currentValue,this.currentDistance, this.currentOrder);
+      this.updateChargeStrength(changes['currentStrength'].currentValue, this.currentDistance, this.currentOrder);
     }
     else if (changes['currentDistance'] && !changes['data']?.isFirstChange()) {
-      this.updateChargeStrength(this.currentStrength,changes['currentDistance'].currentValue, this.currentOrder);
+      this.updateChargeStrength(this.currentStrength, changes['currentDistance'].currentValue, this.currentOrder);
     }
     else if (changes['currentOrder'] && !changes['data']?.isFirstChange()) {
-      this.updateChargeStrength(this.currentStrength,this.currentDistance, changes['currentOrder'].currentValue);
+      this.updateChargeStrength(this.currentStrength, this.currentDistance, changes['currentOrder'].currentValue);
     }
   }
 
@@ -127,14 +117,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
 
     // Funcion que pinta los nodos desde el modal de grupos al hacer hover
     this.sharedService.selectedNodes$
-      .subscribe(nodes => { // of type Node[] extends d3Force.SimulationNodeDatum
-        // console.log("nodes",nodes)
+      .subscribe(nodes => { // of type Node[] extends d3Force.SimulationNodeDatu
         if (!nodes) return;
+
         for (let n of nodes) {
-          let el = d3.select('#id' + n.id);
-          // el.attr("fill", '#304FFE');
-          el.attr("fill", '#A074FE')
-          .attr("color",'#FFFFFF');
+          d3.select('#id' + n.id)
+              .attr("fill", '#A074FE')
+              .attr("color",'#FFFFFF');
         }
     });
 
@@ -142,11 +131,13 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.sharedService.deselectedNodes$
       .subscribe(nodes => {
         if (!nodes) return;
+
         for (let n of nodes) {
           let tempNode = this.nodesMap.get(n.id);
           if (!tempNode) continue; // to avoid using nodes not present in current symbio. Weird behavior.
-          let el = d3.select('#id' + n.id);
-          el.attr("fill", tempNode.color);
+
+          d3.select('#id' + n.id)
+              .attr("fill", tempNode.color);
         }
       });
 
@@ -156,10 +147,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       this.innerHeight = window.innerHeight;
       // console.log(`Width: ${this.innerWidth}, Height: ${this.innerHeight}`);
     });
-  }
-
-  ngAfterContentInit() {
-    //this.updateDimensions();
   }
 
   ngAfterViewInit() {
@@ -197,7 +184,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .call(d3.zoom().scaleExtent([0.3, 3])
         .on("zoom", this.zoomed))
         .on("dblclick.zoom", null)
-        .on("contextmenu", () => { d3.event.preventDefault(); }); // Deshabilita el menu contextual del navegador dentro del SVG
+        .on("dblclick", () => this.newIdeaClick())
+        .on("contextmenu", () => d3.event.preventDefault()); // Disables native context menu
 
 
     // Pintar cuadricula
@@ -209,7 +197,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     this.linkGroup = this.bounds.append('g').attr('class', 'links');
     this.nodeGroup = this.bounds.append('g').attr('class', 'nodes');
   }
-
 
   getLinksWithAttributes(links: any[]): any[] {
     return links.map(link => {
@@ -229,8 +216,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
       if (temp > this.maxNodeHeight) this.maxNodeHeight = temp;
     }
 
-    // console.log("this.data",this.data)
-
     //const root = d3.hierarchy(this.data);
     this.links = this.getLinks(this.data);
     //const nodes = root.descendants();
@@ -239,11 +224,6 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     //const links = d3.hierarchy(this.data).links();
     this.nodesMap = this.mapIdToNodes(this.nodes);
 
-    // console.log("this.nodes",this.nodes)
-
-    const nodesWithLinks = this.nodes.filter(node => 
-      (node.r > 24) && this.links.some( (link:any) => link.source.id === node.id || link.target.id === node.id)
-    );
 
     this.simulation = d3.forceSimulation(this.nodes)
       .force('link', d3.forceLink(this.links).id((d: any) => d.id).distance((d: any) => this.getGradientLinkLength(d.source.height, this.maxNodeHeight, 130, 140))) // d is for node, useful to set ids of source and target: default to node.id, then node.index
@@ -283,6 +263,11 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
     const nodeEnter = this.nodeElements
       .enter()
       .append("g")
+        .attr("class", "node")
+      .on('click', d => this.openIdeaDetailSidenav(d))
+      .on('contextmenu', d => this.openNodeContextMenu(d))
+      .on("mouseover", d => d3.select('#id' + d.id).classed("hover", true))
+      .on("mouseout", d => d3.select('#id' + d.id).classed("hover", false))
       .call(this.drag(this.simulation));
 
 
@@ -293,14 +278,8 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
         .attr("stroke-width", 1.5)
         .attr('r', d => d.r * 3)
-        .attr("filter", "url(#drop-shadow)") // Agregar filtro solo al primer círculo
-        // .attr("class", "circle")
-        .on('click', d => this.openIdeaDetailSidenav(d))  
-        .on('contextmenu', d => this.openNodeContextMenu(d))
-        // .on('mouseover', d => d3.select(d3.event.currentTarget).attr("fill", '#304FFE'))
-        // .on('mouseout', d => d3.select(d3.event.currentTarget).attr("fill", this.nodesMap.get(d.id).color));
-        .on("mouseover", () => d3.select(d3.event.currentTarget).classed("hover", true)) // Añadir clase 'hover'
-        .on("mouseout", () => d3.select(d3.event.currentTarget).classed("hover", false)); // Quitar clase 'hover'
+        .attr("class", "circle")
+        .attr("filter", "url(#drop-shadow)");
         
 
     const filter = nodeEnter.append("filter")
@@ -818,7 +797,7 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
   }
 
   // Funcion para pintar pequeños circulos en el svg
-  paintTinyCirclesGrid(){
+  paintTinyCirclesGrid() {
     let gridSize = 10;
 
     // Selecciona o crea el grupo para el grid
@@ -864,22 +843,16 @@ export class GraphComponent implements OnInit, AfterContentInit, AfterViewInit, 
         // Ajustar las velocidades para mover los nodos hacia la posición objetivo
         node.vx += (targetX - node.x) * alpha * 0.02;
         node.vy += (targetY - node.y) * alpha * 0.02;
-
       });
     };
   }
 
-
-  newIdeaClick(){
+  newIdeaClick() {
     this.dblClickNewIdea.emit();
   }
 
-  deleteLine(childId: string, parentId: string){
-        
-        // console.log('parentId:', parentId);
-        // console.log('childId:', childId);
-        this.parentChanged.emit([childId, parentId]);
-    
+  deleteLine(childId: string, parentId: string) {
+    this.parentChanged.emit([childId, parentId]);
   }
 
 }

@@ -277,7 +277,7 @@ a.link-hvr-underline:hover {
     stroke-opacity: 0.6;
 }
 
-.nodes circle {
+.nodes .node {
     /*stroke-width: 1.5px;*/
     cursor: pointer;
 }

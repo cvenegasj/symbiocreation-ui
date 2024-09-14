@@ -141,12 +141,11 @@ path.line-2 {
     stroke: mat.get-color-from-palette(mat.$cyan-palette, 500);
 }
 
-
-circle {
-    transition: transform 0.3s ease !important;
+.circle {
+    transition: transform 0.2s ease !important;
 }
   
-.hover{
+.hover {
     transform: scale(1.25) !important;
 }
 
