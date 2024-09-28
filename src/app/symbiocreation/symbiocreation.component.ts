@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, HostListener  } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy  } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
@@ -25,7 +25,6 @@ import { NewIdeaConfirmationDialogComponent } from '../new-idea-confirmation-dia
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 import { saveAs } from 'file-saver';
-import { BehaviorSubject, forkJoin } from 'rxjs';
 import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
@@ -76,16 +75,16 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   
   
   // Stats
-  GroupParticipantStat: number = 1;//1:Group 2:Participant 3:TopUsuario 4:Tendencias 5:ListaIdeas
-  isSidenavStatsOpen = false;
-
-  private _symbiocreationId = new BehaviorSubject<string>(null);
+  GroupParticipantStat: number = 1; // 1:Group, 2:Participant, 3:TopUsuarios, 4:Tendencias, 5:ListaIdeas
+  // isSidenavStatsOpen = false;
+  isLoadingTopUsers = false;
+  isLoadingTrends = false;
 
   totalUsers: number;
   totalIdeas: number;
 
-  commonTermsRanking: any[] = [];
-  usersRanking: any[] = [];
+  trends: string[];
+  usersRanking: any[];
 
   constructor(
     private router: Router, 
@@ -106,13 +105,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.sharedService.appUser$.subscribe(appUser => this.appUser = appUser);
+    this.sharedService.appUser$
+      .subscribe(appUser => this.appUser = appUser);
 
     this.getData();
-
-    // this.toggleModalIdeas();
-
-    
+    // this.toggleModalIdeas();    
   }
 
   ngAfterViewInit() {
@@ -133,7 +130,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     .pipe(
       tap(s => {
         this.symbiocreation = s;
-        // console.log("this.symbiocreation",this.symbiocreation)
         this.groups = this.getGroups();
         this.filteredParticipants = this.symbiocreation.participants;
         this.filteredGroups = this.groups;
@@ -150,7 +146,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
         }
       }
 
-      this.searchStats();
+      this.fetchCounts();
       this.sharedService.nextIsLoading(false);
       
       // connect to socket for updates
@@ -362,7 +358,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   createUserNode() {
-
     if( !this.participant ){
       return;
     }
@@ -465,11 +460,11 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   // Funcion cuando se cambia/asigna grupo de una idea desde el control Grupo
   // Para quitar el grupo de cualquier nodo hay que asignar como grupo 'none'
   onMyGroupChanged(myNode: Node) {
-    console.log("Falla")
-    console.log("myNode",myNode)
-    console.log("this.symbiocreation.id",this.symbiocreation.id)
-    console.log("myNode.id",myNode.id)
-    console.log("this.idGroupSelected",this.idGroupSelected)
+    // console.log("Falla")
+    // console.log("myNode",myNode)
+    // console.log("this.symbiocreation.id",this.symbiocreation.id)
+    // console.log("myNode.id",myNode.id)
+    // console.log("this.idGroupSelected",this.idGroupSelected)
 
     this.symbioService.setParentNode(this.symbiocreation.id, myNode.id, this.idGroupSelected ? this.idGroupSelected : 'none')
       .subscribe();
@@ -477,7 +472,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     el.hidden = true;
 
     this.idGroupSelected = null;
-
   }
 
   // Funcion cuando se cambia/asigna un grupo a una idea desde el area de trabajo
@@ -887,34 +881,57 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     });
   }
 
-  OpenGroupsSidenav(isGroup:number) {
+  OpenGroupsSidenav(isGroup: number) {
     this.showFloatIdeaMenu = false;
     this.showFloatGroupMenu = false;
     this.showFloatStatMenu = false;
     this.GroupParticipantStat = isGroup;
     this.isSidenavGroupsOpen = !this.isSidenavGroupsOpen;
+
+    if (this.GroupParticipantStat === 3) {
+      this.fetchUsersRanking();
+    }
+    else if (this.GroupParticipantStat === 4) {
+      this.fetchTrends();
+    }
   }
 
   closeSidebarGroupsBtn() {
     this.isSidenavGroupsOpen = false;
   }
 
-  searchStats(){
+  fetchCounts() {
+    this.analyticsService.getCountsSummarySymbiocreation(this.symbiocreation?.id)
+      .subscribe(countsSummary => {
+        this.totalUsers = countsSummary.users;
+        this.totalIdeas = countsSummary.ideas;
+      });
+  }
 
-    forkJoin({
-      countsSummary: this.analyticsService.getCountsSummarySymbiocreation(this.symbiocreation?.id),
-      commonTerms: this.analyticsService.getCommonTermsInSymbiocreation(this.symbiocreation?.id),
-      usersRanking: this.analyticsService.getUsersRankingSymbiocreation(this.symbiocreation?.id)
-    }).subscribe({
-      next: response => {
-        this.totalUsers = response.countsSummary.users;
-        this.totalIdeas = response.countsSummary.ideas;
+  fetchUsersRanking() {
+    if (this.usersRanking) {
+      return;
+    }
 
-        this.commonTermsRanking = response.commonTerms;
-        this.usersRanking = response.usersRanking;
-      }
-    });
+    this.isLoadingTopUsers = true;
+    this.analyticsService.getUsersRankingSymbiocreation(this.symbiocreation?.id)
+      .subscribe(usersRanking => {
+        this.isLoadingTopUsers = false;
+        this.usersRanking = usersRanking;
+      });
+  }
 
+  fetchTrends() {
+    if (this.trends) {
+      return;
+    }
+
+    this.isLoadingTrends = true;
+    this.analyticsService.getTrendsInSymbiocreation(this.symbiocreation?.id)
+      .subscribe(trends => {
+        this.isLoadingTrends = false;
+        this.trends = trends;
+      });
   }
 
 }

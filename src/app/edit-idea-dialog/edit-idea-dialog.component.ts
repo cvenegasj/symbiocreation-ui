@@ -6,7 +6,10 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';
 import { Observable, forkJoin } from 'rxjs';
-import { CloudinaryImage } from '@cloudinary/url-gen';
+import { SymbiocreationService } from '../services/symbiocreation.service';
+
+import { v4 as uuidv4 } from 'uuid';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-idea-dialog',
@@ -17,6 +20,7 @@ export class EditIdeaDialogComponent implements OnInit {
 
   idea: Idea = {};
   selectedImgs: ImageSnippet[];
+  isLoadingImageGeneration = false;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -24,7 +28,9 @@ export class EditIdeaDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditIdeaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private symbioService: SymbiocreationService,
+    private _snackBar: MatSnackBar,
   ) {
     if (this.data.idea) {
       this.idea = this.data.idea;
@@ -38,7 +44,7 @@ export class EditIdeaDialogComponent implements OnInit {
     this.selectedImgs = [];
   }
 
-  onOkClick(okButton) {
+  onOkClick(okButton: any) {
     // upload img to cloudinary
     okButton.disabled = true;
     okButton._elementRef.nativeElement.innerText = 'Cargando...';
@@ -90,6 +96,34 @@ export class EditIdeaDialogComponent implements OnInit {
         this.selectedImgs.push(imgSnippet);
       }
     });
+  }
+
+  generateImageWithLlm(generateImageBtn: any) {
+    if (!this.idea.title?.trim().length || !this.idea.description?.trim().length) {
+      this._snackBar.open('Por favor, inserte el título y descripción de la idea.', 'ok', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    this.isLoadingImageGeneration = true;
+    generateImageBtn.disabled = true;
+    generateImageBtn._elementRef.nativeElement.innerText = 'Generando imagen con AI...';
+
+    this.symbioService.getImageForIdeaFromLlm(this.idea.title, this.idea.description)
+      .subscribe(imgBlob => {
+        const imgFileName = `img-generated-${uuidv4()}.png`;
+
+        const imgUrl = URL.createObjectURL(imgBlob);
+        const file = new File([imgBlob], imgFileName, { type: imgBlob.type });
+
+        const imgSnippet = new ImageSnippet(imgUrl, file);
+        this.selectedImgs.push(imgSnippet);
+
+        this.isLoadingImageGeneration = false;
+        generateImageBtn.disabled = false;
+        generateImageBtn._elementRef.nativeElement.innerText = 'Generar imagen con AI';
+      });
   }
   
   processFile(imageInput: any) {

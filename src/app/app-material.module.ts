@@ -26,6 +26,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 
 @NgModule({
@@ -86,6 +88,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatAutocompleteModule,
     MatTabsModule,
     MatSliderModule,
+    MatProgressSpinnerModule,
     
   ],
 })

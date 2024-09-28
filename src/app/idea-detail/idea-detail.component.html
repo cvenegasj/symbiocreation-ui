@@ -1,6 +1,5 @@
 <mat-toolbar class="idea-toolbar">
-    <!-- <span class="ellipsed">Idea de {{nameToShow}}</span> -->
-    
+
     <span fxFlex></span>
 
     <button *ngIf="sharedService.isIdeaEditable$ | async" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
@@ -25,7 +24,7 @@
     </button>
 </mat-toolbar>
 
-<div class="ellipsed idea-name">Idea de {{nameToShow}}</div>
+<div class="ellipsed idea-name">Idea de {{node?.name}}</div>
 
 <div class="idea-body" [style.padding]="sidenavService.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
 
@@ -34,10 +33,26 @@
             No hay ninguna idea registrada.
         </p>
         <div class="centered" *ngIf="sharedService.isIdeaEditable$ | async">
-            <button class="register-new-idea" mat-flat-button color="primary" (click)="openEditIdeaDialog()">Registrar idea</button>
+            <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">
+                Registrar idea
+            </button><br />
+
+            <button mat-button color="accent" (click)="showChatGptSuggestedIdeas = true;" style="margin-top: 5px;">
+                Obtener ideas de ChatGPT
+            </button>
         </div>
     </div>
 
+
+    <!-- ChatGPT results -->
+    <app-chatgpt-idea-suggestions *ngIf="showChatGptSuggestedIdeas" 
+        [symbiocreationId]="idSymbio"
+        [node]="node"
+        (changedIdea)="onIdeaChanged($event)">
+    </app-chatgpt-idea-suggestions>
+
+
+    <!-- Idea -->
     <div *ngIf="node?.idea">
         <div>
             <p class="centered gray-900 font-18 bold">{{node.idea.title}}</p>
@@ -51,9 +66,7 @@
         <div class="carousel-container" *ngIf="node.idea.imgPublicIds?.length > 0">
             <button class="carousel-button prev" (click)="moveLeft()">&#10094;</button>
 
-            <div class="carousel"
-                 (mousedown)="onMouseDown($event)" (mouseleave)="onMouseLeave()" (mouseup)="onMouseUp()" (mousemove)="onMouseMove($event)"
-                 (touchstart)="onMouseDown($event)" (touchend)="onMouseUp()" (touchmove)="onMouseMove($event)">
+            <div class="carousel">
                 <div class="carousel-track" #carouselTrack>
                     <div class="carousel-item" *ngFor="let cloudinaryImg of node.idea.cloudinaryImages">
                         <advanced-image [cldImg]="cloudinaryImg" width="100%" height="auto"></advanced-image>
@@ -98,11 +111,9 @@
         <span>{{node.idea.comments ? node.idea.comments.length : '0' }} comentarios</span>
 
         <!-- Visible to logged-in users -->
-        <div *ngIf="auth.userProfile$ | async as profile" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
-            <div style="width: 70px; padding: 10px 15px;">
-                <!-- <advanced-image [cldImg]="imageService.getImage(profile.picture)" type="fetch" class="img-2">
-                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                </advanced-image> -->
+        <div *ngIf="appUser" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+            <div style="width: 50px; padding: 10px 15px;">
+                <advanced-image [cldImg]="appUser.cloudinaryImage" class="img-2"></advanced-image>
             </div>
             <div fxFlex>
                 <mat-form-field style="width: 100%;">
@@ -117,10 +128,8 @@
         </div>
 
         <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
-            <div style="width: 70px; padding: 0 15px;">
-                <!-- <advanced-image [cldImg]="comment.author.pictureUrl" type="fetch" class="img-2">
-                    <cl-transformation height="120" width="120" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                </advanced-image> -->
+            <div style="width: 50px; padding: 0 15px;">
+                <advanced-image [cldImg]="comment.author.cloudinaryImage" class="img-2"></advanced-image>
             </div>
             <div fxFlex>
                 <div>

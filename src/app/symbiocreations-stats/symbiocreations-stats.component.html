@@ -57,13 +57,10 @@
         <mat-tab label="Tendencias">
             
             <mat-list>
-                <mat-list-item *ngFor="let item of commonTermsRanking; index as i; last as last">
+                <mat-list-item *ngFor="let item of trends; last as last">
                   <div matLine>
                     <span class="bold font-15 cyan-color-1" style="max-width: 90%;">
                       {{ item.term }}
-                    </span>
-                    <span class="font-12 gray-600" style="margin-left: 2px;">
-                      ({{ item.count }} {{ item.count === 1 ? 'vez' : 'veces' }})
                     </span>
                   </div>
             

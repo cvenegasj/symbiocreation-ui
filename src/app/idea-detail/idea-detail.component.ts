@@ -2,9 +2,8 @@ import { Component, OnInit, AfterViewInit, ElementRef, Renderer2, ViewChild } fr
 import { SidenavService } from '../services/sidenav.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Node } from '../models/forceGraphTypes';
-import { Comment } from '../models/symbioTypes';
+import { Comment, Idea, User } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
-import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { SharedService } from '../services/shared.service';
 import { concatMap } from 'rxjs/operators';
@@ -16,6 +15,11 @@ import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.co
 import { ImageService } from '../services/image.service';
 import { CloudinaryImage } from '@cloudinary/url-gen';
 
+import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
+import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity';
+import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { fill } from '@cloudinary/url-gen/actions/resize';
+
 @Component({
   selector: 'app-idea-detail',
   templateUrl: './idea-detail.component.html',
@@ -23,28 +27,30 @@ import { CloudinaryImage } from '@cloudinary/url-gen';
 })
 export class IdeaDetailComponent implements OnInit, AfterViewInit {
 
+  appUser: User;
+  idSymbio: string;
+
   node: Node;
-  nameToShow: string;
-  //sessionIsModerator: boolean = false;
 
   rating: number = 3.5;
   comment: string = '';
   hiddenCommentButtons: boolean = true;
+  showChatGptSuggestedIdeas = false;
 
   // Carrousel
-  @ViewChild('carouselTrack') carouselTrack!: ElementRef;
-  isDragging = false;
-  startX = 0;
-  scrollLeft = 0;
-  dragSpeedMultiplier = 1.5;
+  @ViewChild('carouselTrack', { static: false }) carouselTrack: ElementRef;
+  currentIndex: number = 0;
+  isDragging: boolean = false;
+  startPosition: number = 0;
+  currentTranslate: number = 0;
+  prevTranslate: number = 0;
 
   constructor(
     private router: Router, 
     private route: ActivatedRoute,
     public sidenavService: SidenavService,
     private symbioService: SymbiocreationService,
-    private userService: UserService,
-    public auth: AuthService,
+    private auth: AuthService,
     public sharedService: SharedService,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog,
@@ -65,17 +71,27 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   subscribeToParams() {
-    const idSymbio = this.route.parent.snapshot.paramMap.get('id');
+    this.sharedService.appUser$.subscribe(appUser => {
+      this.appUser = appUser;
+      this.appUser.cloudinaryImage = this.getThumbnailFromUrl(this.appUser.pictureUrl);
+    });
+
+    this.idSymbio = this.route.parent.snapshot.paramMap.get('id');
 
     this.route.params.pipe(
-      concatMap(routeParams => this.symbioService.getNodeById(idSymbio, routeParams.idNode))
+      concatMap(routeParams => this.symbioService.getNodeById(this.idSymbio, routeParams.idNode))
     )
     .subscribe(node => { // node injected w user
+      this.showChatGptSuggestedIdeas = false;
       this.node = node;
-      this.nameToShow = this.node.name;
 
       if (this.node.idea?.imgPublicIds) {
         this.node.idea.cloudinaryImages = this.toCloudinaryImages(this.node.idea.imgPublicIds);
+      }
+      if (this.node.idea?.comments) {
+        this.node.idea.comments.forEach(comment => {
+          comment.author.cloudinaryImage = this.getThumbnailFromUrl(comment.author.pictureUrl);
+        });
       }
     });
   }
@@ -93,19 +109,16 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   openEditIdeaDialog() {
-    if (!this.auth.loggedIn) {
-      const id = this.route.parent.snapshot.params.id;
+    if (!this.appUser) {
       const ideaId = this.route.snapshot.params.idNode;
-      this.auth.login(`/symbiocreation/${id}/idea/${ideaId}`);
+      this.auth.login(`/symbiocreation/${this.idSymbio}/idea/${ideaId}`);
       return;
     }
 
-    const idSymbio = this.route.parent.snapshot.paramMap.get('id');
-
     const dialogRef = this.dialog.open(EditIdeaDialogComponent, {
-      width: '550px',
+      width: '650px',
       data: {
-        name: this.nameToShow,
+        name: this.node.name,
         idea: structuredClone(this.node.idea) // deep copy
       }
     });
@@ -117,8 +130,13 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
         if (this.node.idea.imgPublicIds) {
           this.node.idea.cloudinaryImages = this.toCloudinaryImages(this.node.idea.imgPublicIds);
         }
+        if (this.node.idea.comments) {
+          this.node.idea.comments.forEach(comment => {
+            comment.author.cloudinaryImage = this.getThumbnailFromUrl(comment.author.pictureUrl);
+          });
+        }
 
-        this.symbioService.updateNodeIdea(idSymbio, this.node)
+        this.symbioService.updateNodeIdea(this.idSymbio, this.node)
           .subscribe(res => {
             this._snackBar.open('Se registró la idea correctamente.', 'ok', {
               duration: 2000,
@@ -126,6 +144,27 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
           });
       }
     });
+  }
+
+  onIdeaChanged(idea: Idea) {
+    this.showChatGptSuggestedIdeas = false;
+    this.node.idea = idea;
+        
+    if (this.node.idea.imgPublicIds) {
+      this.node.idea.cloudinaryImages = this.toCloudinaryImages(this.node.idea.imgPublicIds);
+    }
+    if (this.node.idea.comments) {
+      this.node.idea.comments.forEach(comment => {
+        comment.author.cloudinaryImage = this.getThumbnailFromUrl(comment.author.pictureUrl);
+      });
+    }
+
+    this.symbioService.updateNodeIdea(this.idSymbio, this.node)
+      .subscribe(res => {
+        this._snackBar.open('Se registró la idea correctamente.', 'ok', {
+          duration: 2000,
+        });
+      });
   }
 
   toCloudinaryImages(publicIds: string[]): CloudinaryImage[] {
@@ -142,59 +181,62 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   postComment() {
-    this.auth.userProfile$.pipe(
-      concatMap(user => this.userService.getUserByEmail(user.email)),
-      concatMap(u => {
-        const newComment: Comment = {u_id: u.id, content: this.comment};
-        const idSymbio = this.route.parent.snapshot.paramMap.get('id');
-        return this.symbioService.createCommentOfIdea(idSymbio, this.node.id, newComment);
-      })
-    ).subscribe(comment => {
-      if (!this.node.idea.comments) {
-        this.node.idea.comments = [];
-      }
-      this.node.idea.comments.push(comment);
-      this.comment = '';
-      this._snackBar.open('Se registró tu comentario correctamente.', 'ok', {
-        duration: 2000,
+    const newComment: Comment = {u_id: this.appUser.id, content: this.comment};
+
+    this.symbioService.createCommentOfIdea(this.idSymbio, this.node.id, newComment)
+      .subscribe(comment => {
+        comment.author.cloudinaryImage = this.getThumbnailFromUrl(comment.author.pictureUrl);
+
+        if (!this.node.idea.comments) {
+          this.node.idea.comments = [];
+        }
+        this.node.idea.comments.push(comment);
+        this.comment = '';
+        this._snackBar.open('Se registró tu comentario correctamente.', 'ok', {
+          duration: 2000,
+        });
       });
-    });
   }
 
   moveLeft() {
-    const width = this.carouselTrack.nativeElement.clientWidth;
-    this.carouselTrack.nativeElement.scrollLeft -= width;
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updateCarouselPosition(true);
+    }
   }
 
   moveRight() {
-    const width = this.carouselTrack.nativeElement.clientWidth;
-    this.carouselTrack.nativeElement.scrollLeft += width;
+    const items = this.carouselTrack.nativeElement.children.length;
+    if (this.currentIndex < items - 1) {
+      this.currentIndex++;
+      this.updateCarouselPosition(true);
+    }
   }
 
-  onMouseDown(event: MouseEvent | TouchEvent) {
-    this.isDragging = true;
-    const startX = 'touches' in event ? event.touches[0].pageX : event.pageX;
-    this.startX = startX - this.carouselTrack.nativeElement.offsetLeft;
-    this.scrollLeft = this.carouselTrack.nativeElement.scrollLeft;
-    this.renderer.setStyle(this.carouselTrack.nativeElement, 'cursor', 'grabbing');
+  updateCarouselPosition(addTransition: boolean) {
+    const width = this.carouselTrack.nativeElement.offsetWidth;
+    this.currentTranslate = -this.currentIndex * width;
+    
+    // Añade la clase de transición solo si se está usando los botones
+    if (addTransition) {
+      this.renderer.addClass(this.carouselTrack.nativeElement, 'with-transition');
+    } else {
+      this.renderer.removeClass(this.carouselTrack.nativeElement, 'with-transition');
+    }
+
+    this.carouselTrack.nativeElement.style.transform = `translateX(${this.currentTranslate}px)`;
   }
 
-  onMouseLeave() {
-    this.isDragging = false;
-    this.renderer.setStyle(this.carouselTrack.nativeElement, 'cursor', 'grab');
+  getPositionX(event: MouseEvent | TouchEvent): number {
+    return event instanceof MouseEvent ? event.pageX : event.touches[0].clientX;
   }
 
-  onMouseUp() {
-    this.isDragging = false;
-    this.renderer.setStyle(this.carouselTrack.nativeElement, 'cursor', 'grab');
-  }
-
-  onMouseMove(event: MouseEvent | TouchEvent) {
-    if (!this.isDragging) return;
-    event.preventDefault();
-    const x = 'touches' in event ? event.touches[0].pageX : event.pageX;
-    const walk = (x - this.startX) * this.dragSpeedMultiplier; // Aumenta la distancia de desplazamiento
-    this.carouselTrack.nativeElement.scrollLeft = this.scrollLeft - walk;
+  getThumbnailFromUrl(url: string): CloudinaryImage {
+    return this.imageService.getImage(url)
+              .setDeliveryType('fetch')
+              .format('auto')
+              .resize(fill().width(120).height(120).gravity(focusOn(FocusOn.face()))) 
+              .roundCorners(byRadius(100));
   }
 
 }

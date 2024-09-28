@@ -61,3 +61,13 @@ export interface Comment {
     content: string;
     lastModified?: Date;
 }
+
+export interface IdeaAI {
+    title: string;
+    description: string;
+}
+
+export interface ImageAI {
+    url: string;
+    b64Json: string;
+}

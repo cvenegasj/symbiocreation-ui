@@ -95,39 +95,54 @@
 
             <div class="container-lista topUser" *ngIf="GroupParticipantStat == 3">
 
-                <div class="container-elemento" *ngFor="let ur of usersRanking;let i = index">
+                <mat-progress-spinner *ngIf="isLoadingTopUsers" 
+                        style="margin: 40px auto 0;"
+                        color="accent"
+                        diameter="50"
+                        mode="indeterminate">
+                </mat-progress-spinner>
 
-                    <div class="data" style="display: flex; ">
-                        <div class="data-index">{{i+1}}</div>
-                        <div class="data-data">
-                            <div class="data-name">{{ur?.user?.name}}</div>
-                            <div class="data-node">PUNTAJE: {{ur?.score}}</div>
+                <ng-container *ngIf="!isLoadingTopUsers">
+                    <div class="container-elemento" *ngFor="let ur of usersRanking; let i = index">
+
+                        <div class="data" style="display: flex; ">
+                            <div class="data-index">{{i+1}}</div>
+                            <div class="data-data">
+                                <div class="data-name">{{ur?.user?.name}}</div>
+                                <div class="data-node">PUNTAJE: {{ur?.score}}</div>
+                            </div>
+                        </div>
+                        <div class="buttons">
+    
                         </div>
                     </div>
-                    <div class="buttons">
-
-                    </div>
-
-                </div>
+                </ng-container>
 
             </div>
 
             <div class="container-lista tendency" *ngIf="GroupParticipantStat == 4">
 
-                <div class="container-elemento" *ngFor="let ctr of commonTermsRanking;let i = index">
+                <mat-progress-spinner *ngIf="isLoadingTrends" 
+                        style="margin: 40px auto 0;"
+                        color="accent"
+                        diameter="50"
+                        mode="indeterminate">
+                </mat-progress-spinner>
 
-                    <div class="data" style="display: flex; ">
-                        <div class="data-index">{{i+1}}</div>
-                        <div class="data-data">
-                            <div class="data-name">{{ctr?.term}}</div>
-                            <div class="data-node">PUNTAJE: {{ctr?.count}}</div>
+                <ng-container *ngIf="!isLoadingTrends">
+                    <div class="container-elemento" *ngFor="let trend of trends; let i = index">
+
+                        <div class="data" style="display: flex;">
+                            <div class="data-index">{{i+1}}</div>
+                            <div class="data-data">
+                                <div class="data-name">{{trend}}</div>
+                            </div>
+                        </div>
+                        <div class="buttons">
+    
                         </div>
                     </div>
-                    <div class="buttons">
-
-                    </div>
-
-                </div>
+                </ng-container>
 
             </div>
 
@@ -312,8 +327,6 @@
             <div class="mat-elevation-z3 workspace-header" style="padding: 9px; background-color: white; display: flex;justify-content: space-evenly;">
                 <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
 
-                    
-
                     <mat-icon class="teal-color-1 workspace-icon-left" style="color:#287987;"
                             [matTooltip]="symbiocreation?.visibility === 'public' ? 'Pública' : 'Privada'" 
                             matTooltipPosition="above">
@@ -394,29 +407,33 @@
         MARK: Btn flotantes
         -->
 
-        <button class="float-menu-group btn-new-idea" mat-icon-button color="primary" (click)="showFloatIdeaMenuBtn()" matTooltip="Nueva idea" matTooltipPosition="left">
-            <mat-icon style="color: white;">add</mat-icon>
-        </button>
+        <ng-container *ngIf="appUser">
+            <button class="float-menu-group btn-new-idea" mat-icon-button color="primary" (click)="showFloatIdeaMenuBtn()" matTooltip="Nueva idea" matTooltipPosition="left">
+                <mat-icon style="color: white;">add</mat-icon>
+            </button>
 
-        <div class="animated-text" [ngClass]="{'show': showFloatIdeaMenu}">
-            ¿Agregar una nueva idea?
-            <span class="idea-btn-close" (click)="closeIdeaBtn()"><mat-icon>close</mat-icon></span>
-        </div>
+            <div class="animated-text" [ngClass]="{'show': showFloatIdeaMenu}">
+                ¿Agregar una nueva idea?
+                <span class="idea-btn-close" (click)="closeIdeaBtn()"><mat-icon>close</mat-icon></span>
+            </div>
 
-        <div class="animated-text-2" [ngClass]="{'show': showFloatIdeaMenu}">
-            <div class="idea-body">
-                <div class="idea-txt">Se agregará una nueva idea <br> (nodo) al grafo de la simbiocreación</div>
-                <div class="idea-btn-group">
-                    <button mat-flat-button class="idea-btn-cancel" (click)="closeIdeaBtn()">Cancelar</button>
-                    <button mat-flat-button class="idea-btn-confirm" (click)="createNewUserIdea()">Confirmar</button>
+            <div class="animated-text-2" [ngClass]="{'show': showFloatIdeaMenu}">
+                <div class="idea-body">
+                    <div class="idea-txt">Se agregará una nueva idea <br> (nodo) al grafo de la simbiocreación</div>
+                    <div class="idea-btn-group">
+                        <button mat-flat-button class="idea-btn-cancel" (click)="closeIdeaBtn()">Cancelar</button>
+                        <button mat-flat-button class="idea-btn-confirm" (click)="createNewUserIdea()">Confirmar</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
 
         <!-- <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="toggleModalIdeas()" matTooltip="Ideas" matTooltipPosition="left"> -->
-        <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="OpenGroupsSidenav(5)" matTooltip="Ideas" matTooltipPosition="left">
-            <mat-icon style="color: white;">lightbulb</mat-icon>
-        </button>
+        <ng-container *ngIf="appUser">
+            <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="OpenGroupsSidenav(5)" matTooltip="Mis ideas" matTooltipPosition="left">
+                <mat-icon style="color: white;">lightbulb</mat-icon>
+            </button>
+        </ng-container>
 
         <!-- <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="toggleModalGroups()" matTooltip="Grupos" matTooltipPosition="left"> -->
         <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="showFloatGroupMenuBtn()" matTooltip="Grupos" matTooltipPosition="left">
@@ -437,8 +454,7 @@
             </div>
         </div>
 
-        
-
+    
 
         <button class="float-menu-group btn-stats" mat-icon-button color="primary" (click)="showFloatStatMenuBtn()" matTooltip="Stats" matTooltipPosition="left">
             <mat-icon style="color: white;">bar_chart</mat-icon>
@@ -451,8 +467,8 @@
 
         <div class="stat-float-menu-2" [ngClass]="{'show': showFloatStatMenu}">
             <div class="stat-body">
-                <div class="stat-txt">Participantes: <span class="number">{{this.totalUsers}}</span></div>
-                <div class="stat-txt">Ideas: <span class="number">{{this.totalIdeas}}</span></div>
+                <div class="stat-txt">Participantes: <span class="number">{{totalUsers}}</span></div>
+                <div class="stat-txt">Ideas: <span class="number">{{totalIdeas}}</span></div>
                 <div class="stat-btn-stat">
                     <button mat-flat-button class="stat-btn-grupos" (click)="OpenGroupsSidenav(3)">Top Usuarios</button>
                     <button mat-flat-button class="stat-btn-participantes" (click)="OpenGroupsSidenav(4)">Tendencias</button>

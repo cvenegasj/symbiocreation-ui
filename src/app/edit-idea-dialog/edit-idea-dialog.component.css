@@ -1,9 +1,0 @@
-.btn-ok{
-    background-color: #287987;
-    color: #FFFFFF;
-}
-
-.btn-ok.mat-button-disabled{
-    background-color: (0, 0, 0, 0.12) !important;
-    color: #777777 !important;
-}
