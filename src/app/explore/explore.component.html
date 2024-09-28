@@ -35,43 +35,36 @@
                 <a [routerLink]="['/symbiocreation/', s.id]" class="ellipsed-2 link-hvr-underline txt-1">{{s.name}}</a>
             </div>
 
-            <div *ngIf="getParticipantsToDisplay(s.participants) as participantsToDisplay" 
-                style="margin: 20px auto 0; height: 40px; position: relative;" 
-                [style.width]="(participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, participantsToDisplay.length) + 'px'">
+            <div style="margin: 20px auto 0; height: 40px; position: relative;" 
+                [style.width]="(s.participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, s.participantsToDisplay.length) + 'px'">
 
-                    <cl-image *ngFor="let p of participantsToDisplay; index as i;" 
-                        [public-id]="p.user.pictureUrl" type="fetch" class="img-1" 
+                    <advanced-image *ngFor="let p of s.participantsToDisplay; index as i;" 
+                        [cldImg]="p.user.cloudinaryImage"
+                        class="img-1"
                         [style.z-index]="5-i" [style.left]="i*24 + 'px'"
                         [matTooltip]="p.user.name" matTooltipPosition="above">
-                        <cl-transformation height="90" width="90" gravity="face" radius="max" crop="fill" fetch-format="auto"></cl-transformation>
-                    </cl-image>
+                    </advanced-image>
 
-                    <span *ngIf="participantsToDisplay.length > 0 && s.participants.length - participantsToDisplay.length > 0" 
+                    <span *ngIf="s.participantsToDisplay.length > 0 && s.participants.length - s.participantsToDisplay.length > 0" 
                         class="font-12 gray-300 txt-2" style="position: absolute; top: 10px;" 
-                        [style.left]="(participantsToDisplay.length - 1) * 24 + 45 + 'px'">
-                        {{s.participants.length - participantsToDisplay.length}} más
+                        [style.left]="(s.participantsToDisplay.length - 1) * 24 + 45 + 'px'">
+                        {{s.participants.length - s.participantsToDisplay.length}} más
                     </span>
-
             </div>
 
             <div style="margin-top: 20px; height: 30px;">
-                <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="float: left; width: 151px;">
-                    <mat-icon class="font-17 gray-300 txt-2" style="position: relative; top: 4px;">update</mat-icon>
+                <div [matTooltip]="'Actualizado ' + getTimeAgo(s.lastModified)" matTooltipPosition="above" style="max-width: 151px; display: flex; align-items: center;" fxFlex>
+                    <mat-icon class="font-17 gray-300 txt-2">update</mat-icon>
                     <span class="font-12 gray-300 txt-2" style="position: relative; left: -4px;">{{getTimeAgo(s.lastModified)}}</span>
                 </div>
 
-                <!--<button mat-stroked-button
-                        class="gray-300"
-                        (click)="viewSymbiocreationDetail(s)">
-                        Ver detalles
-                </button> -->
-                <div style="float: right; width: 40px; height: 30px;">
+                <div fxFlex="30px">
                     <button class="infoButton"
                             mat-icon-button 
                             matTooltip="Ver más información" matTooltipPosition="above"
                             style="position: relative; top: -5px;" 
                             (click)="openSymbioDetailDialog(s)">
-                            <mat-icon class="font-20 gray-300">info</mat-icon>
+                            <mat-icon class="font-20 gray-400">info</mat-icon>
                     </button>
                 </div>
             </div>

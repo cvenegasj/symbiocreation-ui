@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
   templateUrl: './list-symbios-user.component.html',
   styleUrls: ['./list-symbios-user.component.css']
 })
-export class ListSymbiosUserComponent implements OnInit {
+export class ListSymbiosUserComponent {
 
   environment = environment;
 
@@ -26,9 +26,6 @@ export class ListSymbiosUserComponent implements OnInit {
     private router: Router,
     private symbioService: SymbiocreationService
   ) { }
-
-  ngOnInit(): void {
-  }
 
   deleteSymbiocreation(id: string) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

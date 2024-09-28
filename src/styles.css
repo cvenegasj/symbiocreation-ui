@@ -277,7 +277,7 @@ a.link-hvr-underline:hover {
     stroke-opacity: 0.6;
 }
 
-.nodes circle {
+.nodes .node {
     /*stroke-width: 1.5px;*/
     cursor: pointer;
 }
@@ -366,13 +366,13 @@ ng-moment-timezone-picker div.wrapper {
     display: inline-block !important;
 }
 
-cl-image > img.img-1 {
+advanced-image.img-1 > img {
     width: 40px;
     height: auto;
     position: absolute;
 }
 
-cl-image > img.img-2 {
+advanced-image.img-2 > img {
     width: 43px;
     height: auto;
 }

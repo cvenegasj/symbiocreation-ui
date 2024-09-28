@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { MatDialog } from '@angular/material/dialog';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
@@ -7,13 +7,19 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { Router } from '@angular/router';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { EditGroupNameDialogComponent } from '../edit-group-name-dialog/edit-group-name-dialog.component';
+import { ImageService } from '../services/image.service';
+import { CloudinaryImage } from '@cloudinary/url-gen';
+import { byRadius } from '@cloudinary/url-gen/actions/roundCorners';
+import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity';
+import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { fill } from '@cloudinary/url-gen/actions/resize';
 
 @Component({
   selector: 'app-grid-symbios-user',
   templateUrl: './grid-symbios-user.component.html',
   styleUrls: ['./grid-symbios-user.component.css']
 })
-export class GridSymbiosUserComponent implements OnInit {
+export class GridSymbiosUserComponent implements OnChanges {
 
   @Input() symbiocreations: Symbiocreation[];
   @Input() isModeratorList: boolean[];
@@ -21,10 +27,14 @@ export class GridSymbiosUserComponent implements OnInit {
   constructor(
     private router: Router,
     public dialog: MatDialog,
-    private symbioService: SymbiocreationService
+    private symbioService: SymbiocreationService,
+    private imageService: ImageService,
   ) { }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    if (this.symbiocreations) {
+      this.symbiocreations.forEach(symbio => symbio.participantsToDisplay = this.getParticipantsToDisplay(symbio.participants));
+    }
   }
 
   deleteSymbiocreation(id: string) {
@@ -80,21 +90,27 @@ export class GridSymbiosUserComponent implements OnInit {
 
   getParticipantsToDisplay(participants: Participant[]): Participant[] {
     let selected: Participant[] = [];
+
     // include moderators w picture
     let i = 0;
     while (i < participants.length && selected.length < 5) {
-      if (participants[i].isModerator && participants[i].user.pictureUrl)
+      if (participants[i].isModerator && participants[i].user.pictureUrl) {
+        participants[i].user.cloudinaryImage = this.getThumbnailFromUrl(participants[i].user.pictureUrl);
         selected.push(participants[i]);
+      }
       i++;
     }
 
     i = 0;
     // fill 5 spots w/ participants
     while (i < participants.length && selected.length < 5) {
-      if (!participants[i].isModerator && participants[i].user.pictureUrl)
+      if (!participants[i].isModerator && participants[i].user.pictureUrl) {
+        participants[i].user.cloudinaryImage = this.getThumbnailFromUrl(participants[i].user.pictureUrl);
         selected.push(participants[i]);
+      }
       i++;
     }
+
     return selected;
   }
 
@@ -105,6 +121,14 @@ export class GridSymbiosUserComponent implements OnInit {
   getTimeAgo(lastModified: number): string {
     moment.locale('es');
     return moment(lastModified).fromNow();
+  }
+
+  getThumbnailFromUrl(url: string): CloudinaryImage {
+    return this.imageService.getImage(url)
+              .setDeliveryType('fetch')
+              .format('auto')
+              .resize(fill().width(90).height(90).gravity(focusOn(FocusOn.face()))) 
+              .roundCorners(byRadius(50));
   }
 
 }

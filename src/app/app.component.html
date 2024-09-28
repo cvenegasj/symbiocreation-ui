@@ -1,6 +1,6 @@
 <mat-progress-bar mode="indeterminate" color="accent" *ngIf="sharedService.isLoading$ | async"></mat-progress-bar>
 
-<mat-toolbar color="primary" style="background-color: #287987;" class="menu-desktop">
+<mat-toolbar color="primary" class="menu-desktop">
 
     <!-- Boton Menu Mobile -->
     <a class="no-hover toogle-button only-mobile menu-mobile-btn" mat-button >
@@ -11,7 +11,7 @@
 
     <!-- Menu Desktop -->
     <div class="only-desktop">
-        <a class="no-hover" style="color: white !important;" routerLink="/" style="margin-right: 15px;">{{title}}</a>
+        <a class="no-hover bold font-18" routerLink="/" style="display: flex; align-items: center; margin-right: 15px;">{{title}}</a>
         <a class="no-hover" mat-button routerLink="/dashboard/my-symbios" *ngIf="auth.loggedIn">Dashboard</a>
         <a class="no-hover" mat-button routerLink="/explore">Explora</a>
         <a class="no-hover" mat-button routerLink="/ranking">Ranking</a>

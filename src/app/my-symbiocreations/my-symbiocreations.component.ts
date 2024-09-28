@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Symbiocreation, User } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
-import { tap, concatMap } from 'rxjs/operators';
+import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { SharedService } from '../services/shared.service';
 import { AnalyticsService } from '../services/analytics.service';
@@ -37,7 +36,7 @@ export class MySymbiocreationsComponent implements OnInit {
     public sharedService: SharedService,
     public dialog: MatDialog
     ) {
-    //this.symbiocreations = [];
+    // this.symbiocreations = [];
     this.isModeratorList = [];
   }
 
@@ -49,7 +48,7 @@ export class MySymbiocreationsComponent implements OnInit {
       concatMap(user => this.userService.getUserByEmail(user.email)),
       concatMap(appUser => {
         fetchedUser = appUser;
-        this.isGridViewOn = !appUser.isGridViewOn;
+        this.isGridViewOn = appUser.isGridViewOn;
         // return this.symbioService.countSymbiocreationsByUser(u.id);
         return this.analyticsService.getCountsSummaryUser(appUser.id);
       }),

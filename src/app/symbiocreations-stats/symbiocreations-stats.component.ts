@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AnalyticsService } from '../services/analytics.service';
-import { BehaviorSubject, forkJoin, from, pipe, concat } from 'rxjs';
+import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { SidenavService } from '../services/sidenav.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class SymbiocreationsStatsComponent implements OnInit {
   totalUsers: number;
   totalIdeas: number;
 
-  commonTermsRanking: any[] = [];
+  trends: string[] = [];
   usersRanking: any[] = [];
 
   constructor(
@@ -27,21 +27,20 @@ export class SymbiocreationsStatsComponent implements OnInit {
     this._symbiocreationId.subscribe(symbiocreationId => {
       forkJoin({
         countsSummary: this.analyticsService.getCountsSummarySymbiocreation(symbiocreationId),
-        commonTerms: this.analyticsService.getCommonTermsInSymbiocreation(symbiocreationId),
+        trends: this.analyticsService.getTrendsInSymbiocreation(symbiocreationId),
         usersRanking: this.analyticsService.getUsersRankingSymbiocreation(symbiocreationId)
       }).subscribe({
         next: response => {
           this.totalUsers = response.countsSummary.users;
           this.totalIdeas = response.countsSummary.ideas;
   
-          this.commonTermsRanking = response.commonTerms;
+          this.trends = response.trends;
           this.usersRanking = response.usersRanking;
 
           // console.log("this.totalUsers",this.totalUsers)
           // console.log("this.totalIdeas",this.totalIdeas)
           // console.log("this.commonTermsRanking",this.commonTermsRanking)
           // console.log("this.usersRanking",this.usersRanking)
-
         }
       });
     });

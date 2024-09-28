@@ -1,28 +1,33 @@
-// Custom Theming for Angular Material
 @use '@angular/material' as mat;
-// For more information: https://material.angular.io/guide/theming
-// Plus imports for other components in your app.
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
+// @include mat.all-legacy-component-typographies();
 @include mat.core();
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$symbiocreation-ui-primary: mat.define-palette(mat.$deep-purple-palette, A400, A200, A700);
-$symbiocreation-ui-accent: mat.define-palette(mat.$teal-palette, A200, A100, A400);
-
+$symbiocreation-ui-primary: mat.define-palette(mat.$cyan-palette, 800, 600, A700);
+$symbiocreation-ui-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 // The warn palette is optional (defaults to red).
 $symbiocreation-ui-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $symbiocreation-ui-accent, $symbiocreation-ui-warn);
+$symbiocreation-ui-theme: mat.define-light-theme((
+    color: (
+        primary: $symbiocreation-ui-primary,
+        accent: $symbiocreation-ui-accent,
+        warn: $symbiocreation-ui-warn,
+    )
+));
 
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
 @include mat.all-component-themes($symbiocreation-ui-theme);
 
 .chip-role.moderator {
@@ -42,16 +47,6 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
     fill: mat.get-color-from-palette(mat.$amber-palette, A400);
 }
 
-.bbox-name {
-    fill: white;
-    fill-opacity: 0.2;
-}
-
-.bbox-name2 {
-    fill: white;
-    fill-opacity: 0;
-}
-
 .accent-bg, .accent-bg:hover {
     background-color: mat.get-color-from-palette($symbiocreation-ui-accent, darker) !important;
 }
@@ -61,7 +56,7 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
 }
 
 .pink-A200 {
-    color: mat.get-color-from-palette(mat.$pink-palette, A200);
+    color: mat.get-color-from-palette(mat.$pink-palette, A200) !important;
 }
 
 .teal-color-1 {
@@ -70,6 +65,10 @@ $symbiocreation-ui-theme: mat.define-light-theme($symbiocreation-ui-primary, $sy
 
 .cyan-color-1 {
     color: mat.get-color-from-palette(mat.$cyan-palette, 600);
+}
+
+.cyan-color-2 {
+    color: mat.get-color-from-palette(mat.$cyan-palette, 800);
 }
 
 .deep-purple-500 {
@@ -146,11 +145,15 @@ path.line-2 {
     stroke: mat.get-color-from-palette(mat.$cyan-palette, 500);
 }
 
-
-circle{
-    transition: transform 0.3s ease !important;
-  }
+.circle {
+    transition: transform 0.2s ease !important;
+}
   
-  .hover{
+.hover {
     transform: scale(1.25) !important;
-  }
+}
+
+// create-symbio component
+.form-register > .container-card {
+     border: 1px solid mat.get-color-from-palette($symbiocreation-ui-accent);
+}

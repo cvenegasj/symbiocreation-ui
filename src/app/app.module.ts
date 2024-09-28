@@ -7,11 +7,10 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
-import { CloudinaryModule } from '@cloudinary/angular-5.x';
-import * as  Cloudinary from 'cloudinary-core';
-import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { CloudinaryModule } from '@cloudinary/ng';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
-import { NgxLinkifyjsModule } from 'ngx-linkifyjs';
+import { LinkyModule } from 'ngx-linky';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -45,6 +44,7 @@ import { CreateOnedotComponent } from './create-onedot/create-onedot.component';
 import { MyOnedotsComponent } from './my-onedots/my-onedots.component';
 import { OnedotComponent } from './onedot/onedot.component';
 import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
+import { ChatgptIdeaSuggestionsComponent } from './chatgpt-idea-suggestions/chatgpt-idea-suggestions.component';
 // import { MatSidenavModule } from '@angular/material/sidenav';
 // import {MatGridListModule} from '@angular/material/grid-list';
 // import {CdkAccordionModule} from '@angular/cdk/accordion';
@@ -84,6 +84,7 @@ import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
     MyOnedotsComponent,
     OnedotComponent,
     OnedotGridComponent,
+    ChatgptIdeaSuggestionsComponent,
     
   ],
   imports: [
@@ -94,16 +95,16 @@ import { OnedotGridComponent } from './onedot-grid/onedot-grid.component';
     ReactiveFormsModule,
     HttpClientModule,
     ClipboardModule,
-    CloudinaryModule.forRoot(Cloudinary, { cloud_name: 'dymje6shc', upload_preset: 'u6pnku96'}),
+    CloudinaryModule,
     MatMomentDateModule,
     MomentTimezonePickerModule,
-    NgxLinkifyjsModule.forRoot(),
+    LinkyModule,
     // MatSidenavModule,
     // MatGridListModule,
     // CdkAccordionModule,
   ],
   providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}
+    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}, provideMomentDateAdapter()
   ],
   bootstrap: [AppComponent]
 })

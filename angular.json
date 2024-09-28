@@ -68,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "symbiocreation-ui:build"
+            "buildTarget": "symbiocreation-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "symbiocreation-ui:build:production"
+              "buildTarget": "symbiocreation-ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "symbiocreation-ui:build"
+            "buildTarget": "symbiocreation-ui:build"
           }
         },
         "test": {

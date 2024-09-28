@@ -1,62 +1,59 @@
-.container-general{
+.container-general {
     padding: 55px 25px;
 
-    .list-ranking{
-        padding-left: 10px;
-        padding-right: 10px;
-        margin-top: 40px;
+    // .list-ranking {
+    //     padding-left: 10px;
+    //     padding-right: 10px;
+    //     margin-top: 40px;
 
-        .list-item-ranking{
-            padding-top: 0px;
-            padding-bottom: 20px;
-            padding-left: 0px;
-            padding-right: 0px;
+    //     .list-item-ranking {
+    //         padding-top: 0px;
+    //         padding-bottom: 20px;
+    //         padding-left: 0px;
+    //         padding-right: 0px;
     
-            .list-item-ranking-container{
-                padding-bottom: 20px !important;
-                width: 100%;
+    //         .list-item-ranking-container {
+    //             padding-bottom: 20px !important;
+    //             width: 100%;
 
-                .container-number{
-                    width: 70px;
-                    justify-content: flex-start;
+    //             .container-number {
+    //                 width: 70px;
+    //                 justify-content: flex-start;
+    //             }
 
-                    img{
-                        display: none;
-                    }
-                }
-                .container-data{
-                    width: 100%;
+    //             .container-data {
+    //                 width: 100%;
 
-                    .container-names{
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        justify-content: space-between;
+    //                 .container-names {
+    //                     display: flex;
+    //                     flex-direction: row;
+    //                     align-items: center;
+    //                     justify-content: space-between;
 
-                        .name{
-                            font-size: 16px;
-                            color: #287987;
-                        }
-                        .email{
-                            font-size: 8px;
-                            text-align: right;
-                        }
-                    }
-                    .score{
-                        font-size:10px;
-                        font-weight: 400;
-                    }
+    //                     .name {
+    //                         font-size: 16px;
+    //                         color: #287987;
+    //                     }
+    //                     .email {
+    //                         font-size: 8px;
+    //                         text-align: right;
+    //                     }
+    //                 }
+    //                 .score {
+    //                     font-size:10px;
+    //                     font-weight: 400;
+    //                 }
                     
-                }
-            }
-        }
-    }
+    //             }
+    //         }
+    //     }
+    // }
 
 }
 
 @media only screen and (max-width: 768px) {
 
-    .container-general{
+    .container-general {
         padding-left: 0px;
         padding-right: 0px;
 
@@ -64,34 +61,31 @@
             padding-left: 25px;
         }
 
-        .list-ranking{
-            margin-top: 0px;
-            .list-item-ranking{
-                padding-top: 0px;
-                padding-bottom: 0px;
-                height: inherit;
+        // .list-ranking{
+        //     margin-top: 0px;
 
-                .list-item-ranking-container{
-                    padding-top: 20px;
-                    padding-bottom: 20px;
+        //     .list-item-ranking {
+        //         padding-top: 0px;
+        //         padding-bottom: 0px;
+        //         height: inherit;
 
-                    .container-number{
-                        width: 30px;
-                        display: flex;
-                        justify-content: flex-start;
-                        align-items: center;
+        //         .list-item-ranking-container {
+        //             padding-top: 20px;
+        //             padding-bottom: 20px;
 
-                        img{
-                            display: none;
-                        }
-                    }
+        //             .container-number {
+        //                 width: 30px;
+        //                 display: flex;
+        //                 justify-content: flex-start;
+        //                 align-items: center;
+        //             }
 
-                    .container-names{
-                        display: flex; flex-direction: column;word-break: break-all;
-                    }
-                }
-            }
-        }
+        //             .container-names {
+        //                 display: flex; flex-direction: column;word-break: break-all;
+        //             }
+        //         }
+        //     }
+        // }
 
     }
 

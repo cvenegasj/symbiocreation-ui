@@ -4,7 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { Symbiocreation, Participant, Comment, User } from '../models/symbioTypes';
+import { Symbiocreation, Participant, Comment, User, IdeaAI, ImageAI } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
 
 @Injectable({
@@ -246,15 +246,34 @@ export class SymbiocreationService {
             );
     }
 
+    getIdeasForSymbioFromLlm(symbioId: string): Observable<IdeaAI[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/getIdeasFromAI`;
+        return this.http.get<IdeaAI[]>(API_URL);
+    }
+
+    getIdeasForGroupFromLlm(symbioId: string, nodeId: string): Observable<IdeaAI[]> {
+        let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/getIdeasFromAI/${nodeId}`;
+        return this.http.get<IdeaAI[]>(API_URL);
+    }
+
+    getImageForIdeaFromLlm(title: string, description: string): Observable<Blob> {
+        let API_URL = `${this.apiUrl}/symbiocreations/getImageFromAI`;
+
+        return this.http.post(API_URL, { title: title, description: description }, { responseType: "blob", headers: {'Accept': 'image/png'} })
+            .pipe(
+                catchError(this.error)
+            );
+    }
+
     downloadParticipantsData(symbioId: string): Observable<Blob> {
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/export-participants-data`;
-        return this.http.get(API_URL, {responseType: "blob", headers: {'Accept': 'text/csv'}})
+        return this.http.get(API_URL, { responseType: "blob", headers: {'Accept': 'text/csv'} }) 
                 .pipe(
                     catchError(this.error)
                 );
     }
 
-    downloadAllData(symbioId: string): Observable<any> {
+    downloadAllData(symbioId: string): Observable<Blob> {
         let API_URL = `${this.apiUrl}/symbiocreations/${symbioId}/export-all-data`;
         return this.http.get(API_URL, {responseType: "blob", headers: {'Accept': 'text/csv'}})
                 .pipe(

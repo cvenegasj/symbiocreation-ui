@@ -8,31 +8,30 @@
     
     <mat-form-field style="width: 100%;">
       <mat-label>Descripción</mat-label>
-      <textarea matInput required [(ngModel)]="idea.description" placeholder="Descripción larga de mi idea." rows="5"></textarea>
+      <textarea matInput required [(ngModel)]="idea.description" placeholder="Descripción larga de mi idea." rows="9"></textarea>
     </mat-form-field>
 
     <mat-form-field style="width: 100%;">
-      <mat-chip-list #externalUrlList class="mat-chip-list-stacked">
-          <mat-chip *ngFor="let url of idea.externalUrls" selected color="accent"
-                  [removable]="true" (removed)="removeExternalUrl(url)">
+      <mat-chip-grid #externalUrlList class="mat-chip-list-stacked">
+          <mat-chip-row *ngFor="let url of idea.externalUrls" selected color="accent" (removed)="removeExternalUrl(url)">
               {{url}}
               <mat-icon matChipRemove>cancel</mat-icon>
-          </mat-chip>
+          </mat-chip-row>
           <input style="flex: 1 0 40px;" placeholder="Enlaces externos"
                   [matChipInputFor]="externalUrlList"
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                   [matChipInputAddOnBlur]="true"
                   (matChipInputTokenEnd)="addExternalUrl($event)">
-      </mat-chip-list>
+      </mat-chip-grid>
   </mat-form-field>
     
     <div class="centered" style="padding-bottom: 25px;">
-      <button mat-raised-button color="accent" style="margin-right: 5px;background-color: #E91D63; color: #FFFFFF;" (click)="openCamera()">
+      <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="openCamera()">
         <mat-icon>camera_alt</mat-icon>
         <span>Tomar foto</span>
       </button>
 
-      <button mat-raised-button color="accent" style="background-color: #E91D63; color: #FFFFFF;" (click)="imageInput.click()">
+      <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="imageInput.click()">
         <mat-icon>add_photo_alternate</mat-icon>
         <span>Agregar imagen</span>
       </button>
@@ -41,15 +40,29 @@
               type="file"
               accept="image/*"
               (change)="processFile(imageInput)">
-    </div>
-    
-    <div *ngFor="let publicId of idea.imgPublicIds" style="margin-top: 10px;">
-      <cl-image [public-id]="publicId" style="width: 80%;"></cl-image>
-      <button mat-button color="warn" (click)="deletePublicId(publicId)">Eliminar</button>
+
+      <button #generateImageBtn mat-raised-button color="accent" style="margin-right: 5px;" (click)="generateImageWithLlm(generateImageBtn)">
+        <mat-icon>camera_alt</mat-icon>
+        <span>Generar imagen con AI</span>
+      </button>
     </div>
 
-    <div *ngFor="let img of selectedImgs" style="margin-top: 10px;">
-      <img [src]="img.src" style="width: 80%;" />
+    <div *ngIf="isLoadingImageGeneration">
+      <mat-progress-spinner
+              style="margin: 20px auto 40px;"
+              color="accent"
+              diameter="40"
+              mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
+    
+    <div *ngFor="let cloudinaryImg of idea.cloudinaryImages; index as i" style="margin-top: 20px;">
+      <advanced-image [cldImg]="cloudinaryImg" width="60%" height="auto"></advanced-image>
+      <button mat-button color="warn" (click)="deletePublicId(i)">Eliminar</button>
+    </div>
+
+    <div *ngFor="let img of selectedImgs" style="margin-top: 20px;">
+      <img [src]="img.src" style="width: 60%; height: auto;" /><br />
       <button mat-button color="warn" (click)="deleteSelectedImg(img)">Eliminar</button>
     </div>
 </mat-dialog-content>
@@ -57,5 +70,5 @@
 <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancelar</button>
     <span fxFlex></span>
-    <button #okButton mat-flat-button color="accent" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description" class="btn-ok">OK</button>
+    <button #okButton mat-flat-button color="primary" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description">OK</button>
 </mat-dialog-actions>

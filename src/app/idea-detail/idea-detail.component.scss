@@ -7,7 +7,7 @@ mat-toolbar.idea-toolbar{
     background: #FAFAFA;
 }
 
-.idea-name{
+.idea-name {
     background: #E91D63;
     color: white;
     text-align: center;
@@ -18,70 +18,56 @@ mat-toolbar.idea-toolbar{
     height: 23px;
 }
 
-.idea-body{
-    
-}
-
-.register-new-idea{
-    background-color: #E91D63;
-    color: #FFFFFF;
-}
-
 
 // Carrousel
 .carousel-container {
-    position: relative;
-    width: 100%;
-    margin-top: 30px;
-  }
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
   
-  .carousel {
-    overflow: hidden;
-    width: 100%;
-    position: relative;
-  }
-  
-  .carousel-track {
-    display: flex;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .carousel-item {
-    flex: 0 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .carousel-item cl-image {
-    display: block;
-    text-align: center;
-  }
-  
-  .carousel-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: transparent;
-    border: none;
-    color: #000000;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1;
-  }
-  
-  .carousel-button.prev {
-    left: 10px;
-  }
-  
-  .carousel-button.next {
-    right: 10px;
-  }
-  
-  .carousel-button:hover {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #FFFFFF;
-  }
+.carousel {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease;
+  align-items: center;
+}
+
+.carousel-item {
+  // min-width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center; /* Centra las imágenes */
+  max-width: 100%;
+}
+
+.carousel-item advanced-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain; /* Ajusta el tamaño de la imagen sin que se deforme */
+}
+
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}

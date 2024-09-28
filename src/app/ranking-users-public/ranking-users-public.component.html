@@ -1,42 +1,50 @@
-<div class="container-80 container-general ranking-users" style="">
+<div class="container-80 container-general">
 
     <h2 class="font-26 bolder gray-900 container-header">Top 100 Usuarios</h2>
 
     <mat-list class="list-ranking">
-        <!-- <h3 matSubheader>
-            <span fxFlex></span>
-            <span fxFlex="15">Número de participantes</span>
-            <span fxFlex="15">Última modificación</span>
-            <span fxFlex="40px"></span>
-        </h3> -->
 
-        <mat-list-item *ngFor="let user of users; index as i; last as last" class="list-item-ranking">
-            <div class="list-item-ranking-container" fxLayout="row">
+        <ng-container *ngFor="let user of users; index as i; last as last">
 
-                <div class="centered container-number" style="padding: 5px;">
-                    <img *ngIf="i === 0" src="assets/jesus-img.svg" width="25" 
-                        style="position: relative; top: 2px;" alt="God icon" />
+            <mat-list-item>
 
-                    <span class="bolder font-26 pink-A200 index-number">{{ i + 1 }}</span>
+               
+                <span matListItemIcon class="bolder font-26 pink-A200">{{ i + 1 }}</span>
+
+                <div matListItemTitle>
+                    <span class="bold font-18 cyan-color-2">{{ user.name || user.firstName + " " + user.lastName }}</span>
+                    <span class="font-14 gray-600" style="float: right; margin-top: 18px;">{{ user.email }}</span>
                 </div>
 
-                <div fxLayout="column" class="container-data">
-                    <div class="container-names" style="padding-left: 5px;">
-                        <span class="bold font-18 cyan-color-1 name">
-                            {{ user.name || user.firstName + " " + user.lastName }}
-                        </span>
-                        <span class="font-13 gray-600 email" style="margin-left: 2px;">
-                            {{ user.email }}
-                          </span>
-                    </div>
-        
-                    <div style="padding-left: 5px;">
-                        <span class="bold font-14 gray-700 score">PUNTAJE: {{ user.score }}</span>
-                    </div>
+                <div matListItemLine>
+                    <span class="font-14 gray-700">PUNTAJE: {{ user.score }}</span>
                 </div>
-            </div>
+
+                <!-- <div class="list-item-ranking-container" fxLayout="row">
+
+                    <div class="centered container-number" style="padding: 5px;">
+                        <span class="bolder font-26 pink-A200 index-number">{{ i + 1 }}</span>
+                    </div>
+
+                    <div fxLayout="column" class="container-data">
+                        <div class="container-names" style="padding-left: 5px;">
+                            <span class="bold font-18 cyan-color-1 name">
+                                {{ user.name || user.firstName + " " + user.lastName }}
+                            </span>
+                            <span class="font-13 gray-600 email" style="margin-left: 2px;">
+                                {{ user.email }}
+                            </span>
+                        </div>
+            
+                        <div style="padding-left: 5px;">
+                            <span class="bold font-14 gray-700 score">PUNTAJE: {{ user.score }}</span>
+                        </div>
+                    </div>
+                </div> -->
+            </mat-list-item>
 
             <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
-        </mat-list-item>
+
+        </ng-container>
     </mat-list>
 </div>

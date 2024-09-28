@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Location } from '@angular/common';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -13,9 +14,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
-//import * as moment from 'moment';
+
 import * as moment from 'moment-timezone';
-import { Location } from '@angular/common';
+import { TZone } from 'moment-timezone-picker';
 
 @Component({
   selector: 'app-create-symbio',
@@ -29,7 +30,7 @@ export class CreateSymbioComponent implements OnInit {
   
   eventDate: moment.Moment;
   eventTime: any;
-  eventTz: string;
+  eventTz: TZone;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   sdgCtrl = new UntypedFormControl();
@@ -63,7 +64,6 @@ export class CreateSymbioComponent implements OnInit {
     this.isPrivate = false;
 
     this.eventTime = '12:00';
-    this.eventTz = 'UTC';
 
     this.detailsOpened = false;
   }
@@ -71,7 +71,6 @@ export class CreateSymbioComponent implements OnInit {
   onSubmit(): void {
     this.model.participants = [];
     this.model.graph = [];
-
     this.model.visibility = this.isPrivate ? 'private' : 'public';
 
     if (this.eventDate) {
@@ -82,7 +81,7 @@ export class CreateSymbioComponent implements OnInit {
         this.model.dateTime.setUTCHours(this.eventTime.split(':')[0]);
         this.model.dateTime.setUTCMinutes(this.eventTime.split(':')[1]);
 
-        this.model.timeZone = this.eventTz;
+        this.model.timeZone = this.eventTz.name;
       }
     }
     
@@ -168,10 +167,6 @@ export class CreateSymbioComponent implements OnInit {
     if (index >= 0) {
       this.model.sdgs.splice(index, 1);
     }
-  }
-
-  onTzSelected(tz) {
-    this.eventTz = tz.nameValue;
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {

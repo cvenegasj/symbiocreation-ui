@@ -76,10 +76,10 @@ export class AnalyticsService {
         return this.http.get<any>(API_URL);
     }
 
-    // get the common terms used in the ideas of a symbiocreation
-    getCommonTermsInSymbiocreation(symbiocreationId: string): Observable<any> {
-        let API_URL = `${this.apiUrl}/analytics/common-terms-symbiocreation/${symbiocreationId}`;
-        return this.http.get<any>(API_URL);
+    // get the trends in the ideas of a symbiocreation
+    getTrendsInSymbiocreation(symbiocreationId: string): Observable<string[]> {
+        let API_URL = `${this.apiUrl}/analytics/trends-symbiocreation/${symbiocreationId}`;
+        return this.http.get<string[]>(API_URL);
     }
 
     

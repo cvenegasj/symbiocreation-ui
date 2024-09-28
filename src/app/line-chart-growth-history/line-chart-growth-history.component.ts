@@ -79,7 +79,7 @@ export class LineChartGrowthHistoryComponent implements OnInit {
     // inner g
     this.bounds = this.wrapper
       .append("g")
-        .attr("transform", `translate(${this.dimensions.marginLeft}, ${this.dimensions.marginTop})`);
+        .attr("transform", `translate(${this.dimensions.marginLeft} ${this.dimensions.marginTop})`);
 
     const dateParser = d3.timeParse("%Y-%m-%d"); 
     const xAccessor = d => dateParser(d._id);
@@ -135,7 +135,7 @@ export class LineChartGrowthHistoryComponent implements OnInit {
 
     // legend
     const legendGroup = this.wrapper.append("g")
-                                      .attr("transform", `translate(${ 20 }, ${ 30 })`);
+                                      .attr("transform", `translate(${ 20 } ${ 30 })`);
     const legendTitle = legendGroup.append("text")
                                       //.attr("y", -10)
                                       .attr("class", "legend-title")

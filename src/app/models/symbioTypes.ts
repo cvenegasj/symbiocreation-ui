@@ -1,3 +1,4 @@
+import { CloudinaryImage } from '@cloudinary/url-gen';
 import { Node } from './forceGraphTypes';
 
 export interface User {
@@ -11,6 +12,7 @@ export interface User {
     role?: string;
 
     score?: number;
+    cloudinaryImage?: CloudinaryImage;
 }
 
 export interface Symbiocreation {
@@ -33,6 +35,8 @@ export interface Symbiocreation {
     participants?: Participant[];
     graph?: Node[];
     nparticipants?: number;
+
+    participantsToDisplay?: Participant[];
 }
 
 export interface Participant {
@@ -48,6 +52,7 @@ export interface Idea {
     imgPublicIds?: string[];
     externalUrls?: string[];
     comments?: Comment[];
+    cloudinaryImages?: CloudinaryImage[];
 }
 
 export interface Comment {
@@ -55,4 +60,14 @@ export interface Comment {
     author?: User;
     content: string;
     lastModified?: Date;
+}
+
+export interface IdeaAI {
+    title: string;
+    description: string;
+}
+
+export interface ImageAI {
+    url: string;
+    b64Json: string;
 }

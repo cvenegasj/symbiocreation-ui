@@ -1,9 +1,6 @@
 <div style="padding: 15px;" class="container-top">
     
-    
     <form #form="ngForm" (ngSubmit)="onSubmit()" class="container-60 form-register">
-
-        
 
         <div class="container-card">
 
@@ -33,9 +30,9 @@
                     <mat-label>Fecha</mat-label>
                     <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
 
-                    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                    <mat-datepicker #datePicker></mat-datepicker>
-                </mat-form-field>
+                <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+            </mat-form-field>
 
                 <mat-checkbox [(ngModel)]="model.hasStartTime" name="hasStartTime" class="form-checkbox">Establecer hora de inicio</mat-checkbox>
             </div>
@@ -46,7 +43,7 @@
                     <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
                 </mat-form-field>
 
-                <ng-moment-timezone-picker (onselect)="onTzSelected($event)" 
+                <ng-moment-timezone-picker [(ngModel)]="eventTz" name="eventTz"
                                 [customPlaceholderText]="'Zona horaria'"
                                 [customNotFoundText]="'No se encontró zona'">
                 </ng-moment-timezone-picker>
@@ -74,62 +71,59 @@
                 </mat-form-field>
             </div>
 
-            <div *ngIf="detailsOpened">
-                <mat-form-field fxFlex>
-                    <mat-chip-list #tagList>
-                        <mat-chip *ngFor="let tag of model.tags" selected color="accent"
-                                [removable]="true" (removed)="removeTag(tag)">
-                            {{tag}}
-                            <mat-icon matChipRemove>cancel</mat-icon>
-                        </mat-chip>
-                        <input placeholder="Tags"
-                                [matChipInputFor]="tagList"
-                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                [matChipInputAddOnBlur]="true"
-                                (matChipInputTokenEnd)="addTag($event)">
-                    </mat-chip-list>
-                </mat-form-field>
-            </div>
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-chip-grid #tagList>
+                    <mat-chip-row *ngFor="let tag of model.tags" selected color="accent" (removed)="removeTag(tag)">
+                        {{tag}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip-row>
+                    <input placeholder="Tags"
+                            [matChipInputFor]="tagList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="true"
+                            (matChipInputTokenEnd)="addTag($event)">
+                </mat-chip-grid>
+            </mat-form-field>
+        </div>
 
-            <div *ngIf="detailsOpened">
-                <mat-form-field fxFlex>
-                    <mat-chip-list #extraUrlsList class="mat-chip-list-stacked">
-                        <mat-chip *ngFor="let url of model.extraUrls" selected color="accent"
-                                [removable]="true" (removed)="removeExtraUrl(url)">
-                            {{url}}
-                            <mat-icon matChipRemove>cancel</mat-icon>
-                        </mat-chip>
-                        <input style="flex: 1 0 40px;" placeholder="Extra URLs"
-                                [matChipInputFor]="extraUrlsList"
-                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                [matChipInputAddOnBlur]="true"
-                                (matChipInputTokenEnd)="addExtraUrl($event)">
-                    </mat-chip-list>
-                </mat-form-field>
-            </div>
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-chip-grid #extraUrlsList class="mat-chip-list-stacked">
+                    <mat-chip-row *ngFor="let url of model.extraUrls" selected color="accent" (removed)="removeExtraUrl(url)">
+                        {{url}}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip-row>
+                    <input style="flex: 1 0 40px;" placeholder="Extra URLs"
+                            [matChipInputFor]="extraUrlsList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            [matChipInputAddOnBlur]="true"
+                            (matChipInputTokenEnd)="addExtraUrl($event)">
+                </mat-chip-grid>
+            </mat-form-field>
+        </div>
 
-            <div *ngIf="detailsOpened">
-                <mat-form-field fxFlex>
-                    <mat-chip-list #sdgList>
-                        <mat-chip *ngFor="let sdg of model.sdgs" selected color="accent"
-                                [removable]="true" (removed)="removeSDG(sdg)">
-                            {{sdg}}
-                            <mat-icon matChipRemove>cancel</mat-icon>
-                        </mat-chip>
-                        <input placeholder="Objetivos de Desarrollo Sostenible"
-                                #sdgInput
-                                [formControl]="sdgCtrl"
-                                [matAutocomplete]="auto"
-                                [matChipInputFor]="sdgList">
-                    </mat-chip-list>
-                    
-                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                        <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
+        <div *ngIf="detailsOpened">
+            <mat-form-field fxFlex>
+                <mat-chip-grid #sdgList>
+                    <mat-chip-row *ngFor="let sdg of model.sdgs" selected color="accent" (removed)="removeSDG(sdg)">
                         {{sdg}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div>
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip-row>
+                    <input placeholder="Objetivos de Desarrollo Sostenible"
+                            #sdgInput
+                            [formControl]="sdgCtrl"
+                            [matAutocomplete]="auto"
+                            [matChipInputFor]="sdgList">
+                </mat-chip-grid>
+                
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                    <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
+                      {{sdg}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
 
         </div>
     

@@ -6,6 +6,10 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ImageService } from '../services/image.service';
 import { CameraCaptureDialogComponent } from '../camera-capture-dialog/camera-capture-dialog.component';
 import { Observable, forkJoin } from 'rxjs';
+import { SymbiocreationService } from '../services/symbiocreation.service';
+
+import { v4 as uuidv4 } from 'uuid';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-idea-dialog',
@@ -16,6 +20,7 @@ export class EditIdeaDialogComponent implements OnInit {
 
   idea: Idea = {};
   selectedImgs: ImageSnippet[];
+  isLoadingImageGeneration = false;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -23,16 +28,23 @@ export class EditIdeaDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditIdeaDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private symbioService: SymbiocreationService,
+    private _snackBar: MatSnackBar,
   ) {
-    if (this.data.idea) this.idea = this.data.idea;
+    if (this.data.idea) {
+      this.idea = this.data.idea;
+
+      const cloudinaryImages = this.idea.imgPublicIds?.map(publicId => this.imageService.getImage(publicId).format('auto').quality('auto'));
+      this.idea.cloudinaryImages = cloudinaryImages;
+    }
   }
 
   ngOnInit(): void {
     this.selectedImgs = [];
   }
 
-  onOkClick(okButton) {
+  onOkClick(okButton: any) {
     // upload img to cloudinary
     okButton.disabled = true;
     okButton._elementRef.nativeElement.innerText = 'Cargando...';
@@ -43,7 +55,7 @@ export class EditIdeaDialogComponent implements OnInit {
       observables.push(this.imageService.uploadImage(img.file));
     } 
 
-    if (observables.length == 0) {
+    if (observables.length === 0) {
       this.dialogRef.close(this.idea);
       return;
     }
@@ -53,14 +65,17 @@ export class EditIdeaDialogComponent implements OnInit {
         if (!this.idea.imgPublicIds) {
           this.idea.imgPublicIds = [];
         }
+
         for (let item of res) {
           this.idea.imgPublicIds.push(item.public_id);
         }
       },
       err => {
+        console.log('error');
         console.error(err);
       },
       () => {
+        console.log('complete');
         this.dialogRef.close(this.idea);
       }
     );
@@ -82,6 +97,34 @@ export class EditIdeaDialogComponent implements OnInit {
       }
     });
   }
+
+  generateImageWithLlm(generateImageBtn: any) {
+    if (!this.idea.title?.trim().length || !this.idea.description?.trim().length) {
+      this._snackBar.open('Por favor, inserte el título y descripción de la idea.', 'ok', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    this.isLoadingImageGeneration = true;
+    generateImageBtn.disabled = true;
+    generateImageBtn._elementRef.nativeElement.innerText = 'Generando imagen con AI...';
+
+    this.symbioService.getImageForIdeaFromLlm(this.idea.title, this.idea.description)
+      .subscribe(imgBlob => {
+        const imgFileName = `img-generated-${uuidv4()}.png`;
+
+        const imgUrl = URL.createObjectURL(imgBlob);
+        const file = new File([imgBlob], imgFileName, { type: imgBlob.type });
+
+        const imgSnippet = new ImageSnippet(imgUrl, file);
+        this.selectedImgs.push(imgSnippet);
+
+        this.isLoadingImageGeneration = false;
+        generateImageBtn.disabled = false;
+        generateImageBtn._elementRef.nativeElement.innerText = 'Generar imagen con AI';
+      });
+  }
   
   processFile(imageInput: any) {
     const file: File = imageInput.files[0];
@@ -95,9 +138,9 @@ export class EditIdeaDialogComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  deletePublicId(publicId: string) {
-    const index = this.idea.imgPublicIds.indexOf(publicId);
+  deletePublicId(index: number) {
     this.idea.imgPublicIds.splice(index, 1);
+    this.idea.cloudinaryImages.splice(index, 1);
   }
 
   deleteSelectedImg(img: ImageSnippet) {
