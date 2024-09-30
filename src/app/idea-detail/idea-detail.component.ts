@@ -35,7 +35,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   rating: number = 3.5;
   comment: string = '';
   hiddenCommentButtons: boolean = true;
-  showChatGptSuggestedIdeas = false;
+  showAiSuggestedIdeas = false;
 
   // Carrousel
   @ViewChild('carouselTrack', { static: false }) carouselTrack: ElementRef;
@@ -82,7 +82,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
       concatMap(routeParams => this.symbioService.getNodeById(this.idSymbio, routeParams.idNode))
     )
     .subscribe(node => { // node injected w user
-      this.showChatGptSuggestedIdeas = false;
+      this.showAiSuggestedIdeas = false;
       this.node = node;
 
       if (this.node.idea?.imgPublicIds) {
@@ -147,7 +147,7 @@ export class IdeaDetailComponent implements OnInit, AfterViewInit {
   }
 
   onIdeaChanged(idea: Idea) {
-    this.showChatGptSuggestedIdeas = false;
+    this.showAiSuggestedIdeas = false;
     this.node.idea = idea;
         
     if (this.node.idea.imgPublicIds) {

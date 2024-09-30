@@ -37,15 +37,15 @@
                 Registrar idea
             </button><br />
 
-            <button mat-button color="accent" (click)="showChatGptSuggestedIdeas = true;" style="margin-top: 5px;">
-                Obtener ideas de ChatGPT
+            <button mat-button color="accent" (click)="showAiSuggestedIdeas = true;" style="margin-top: 5px;">
+                Obtener ideas de IA
             </button>
         </div>
     </div>
 
 
     <!-- ChatGPT results -->
-    <app-chatgpt-idea-suggestions *ngIf="showChatGptSuggestedIdeas" 
+    <app-chatgpt-idea-suggestions *ngIf="showAiSuggestedIdeas" 
         [symbiocreationId]="idSymbio"
         [node]="node"
         (changedIdea)="onIdeaChanged($event)">

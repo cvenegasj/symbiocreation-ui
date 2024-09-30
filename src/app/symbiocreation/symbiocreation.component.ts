@@ -61,8 +61,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   sliderDistanceValue: number = 40;
   sliderOrderValue: number = 100;
 
-  isModalGroupsOpen = false;
-  isModalIdeasOpen = false;
   isModalOptionsOpen = false;
 
   showFloatIdeaMenu: boolean = false;
@@ -358,7 +356,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   }
 
   createUserNode() {
-    if( !this.participant ){
+    if (!this.participant) {
       return;
     }
 
@@ -435,7 +433,7 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     this.symbioService.getNodeById(this.symbiocreation.id, myNode.id).subscribe(
       node => {
         const dialogRef = this.dialog.open(EditIdeaDialogComponent, {
-          width: '450px',
+          width: '650px',
           data: {
             //name: this.participant.user.firstName && this.participant.user.lastName ? this.participant.user.firstName + ' ' + this.participant.user.lastName : this.participant.user.name,
             name: myNode.name,
@@ -782,14 +780,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
     // console.log("this.sliderValue",this.sliderValue)
   }
 
-  toggleModalIdeas() {
-    this.isModalIdeasOpen = !this.isModalIdeasOpen;
-  }
-
-  closeModalIdeas(event: MouseEvent) {
-    this.isModalIdeasOpen = false;
-  }
-
   stopPropagation(event: MouseEvent) {
     event.stopPropagation(); // Esto evita que el clic dentro del modal se propague al fondo
   }
@@ -841,15 +831,6 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
 
   closeStatBtn() {
     this.showFloatStatMenu = false;
-  }
-
-
-  toggleModalGroups() {
-    this.isModalGroupsOpen = !this.isModalGroupsOpen;
-  }
-
-  closeModalGroups(event: MouseEvent) {
-    this.isModalGroupsOpen = false;
   }
 
   toggleModalOptions() {
