@@ -4,7 +4,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-import { Symbiocreation, Participant, Comment, User, IdeaAI, ImageAI } from '../models/symbioTypes';
+import { Symbiocreation, Participant, Comment, User, IdeaAI } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
 
 @Injectable({

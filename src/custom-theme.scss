@@ -68,7 +68,7 @@ $symbiocreation-ui-theme: mat.define-light-theme((
 }
 
 .cyan-color-2 {
-    color: mat.get-color-from-palette(mat.$cyan-palette, 800);
+    color: mat.get-color-from-palette(mat.$cyan-palette, 800) !important;
 }
 
 .deep-purple-500 {

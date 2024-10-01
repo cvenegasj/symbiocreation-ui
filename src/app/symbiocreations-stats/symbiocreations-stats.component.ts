@@ -34,7 +34,7 @@ export class SymbiocreationsStatsComponent implements OnInit {
           this.totalUsers = response.countsSummary.users;
           this.totalIdeas = response.countsSummary.ideas;
   
-          this.trends = response.trends;
+          // this.trends = response.trends;
           this.usersRanking = response.usersRanking;
 
           // console.log("this.totalUsers",this.totalUsers)

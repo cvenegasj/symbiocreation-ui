@@ -3,6 +3,7 @@ import { Observable, throwError } from 'rxjs';
 //import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { TrendAI } from '../models/symbioTypes';
 
 @Injectable({
     providedIn: 'root',
@@ -77,9 +78,9 @@ export class AnalyticsService {
     }
 
     // get the trends in the ideas of a symbiocreation
-    getTrendsInSymbiocreation(symbiocreationId: string): Observable<string[]> {
+    getTrendsInSymbiocreation(symbiocreationId: string): Observable<TrendAI[]> {
         let API_URL = `${this.apiUrl}/analytics/trends-symbiocreation/${symbiocreationId}`;
-        return this.http.get<string[]>(API_URL);
+        return this.http.get<TrendAI[]>(API_URL);
     }
 
     

@@ -67,7 +67,7 @@ export interface IdeaAI {
     description: string;
 }
 
-export interface ImageAI {
-    url: string;
-    b64Json: string;
+export interface TrendAI {
+    topic: string;
+    description: string;
 }
