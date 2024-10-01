@@ -197,12 +197,10 @@
                 <div *ngIf="participant">
                     <div fxLayout="column">
                         <div class="gray-900 bold" style="padding: 5px 10px; margin-right: 15px; width: 120px; text-align: left;">
-                            <!-- Mi(s) idea(s) <br /> -->
-                            <button mat-button
-                                color="primary"
-                                (click)="createUserNode()"
-                                class="btn-symbio-add-group"
-                                style="padding: 0;">
+                            <!-- Mi(s) idea(s) -->
+                            <button mat-raised-button
+                                color="accent"
+                                (click)="createUserNode()">
                                 <mat-icon>add</mat-icon>
                                 Nueva idea
                             </button>

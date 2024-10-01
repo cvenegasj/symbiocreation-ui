@@ -366,17 +366,6 @@ ng-moment-timezone-picker div.wrapper {
     display: inline-block !important;
 }
 
-advanced-image.img-1 > img {
-    width: 40px;
-    height: auto;
-    position: absolute;
-}
-
-advanced-image.img-2 > img {
-    width: 43px;
-    height: auto;
-}
-
 .hoveredList1 {
     cursor: pointer;
 }

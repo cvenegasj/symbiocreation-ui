@@ -40,7 +40,8 @@
 
                     <advanced-image *ngFor="let p of s.participantsToDisplay; index as i;" 
                         [cldImg]="p.user.cloudinaryImage"
-                        class="img-1"
+                        width="40px" height="auto"
+                        style="position: absolute;"
                         [style.z-index]="5-i" [style.left]="i*24 + 'px'"
                         [matTooltip]="p.user.name" matTooltipPosition="above">
                     </advanced-image>
