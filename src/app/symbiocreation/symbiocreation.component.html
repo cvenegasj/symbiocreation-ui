@@ -37,89 +37,129 @@
         <div class="body">
             <div class="title" *ngIf="GroupParticipantStat==1">Grupos</div>
             <div class="title" *ngIf="GroupParticipantStat==2">Participantes</div>
-            <div class="title" *ngIf="GroupParticipantStat==3">Top usuarios</div>
+            <div class="title" *ngIf="GroupParticipantStat==3">Ranking de usuarios</div>
             <div class="title" *ngIf="GroupParticipantStat==4">Tendencias</div>
             <div class="title" *ngIf="GroupParticipantStat==5">Mi(s) idea(s)</div>
 
+
+
+            <!-- Left panel: Groups -->
             <div class="container-lista group" *ngIf="GroupParticipantStat == 1">
 
-                <div class="container-elemento" *ngFor="let g of filteredGroups; let i = index" (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])">
-                    <div class="data" style="display: flex; ">
-                        <div class="data-index">{{i+1}}</div>
-                        <div class="data-data">
-                            <div class="data-name" (click)="openIdeaDetailSidenav(g)">{{g.name}}</div>
-                            <div class="data-node">{{g.children.length}} {{g.children.length === 1 ? 'nodo' : 'nodos'}}</div>
-                        </div>
-                    </div>
-                    <div class="buttons">
+                <mat-list style="max-width: 100%;">
 
-                        <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)" mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        
-                    </div>
-                </div>
+                    <ng-container *ngFor="let g of filteredGroups; index as i; last as last">
+                        <mat-list-item (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])" style="height: 65px;">
+
+                            <div fxLayout="row" style="width: 100%; display: flex; align-items: center;">
+                                <div style="width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; margin-right: 20px;">
+                                    <span class="bolder font-22 gray-500">{{ i + 1 }}</span>
+                                </div>
+
+                                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex>
+                                    <div>
+                                        <span class="bold font-16 cyan-color-2" (click)="openIdeaDetailSidenav(g)" style="cursor: pointer;">{{ g.name }}</span><br />
+                                        <span class="font-14 gray-700">{{g.children.length}} {{g.children.length === 1 ? 'nodo' : 'nodos'}}</span>
+                                    </div>
+    
+                                    <div>
+                                        <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)" 
+                                                mat-icon-button
+                                                [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
+                                                <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </mat-list-item>
+
+                        <mat-divider *ngIf="!last"></mat-divider>
+                    </ng-container>
+
+                </mat-list>
 
             </div>
 
+
+
+            <!-- Left panel: Participants -->
             <div class="container-lista participant" *ngIf="GroupParticipantStat == 2">
 
-                <div class="container-elemento" *ngFor="let p of filteredParticipants;let i = index" (mouseenter)="onMouseEnterListItem(getNodesByUserId(p.u_id))" (mouseleave)="onMouseLeaveListItem(getNodesByUserId(p.u_id))">
+                <mat-list style="max-width: 100%;">
 
-                    <div class="data" style="display: flex; ">
-                        <div class="data-index">{{i+1}}</div>
-                        <div class="data-data">
-                            <div class="data-name" *ngIf="p.user.firstName && p.user.lastName" (click)="preOpenIdeaDetailSidenav(p.u_id)">{{p.user.firstName}} {{p.user.lastName}} <span *ngIf="p.isModerator" class="chip-role small moderator">Moderador</span></div>
-                            <div class="data-name" *ngIf="!(p.user.firstName && p.user.lastName)" (click)="preOpenIdeaDetailSidenav(p.u_id)">{{p.user.name}} <span *ngIf="p.isModerator" class="chip-role small moderator">Moderador</span></div>
-                            <div class="data-name" *ngIf="p.u_id === participant?.u_id" (click)="preOpenIdeaDetailSidenav(p.u_id)">
-                                (tú)
-                                
+                    <ng-container *ngFor="let p of filteredParticipants; index as i; last as last">
+                        <mat-list-item (mouseenter)="onMouseEnterListItem(getNodesByUserId(p.u_id))" (mouseleave)="onMouseLeaveListItem(getNodesByUserId(p.u_id))" style="height: 55px;">
+
+                            <div fxLayout="row" style="width: 100%; display: flex; align-items: center;">
+                                <div style="width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; margin-right: 20px;">
+                                    <span class="bolder font-22 gray-500">{{ i + 1 }}</span>
+                                </div>
+
+                                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex>
+                                    <div>
+                                        <span *ngIf="p.user.firstName && p.user.lastName" class="bold font-16 cyan-color-2" (click)="preOpenIdeaDetailSidenav(p.u_id)" style="cursor: pointer;">
+                                            {{ p.user.firstName && p.user.lastName ? p.user.firstName + ' ' + p.user.lastName : p.user.name }}
+                                        </span><br />
+                                        <span *ngIf="p.u_id === participant?.u_id" class="gray-600 font-14">(tú)</span>
+                                    </div>
+    
+                                    <div>
+                                        <button mat-icon-button 
+                                            [matMenuTriggerFor]="participantMenu" 
+                                            [matMenuTriggerData]="{participant: p}">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
-                            
-                            <!-- <div class="data-node">PUNTAJE: 4</div> -->
-                        </div>
-                    </div>
-                    <div class="buttons">
 
-                        <button mat-icon-button 
-                        [matMenuTriggerFor]="participantMenu" 
-                        [matMenuTriggerData]="{participant: p}">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        
-                    </div>
+                        </mat-list-item>
 
-                </div>
+                        <mat-divider *ngIf="!last"></mat-divider>
+                    </ng-container>
+
+                </mat-list>
 
             </div>
 
+
+
+            <!-- Left panel: Ranking users -->
             <div class="container-lista topUser" *ngIf="GroupParticipantStat == 3">
 
-                <mat-progress-spinner *ngIf="isLoadingTopUsers" 
+                <mat-progress-spinner *ngIf="isLoadingUsersRanking" 
                         style="margin: 40px auto 0;"
                         color="accent"
                         diameter="50"
                         mode="indeterminate">
                 </mat-progress-spinner>
 
-                <ng-container *ngIf="!isLoadingTopUsers">
-                    <div class="container-elemento" *ngFor="let ur of usersRanking; let i = index">
+                <ng-container *ngIf="!isLoadingUsersRanking">
+                    <mat-list style="max-width: 100%;">
 
-                        <div class="data" style="display: flex; ">
-                            <div class="data-index">{{i+1}}</div>
-                            <div class="data-data">
-                                <div class="data-name">{{ur?.user?.name}}</div>
-                                <div class="data-node">PUNTAJE: {{ur?.score}}</div>
-                            </div>
-                        </div>
-                        <div class="buttons">
-    
-                        </div>
-                    </div>
+                        <ng-container *ngFor="let ur of usersRanking; index as i; last as last">
+                            <mat-list-item lines="2">
+                                <span matListItemIcon class="bolder font-22 gray-500">{{ i + 1 }}</span>
+
+                                <span matListItemTitle class="bold font-16 cyan-color-2">{{ ur.user.name }}</span>
+
+                                <span class="font-14 gray-700">PUNTAJE: {{ ur.score }}</span>
+                            </mat-list-item>
+
+                            <mat-divider *ngIf="!last"></mat-divider>
+                        </ng-container>
+
+                    </mat-list>
                 </ng-container>
 
             </div>
 
+
+
+            <!-- Left panel: Trends -->
             <div class="container-lista tendency" *ngIf="GroupParticipantStat == 4">
 
                 <mat-progress-spinner *ngIf="isLoadingTrends" 
@@ -130,33 +170,37 @@
                 </mat-progress-spinner>
 
                 <ng-container *ngIf="!isLoadingTrends">
-                    <div class="container-elemento" *ngFor="let trend of trends; let i = index">
+                    <mat-list style="max-width: 100%;">
 
-                        <div class="data" style="display: flex;">
-                            <div class="data-index">{{i+1}}</div>
-                            <div class="data-data">
-                                <div class="data-name">{{trend}}</div>
-                            </div>
-                        </div>
-                        <div class="buttons">
-    
-                        </div>
-                    </div>
+                        <ng-container *ngFor="let trend of trends; index as i; last as last">
+                            <mat-list-item lines="3">
+                                <span matListItemIcon class="bolder font-22 gray-500">{{ i + 1 }}</span>
+
+                                <span matListItemTitle class="bold font-16 cyan-color-2">{{ trend.topic }}</span>
+
+                                <span class="font-14 gray-700">{{ trend.description }}</span>
+                            </mat-list-item>
+
+                            <mat-divider *ngIf="!last"></mat-divider>
+                        </ng-container>
+
+                    </mat-list>
                 </ng-container>
 
             </div>
 
+
+
+            <!-- Left panel: Mis ideas -->
             <div class="container-lista list-idea" *ngIf="GroupParticipantStat == 5">
 
                 <div *ngIf="participant">
                     <div fxLayout="column">
                         <div class="gray-900 bold" style="padding: 5px 10px; margin-right: 15px; width: 120px; text-align: left;">
-                            <!-- Mi(s) idea(s) <br /> -->
-                            <button mat-button
-                                color="primary"
-                                (click)="createUserNode()"
-                                class="btn-symbio-add-group"
-                                style="padding: 0;">
+                            <!-- Mi(s) idea(s) -->
+                            <button mat-raised-button
+                                color="accent"
+                                (click)="createUserNode()">
                                 <mat-icon>add</mat-icon>
                                 Nueva idea
                             </button>
@@ -470,7 +514,7 @@
                 <div class="stat-txt">Participantes: <span class="number">{{totalUsers}}</span></div>
                 <div class="stat-txt">Ideas: <span class="number">{{totalIdeas}}</span></div>
                 <div class="stat-btn-stat">
-                    <button mat-flat-button class="stat-btn-grupos" (click)="OpenGroupsSidenav(3)">Top Usuarios</button>
+                    <button mat-flat-button class="stat-btn-grupos" (click)="OpenGroupsSidenav(3)">Ranking usuarios</button>
                     <button mat-flat-button class="stat-btn-participantes" (click)="OpenGroupsSidenav(4)">Tendencias</button>
                 </div>
             </div>

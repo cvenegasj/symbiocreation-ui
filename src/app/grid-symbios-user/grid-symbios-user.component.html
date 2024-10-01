@@ -31,8 +31,9 @@
             [style.width]="(s.participantsToDisplay.length - 1) * 24 + 45 + computeNMoreSpanWidth(s.participants.length, s.participantsToDisplay.length) + 'px'">
 
                 <advanced-image *ngFor="let p of s.participantsToDisplay; index as i;"
-                    [cldImg]="p.user.cloudinaryImage" 
-                    class="img-1"
+                    [cldImg]="p.user.cloudinaryImage"
+                    width="40px" height="auto"
+                    style="position: absolute;"
                     [style.z-index]="5-i" [style.left]="i*24 + 'px'"
                     [matTooltip]="p.user.name" matTooltipPosition="above">
                 </advanced-image>

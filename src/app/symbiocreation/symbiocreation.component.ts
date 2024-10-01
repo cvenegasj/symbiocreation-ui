@@ -4,7 +4,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
 
 import { Node } from '../models/forceGraphTypes';
-import { Symbiocreation, Participant, User } from '../models/symbioTypes';
+import { Symbiocreation, Participant, User, TrendAI } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
 import { RSocketService } from '../services/rsocket.service';
@@ -75,13 +75,13 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
   // Stats
   GroupParticipantStat: number = 1; // 1:Group, 2:Participant, 3:TopUsuarios, 4:Tendencias, 5:ListaIdeas
   // isSidenavStatsOpen = false;
-  isLoadingTopUsers = false;
+  isLoadingUsersRanking = false;
   isLoadingTrends = false;
 
   totalUsers: number;
   totalIdeas: number;
 
-  trends: string[];
+  trends: TrendAI[];
   usersRanking: any[];
 
   constructor(
@@ -894,10 +894,10 @@ export class SymbiocreationComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isLoadingTopUsers = true;
+    this.isLoadingUsersRanking = true;
     this.analyticsService.getUsersRankingSymbiocreation(this.symbiocreation?.id)
       .subscribe(usersRanking => {
-        this.isLoadingTopUsers = false;
+        this.isLoadingUsersRanking = false;
         this.usersRanking = usersRanking;
       });
   }
