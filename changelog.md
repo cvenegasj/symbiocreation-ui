@@ -33,3 +33,9 @@
 ✔ Corregido colores de los bordes de explora y mis symbiocreaciones
 ✔ Cambiado el modo default de la lista de mis simbiocreaciones, del modo lista al modo tarjetas
 ✔ Corregido diseño del Carousel
+
+# 29 08 /24 mramirez
+✔ Corregido doble menú superior en mobile
+
+# 31/07/24 mramirez
+✔ Corregido bug en "Explorar" (Cambios Symbiocreations = null a [])

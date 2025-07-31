@@ -16,7 +16,7 @@ export class ExploreComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  symbiocreations: Symbiocreation[];
+  symbiocreations: Symbiocreation[] = [];
   filter: string = 'all';
   totalCount: number;
 
@@ -40,9 +40,9 @@ export class ExploreComponent implements OnInit {
   }
 
   filterChanged() {
-    this.symbiocreations = null;
+    this.symbiocreations = [];
     this.paginator.firstPage();
-    
+
     switch(this.filter) {
       case "upcoming": {
         this.sharedService.nextIsLoading(true);
@@ -84,10 +84,10 @@ export class ExploreComponent implements OnInit {
           );
         break;
       }
-      default: { 
-        console.log("Invalid choice"); 
-        break;              
-     } 
+      default: {
+        console.log("Invalid choice");
+        break;
+     }
     }
   }
 
@@ -135,7 +135,7 @@ export class ExploreComponent implements OnInit {
     switch(this.filter) {
       case "upcoming": {
         this.sharedService.nextIsLoading(true);
-        this.symbiocreations = null;
+        this.symbiocreations = [];
         this.symbioService.getUpcomingPublicSymbiocreations(event.pageIndex)
           .subscribe(
             symbios => {
@@ -147,7 +147,7 @@ export class ExploreComponent implements OnInit {
       }
       case "past": {
         this.sharedService.nextIsLoading(true);
-        this.symbiocreations = null;
+        this.symbiocreations = [];
         this.symbioService.getPastPublicSymbiocreations(event.pageIndex)
           .subscribe(
             symbios => {
@@ -159,7 +159,7 @@ export class ExploreComponent implements OnInit {
       }
       case "all": {
         this.sharedService.nextIsLoading(true);
-        this.symbiocreations = null;
+        this.symbiocreations = [];
         this.symbioService.getAllPublicSymbiocreations(event.pageIndex)
           .subscribe(
             symbios => {
@@ -169,10 +169,10 @@ export class ExploreComponent implements OnInit {
           );
         break;
       }
-      default: { 
-        console.log("Invalid choice"); 
-        break;              
-     } 
+      default: {
+        console.log("Invalid choice");
+        break;
+     }
     }
   }
 

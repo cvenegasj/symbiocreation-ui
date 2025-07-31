@@ -9,7 +9,7 @@
             <mat-icon>bar_chart</mat-icon>
         </button>
     </div> -->
-    
+
     <!--
     MARK: Side Analitycs
     -->
@@ -56,7 +56,7 @@
                         <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)" mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
                             <mat-icon>more_vert</mat-icon>
                         </button>
-                        
+
                     </div>
                 </div>
 
@@ -73,20 +73,20 @@
                             <div class="data-name" *ngIf="!(p.user.firstName && p.user.lastName)" (click)="preOpenIdeaDetailSidenav(p.u_id)">{{p.user.name}} <span *ngIf="p.isModerator" class="chip-role small moderator">Moderador</span></div>
                             <div class="data-name" *ngIf="p.u_id === participant?.u_id" (click)="preOpenIdeaDetailSidenav(p.u_id)">
                                 (tú)
-                                
+
                             </div>
-                            
+
                             <!-- <div class="data-node">PUNTAJE: 4</div> -->
                         </div>
                     </div>
                     <div class="buttons">
 
-                        <button mat-icon-button 
-                        [matMenuTriggerFor]="participantMenu" 
+                        <button mat-icon-button
+                        [matMenuTriggerFor]="participantMenu"
                         [matMenuTriggerData]="{participant: p}">
                             <mat-icon>more_vert</mat-icon>
                         </button>
-                        
+
                     </div>
 
                 </div>
@@ -147,12 +147,12 @@
                             </button>
                             <!--<span *ngIf="roleOfLoggedIn === 'ambassador'" class="chip-role small ambassador">Embajador</span>-->
                         </div>
-    
+
                         <div fxFlex style="padding: 5px 10px 0;">
                             <div *ngFor="let lineage of myAncestries" class="item-ideas">
-    
+
                                 <button *ngIf="!lineage[0].idea"
-                                    mat-flat-button 
+                                    mat-flat-button
                                     color="accent"
                                     (click)="openMyIdeaEditDialog(lineage[0])"
                                     (mouseenter)="onMouseEnterListItem([lineage[0]])"
@@ -161,8 +161,8 @@
                                     >
                                     <span class="italicized">(vacío)</span>
                                 </button>
-    
-                                <button *ngIf="lineage[0].idea" 
+
+                                <button *ngIf="lineage[0].idea"
                                     mat-flat-button
                                     color="accent"
                                     matTooltip="Ver detalle"
@@ -174,23 +174,23 @@
                                     <mat-icon>open_in_new</mat-icon>
                                     <span class="ellipsed" style="display: inline-block; width: 130px;">{{lineage[0].idea?.title}}</span>
                                 </button>
-    
+
                                 <ng-container *ngFor="let node of lineage | slice:1; index as i; last as last">
                                     <span> &lt; </span>
                                     <span class="chip-ancestry">
                                         Nivel {{i + 1}}: {{node.name}}
                                     </span>
                                 </ng-container>
-    
-                                <button mat-icon-button 
+
+                                <button mat-icon-button
                                     class="btn-symbio-add-group"
                                     color="primary"
                                     matTooltip="Seleccionar mi grupo"
-                                    style="margin-left: 5px;" 
+                                    style="margin-left: 5px;"
                                     (click)="toggleGroupSelectorVisibility(lineage[0])">
                                     <mat-icon>group_add</mat-icon>
                                 </button>
-    
+
                                 <button *ngIf="lineage[0].role === 'ambassador'"
                                     class="btn-symbio-add-group"
                                     mat-icon-button
@@ -200,7 +200,7 @@
                                     (click)="openNextLevelGroupDialog(lineage[lineage.length - 1])">
                                     <mat-icon>upgrade</mat-icon>
                                 </button>
-    
+
                                 <div [id]="lineage[0].id" hidden style="margin-top: 5px;">
                                     <mat-form-field appearance="fill">
                                         <mat-label>Seleccionar grupo</mat-label>
@@ -211,15 +211,15 @@
                                             <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
                                         </mat-select>
                                     </mat-form-field>
-    
+
                                     <button mat-flat-button color="accent"
                                         style="margin-left: 5px;background-color: #287987;color: #FFFFFF;"
                                         (click)="openNewParentGroupDialog(lineage[0].id)">
                                         <mat-icon>add</mat-icon>
                                         Crear grupo
                                     </button>
-    
-                                    <button mat-button 
+
+                                    <button mat-button
                                         style="margin-left: 5px;"
                                         (click)="toggleGroupSelectorVisibility(lineage[0])">
                                         Cancelar
@@ -238,18 +238,18 @@
             <ng-template matMenuContent let-node="node">
                 <button mat-menu-item (click)="openIdeaDetailSidenav(node)">Ver idea</button>
                 <button
-                    mat-menu-item 
-                    [matMenuTriggerFor]="groupsSubMenu" 
+                    mat-menu-item
+                    [matMenuTriggerFor]="groupsSubMenu"
                     [matMenuTriggerData]="{node: node}">
                     Asignar grupo
                 </button>
                 <button
-                    mat-menu-item 
+                    mat-menu-item
                     (click)="openChangeNodeNameDialog(node.id)">
                     Cambiar nombre
                 </button>
                 <button
-                    mat-menu-item 
+                    mat-menu-item
                     (click)="onNodeDeleted(node.id)">
                     Eliminar
                 </button>
@@ -270,24 +270,24 @@
 
         <mat-menu #participantMenu="matMenu">
             <ng-template matMenuContent let-p="participant">
-                <button mat-menu-item 
+                <button mat-menu-item
                     (click)="preOpenIdeaDetailSidenav(p.u_id)">
                     Ver idea
                 </button>
 
-                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && !p.isModerator" 
+                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && !p.isModerator"
                     mat-menu-item
                     (click)="setParticipantIsModerator(p, true)">
                     Asignar como moderador
                 </button>
 
-                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && p.isModerator" 
+                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && p.isModerator"
                     mat-menu-item
                     (click)="setParticipantIsModerator(p, false)">
                     Quitar rol de moderador
                 </button>
 
-                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id" 
+                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id"
                     mat-menu-item
                     (click)="deleteParticipant(p)">
                     Eliminar participante
@@ -296,7 +296,7 @@
         </mat-menu>
 
     </mat-sidenav>
-    
+
 
 
 
@@ -312,10 +312,10 @@
             <div class="mat-elevation-z3 workspace-header" style="padding: 9px; background-color: white; display: flex;justify-content: space-evenly;">
                 <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
 
-                    
+
 
                     <mat-icon class="teal-color-1 workspace-icon-left" style="color:#287987;"
-                            [matTooltip]="symbiocreation?.visibility === 'public' ? 'Pública' : 'Privada'" 
+                            [matTooltip]="symbiocreation?.visibility === 'public' ? 'Pública' : 'Privada'"
                             matTooltipPosition="above">
                             {{symbiocreation?.visibility === 'public' ? 'public' : 'lock'}}
                     </mat-icon>
@@ -323,8 +323,8 @@
                     <span class="workspace-name">{{symbiocreation?.name}}</span>
 
                     <button class="workspace-icon-right"
-                        mat-icon-button 
-                        matTooltip="Ver detalles" 
+                        mat-icon-button
+                        matTooltip="Ver detalles"
                         matTooltipPosition="above"
                         (click)="openSymbioDetailDialog()">
                         <mat-icon class="gray-600">info</mat-icon>
@@ -334,23 +334,23 @@
 
                     <button class=""
                         *ngIf="participant || appUser?.role === 'SUPER_ADMIN'"
-                        mat-icon-button 
+                        mat-icon-button
                         [matMenuTriggerFor]="mainMenu">
                         <mat-icon class="gray-600">more_vert</mat-icon>
                     </button>
 
                     <mat-menu class="workspace-options" #mainMenu="matMenu">
-                        <button mat-menu-item 
+                        <button mat-menu-item
                             (click)="leaveSymbiocreation()">
                             <mat-icon class="gray-600">person_remove</mat-icon>
                             Darme de baja
                         </button>
-                        <button mat-menu-item 
+                        <button mat-menu-item
                             (click)="downloadParticipantsData()">
                             <mat-icon class="gray-600">download</mat-icon>
                             Descargar datos de participantes
                         </button>
-                        <button mat-menu-item 
+                        <button mat-menu-item
                             (click)="downloadAllData()">
                             <mat-icon class="gray-600">download</mat-icon>
                             Descargar todos los datos
@@ -360,12 +360,12 @@
 
 
 
-                
 
 
 
 
-                
+
+
                 <div *ngIf="!participant" style="display: flex;align-items: center;">
                     <!-- <p class="centered">Participa de esta simbiocreación!</p> -->
                     <div style="text-align: center;">
@@ -375,8 +375,8 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- 
+
+            <!--
             MARK: Grafico Symbio
             -->
             <div fxFlex class="workspace-body">
@@ -397,7 +397,7 @@
             </div>
         </div>
 
-        <!-- 
+        <!--
         MARK: Btn flotantes
         -->
 
@@ -444,7 +444,7 @@
             </div>
         </div>
 
-        
+
 
 
         <button class="float-menu-group btn-stats" mat-icon-button color="primary" (click)="showFloatStatMenuBtn()" matTooltip="Stats" matTooltipPosition="left">
@@ -508,7 +508,7 @@
                         <div *ngFor="let lineage of myAncestries" class="item-ideas">
 
                             <button *ngIf="!lineage[0].idea"
-                                mat-flat-button 
+                                mat-flat-button
                                 color="accent"
                                 (click)="openMyIdeaEditDialog(lineage[0])"
                                 (mouseenter)="onMouseEnterListItem([lineage[0]])"
@@ -518,7 +518,7 @@
                                 <span class="italicized">(vacío)</span>
                             </button>
 
-                            <button *ngIf="lineage[0].idea" 
+                            <button *ngIf="lineage[0].idea"
                                 mat-flat-button
                                 color="accent"
                                 matTooltip="Ver detalle"
@@ -538,11 +538,11 @@
                                 </span>
                             </ng-container>
 
-                            <button mat-icon-button 
+                            <button mat-icon-button
                                 class="btn-symbio-add-group"
                                 color="primary"
                                 matTooltip="Seleccionar mi grupo"
-                                style="margin-left: 5px;" 
+                                style="margin-left: 5px;"
                                 (click)="toggleGroupSelectorVisibility(lineage[0])">
                                 <mat-icon>group_add</mat-icon>
                             </button>
@@ -575,7 +575,7 @@
                                     Crear grupo
                                 </button>
 
-                                <button mat-button 
+                                <button mat-button
                                     style="margin-left: 5px;"
                                     (click)="toggleGroupSelectorVisibility(lineage[0])">
                                     Cancelar
@@ -619,13 +619,13 @@
                     <div class="example-accordion-item-header" (click)="accordionItem.toggle()">
 
                         <button *ngIf="!lineage[0].idea"
-                            mat-flat-button 
+                            mat-flat-button
                             color="accent"
                             (click)="openMyIdeaEditDialog(lineage[0])">
                             <span class="italicized">(vacío)</span>
                         </button>
 
-                        <button *ngIf="lineage[0].idea" 
+                        <button *ngIf="lineage[0].idea"
                             mat-flat-button
                             color="accent"
                             matTooltip="Ver detalle"
@@ -634,10 +634,10 @@
                             <span class="ellipsed" style="display: inline-block; width: 130px;">{{lineage[0].idea?.title}}</span>
                         </button>
 
-                        <button mat-icon-button 
+                        <button mat-icon-button
                             color="primary"
                             matTooltip="Seleccionar mi grupo"
-                            style="margin-left: 5px;" 
+                            style="margin-left: 5px;"
                             (click)="toggleGroupSelectorVisibility2(lineage[0])">
                             <mat-icon>group_add</mat-icon>
                         </button>
@@ -670,11 +670,11 @@
                             </div>
                         </ng-container>
 
-                        
 
-                        
 
-                        
+
+
+
 
                     </div>
 
@@ -694,18 +694,18 @@
                             Crear grupo
                         </button>
 
-                        <button mat-button 
+                        <button mat-button
                             style="margin-left: 5px;"
                             (click)="toggleGroupSelectorVisibility2(lineage[0])">
                             Cancelar
                         </button>
                     </div>
 
-                        
 
-                        
+
+
                     </cdk-accordion-item>
-                    
+
                 </cdk-accordion>
 
 
@@ -728,7 +728,7 @@
             </div>
 
             <div>
-                
+
                 <!-- Grupos -->
                 <mat-expansion-panel expanded class="mat-elevation-z0">
                     <mat-expansion-panel-header class="accent-bg">
@@ -753,7 +753,7 @@
                                 <span class="font-13">{{g.name}}</span>
                                 <span class="font-13 gray-700" style="margin-left: 6px;">· {{g.children.length}} {{g.children.length === 1 ? 'nodo' : 'nodos'}}</span>
                             </div>
-                            
+
                             <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)" mat-icon-button [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
                                 <mat-icon>more_vert</mat-icon>
                             </button>
@@ -765,18 +765,18 @@
                         <ng-template matMenuContent let-node="node">
                             <button mat-menu-item (click)="openIdeaDetailSidenav(node)">Ver idea</button>
                             <button
-                                mat-menu-item 
-                                [matMenuTriggerFor]="groupsSubMenu" 
+                                mat-menu-item
+                                [matMenuTriggerFor]="groupsSubMenu"
                                 [matMenuTriggerData]="{node: node}">
                                 Asignar grupo
                             </button>
                             <button
-                                mat-menu-item 
+                                mat-menu-item
                                 (click)="openChangeNodeNameDialog(node.id)">
                                 Cambiar nombre
                             </button>
                             <button
-                                mat-menu-item 
+                                mat-menu-item
                                 (click)="onNodeDeleted(node.id)">
                                 Eliminar
                             </button>
@@ -790,7 +790,7 @@
                             </button>
                         </ng-template>
                     </mat-menu>
-                    
+
                 </mat-expansion-panel>
 
                 <!-- Participantes -->
@@ -810,7 +810,7 @@
                             <input matInput placeholder="Buscar participante..." [(ngModel)]="listFilter1" (keyup.esc)="listFilter1 = ''">
                         </mat-form-field>
                     </div>
-                    
+
                     <mat-list id="participantsSideList">
                         <mat-list-item *ngFor="let p of filteredParticipants" class="hoveredList1" (mouseenter)="onMouseEnterListItem(getNodesByUserId(p.u_id))" (mouseleave)="onMouseLeaveListItem(getNodesByUserId(p.u_id))">
                             <div style="display: inline; width: 205px;" (click)="preOpenIdeaDetailSidenav(p.u_id)">
@@ -824,9 +824,9 @@
                                 <span *ngIf="p.isModerator" class="chip-role small moderator">Moderador</span>
                                 <!--<span *ngIf="p.role === 'ambassador'" class="chip-role small ambassador">Embajador</span>-->
                             </div>
-                            
-                            <button mat-icon-button 
-                                [matMenuTriggerFor]="participantMenu" 
+
+                            <button mat-icon-button
+                                [matMenuTriggerFor]="participantMenu"
                                 [matMenuTriggerData]="{participant: p}">
                                 <mat-icon>more_vert</mat-icon>
                             </button>
@@ -836,24 +836,24 @@
                     <!-- Mat menu and submenu -->
                     <mat-menu #participantMenu="matMenu">
                         <ng-template matMenuContent let-p="participant">
-                            <button mat-menu-item 
+                            <button mat-menu-item
                                 (click)="preOpenIdeaDetailSidenav(p.u_id)">
                                 Ver idea
                             </button>
 
-                            <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && !p.isModerator" 
+                            <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && !p.isModerator"
                                 mat-menu-item
                                 (click)="setParticipantIsModerator(p, true)">
                                 Asignar como moderador
                             </button>
 
-                            <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && p.isModerator" 
+                            <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && p.isModerator"
                                 mat-menu-item
                                 (click)="setParticipantIsModerator(p, false)">
                                 Quitar rol de moderador
                             </button>
 
-                            <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id" 
+                            <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id"
                                 mat-menu-item
                                 (click)="deleteParticipant(p)">
                                 Eliminar participante
@@ -864,7 +864,7 @@
 
             </div>
 
-            
+
 
         </div>
     </div>
@@ -872,7 +872,7 @@
     <!-- Modal lateral de opciones -->
     <div class="modal modal-opciones" *ngIf="isModalOptionsOpen" (click)="closeModalOptions($event)">
         <div class="modal-content" (click)="stopPropagation($event)">
-       
+
             <div style="display: flex;width:100%; align-items: center;">
                 <div style="font-size: 16px;font-weight: 500;">
                     Opciones
@@ -889,12 +889,12 @@
                     <input type="range" [(ngModel)]="sliderStrengthValue" min="1" max="2000" (input)="sliderStrengthChange()"/>
                 </div>
             </div>
-    
+
             <div class="slider-distancia" >
                 <div>Distancia</div>
                 <input type="range" [(ngModel)]="sliderDistanceValue" min="20" max="100" (input)="sliderDistanceChange()"/>
             </div>
-    
+
             <div class="slider-orden" >
                 <div>Orden</div>
                 <input type="range" [(ngModel)]="sliderOrderValue" min="1" max="1000" (input)="sliderOrderChange()"/>
