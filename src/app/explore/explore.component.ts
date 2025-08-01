@@ -62,6 +62,7 @@ export class ExploreComponent implements OnInit {
               this.sharedService.nextIsLoading(false);
               this.symbiocreations = symbios;
               //console.log(symbios);
+              this.symbiocreations.forEach(symbio => symbio.participantsToDisplay = this.getParticipantsToDisplay(symbio.participants));
             }
           );
         break;
@@ -75,6 +76,7 @@ export class ExploreComponent implements OnInit {
             symbios => {
               this.sharedService.nextIsLoading(false);
               this.symbiocreations = symbios;
+              this.symbiocreations.forEach(symbio => symbio.participantsToDisplay = this.getParticipantsToDisplay(symbio.participants));
             }
           );
         break;
@@ -88,6 +90,7 @@ export class ExploreComponent implements OnInit {
             symbios => {
               this.sharedService.nextIsLoading(false);
               this.symbiocreations = symbios;
+              this.symbiocreations.forEach(symbio => symbio.participantsToDisplay = this.getParticipantsToDisplay(symbio.participants));
             }
           );
         break;

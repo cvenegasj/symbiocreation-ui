@@ -33,3 +33,9 @@
 ✔ Corregido colores de los bordes de explora y mis symbiocreaciones
 ✔ Cambiado el modo default de la lista de mis simbiocreaciones, del modo lista al modo tarjetas
 ✔ Corregido diseño del Carousel
+
+# 31/07/25 mramirez
+✔ Corregido el problema de que no se mostraban los participantes en la lista de mis simbiocreaciones
+
+# 01/08/25 mramirez
+✔ Agregado iterado de participantes a la lista de mis simbiocreaciones
