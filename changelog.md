@@ -38,4 +38,7 @@
 ✔ Corregido el problema de que no se mostraban los participantes en la lista de mis simbiocreaciones
 
 # 01/08/25 mramirez
-✔ Agregado iterado de participantes a la lista de mis simbiocreaciones
+✔ Agregado iterado de participantes a la lista de simbiocreaciones
+
+# 02/08/25 mramirez
+✔ Corregido problema de paginación en la lista de simbiocreaciones
