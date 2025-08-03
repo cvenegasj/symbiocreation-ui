@@ -29,7 +29,7 @@ mat-paginator {
     color: #FFFFFF;
     font-size: 15px;
     font-weight: 500;
-    width: 100px;
+    /* width: 100px; */
 }
 
 .btn-explore button{
