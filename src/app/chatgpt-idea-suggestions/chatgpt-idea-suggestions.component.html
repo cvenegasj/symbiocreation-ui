@@ -1,30 +1,38 @@
-<mat-progress-spinner *ngIf="isLoadingLlmResponse"
+@if (isLoadingLlmResponse) {
+  <mat-progress-spinner
     style="margin: 40px auto 0;"
     color="accent"
     diameter="40"
     mode="indeterminate">
-</mat-progress-spinner>
-<p *ngIf="isLoadingLlmResponse" class="centered gray-700 font-15">
-    <span *ngIf="!node?.children">{{ 'AI.GETTING_SUGGESTIONS' | translate }}</span>
-    <span *ngIf="node?.children">{{ 'AI.GETTING_GROUP_SUGGESTIONS' | translate }}</span>
-</p>
+  </mat-progress-spinner>
+}
+@if (isLoadingLlmResponse) {
+  <p class="centered gray-700 font-15">
+    @if (!node?.children) {
+      <span>{{ 'AI.GETTING_SUGGESTIONS' | translate }}</span>
+    }
+    @if (node?.children) {
+      <span>{{ 'AI.GETTING_GROUP_SUGGESTIONS' | translate }}</span>
+    }
+  </p>
+}
 
 
-<div *ngIf="ideasSuggested">
-
+@if (ideasSuggested) {
+  <div>
     <h3 class="gray-800 font-17 bold" style="margin-top: 50px;">{{ 'AI.IDEA_GENERATION' | translate }}:</h3>
-
     <mat-list>
-        <ng-container *ngFor="let idea of ideasSuggested; last as last">
-            <mat-list-item lines="3" (click)="openEditIdeaDialog(idea)" style="cursor: pointer;">
-                <span matListItemTitle>{{idea.title}}</span>
-                <span>
-                {{idea.description}}
-                </span>
-            </mat-list-item>
-
-            <mat-divider *ngIf="!last"></mat-divider>
-        </ng-container>
+      @for (idea of ideasSuggested; track idea; let last = $last) {
+        <mat-list-item lines="3" (click)="openEditIdeaDialog(idea)" style="cursor: pointer;">
+          <span matListItemTitle>{{idea.title}}</span>
+          <span>
+            {{idea.description}}
+          </span>
+        </mat-list-item>
+        @if (!last) {
+          <mat-divider></mat-divider>
+        }
+      }
     </mat-list>
-
-</div>
+  </div>
+}

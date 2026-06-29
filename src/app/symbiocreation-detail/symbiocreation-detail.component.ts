@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { Symbiocreation } from '../models/symbioTypes';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -14,9 +14,11 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-symbiocreation-detail',
-  templateUrl: './symbiocreation-detail.component.html',
-  styleUrls: ['./symbiocreation-detail.component.css']
+    selector: 'app-symbiocreation-detail',
+    templateUrl: './symbiocreation-detail.component.html',
+    styleUrls: ['./symbiocreation-detail.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SymbiocreationDetailComponent implements OnInit {
 

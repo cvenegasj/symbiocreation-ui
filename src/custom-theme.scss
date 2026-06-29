@@ -9,18 +9,19 @@
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
 // @include mat.all-legacy-component-typographies();
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$symbiocreation-ui-primary: mat.define-palette(mat.$cyan-palette, 800, 600, A700);
-$symbiocreation-ui-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$symbiocreation-ui-primary: mat.m2-define-palette(mat.$m2-cyan-palette, 800, 600, A700);
+$symbiocreation-ui-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
 // The warn palette is optional (defaults to red).
-$symbiocreation-ui-warn: mat.define-palette(mat.$red-palette);
+$symbiocreation-ui-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$symbiocreation-ui-theme: mat.define-light-theme((
+$symbiocreation-ui-theme: mat.m2-define-light-theme((
     color: (
         primary: $symbiocreation-ui-primary,
         accent: $symbiocreation-ui-accent,
@@ -33,50 +34,50 @@ $symbiocreation-ui-theme: mat.define-light-theme((
 .chip-role.moderator {
     //background-color: mat-color($mat-pink, 400);
     //color: mat-contrast($mat-pink, 500);
-    color: mat.get-color-from-palette(mat.$pink-palette, 400);
-    border-color: mat.get-color-from-palette(mat.$pink-palette, 400);
+    color: mat.m2-get-color-from-palette(mat.$m2-pink-palette, 400);
+    border-color: mat.m2-get-color-from-palette(mat.$m2-pink-palette, 400);
     position: relative;
 }
 
 .chip-role.ambassador {
-    color: mat.get-color-from-palette(mat.$amber-palette, A700);
-    border-color: mat.get-color-from-palette(mat.$amber-palette, A700);
+    color: mat.m2-get-color-from-palette(mat.$m2-amber-palette, A700);
+    border-color: mat.m2-get-color-from-palette(mat.$m2-amber-palette, A700);
 }
 
 .bbox-ambassador {
-    fill: mat.get-color-from-palette(mat.$amber-palette, A400);
+    fill: mat.m2-get-color-from-palette(mat.$m2-amber-palette, A400);
 }
 
 .accent-bg, .accent-bg:hover {
-    background-color: mat.get-color-from-palette($symbiocreation-ui-accent, darker) !important;
+    background-color: mat.m2-get-color-from-palette($symbiocreation-ui-accent, darker) !important;
 }
 
 .pink-color {
-    color: mat.get-color-from-palette(mat.$pink-palette, 400);
+    color: mat.m2-get-color-from-palette(mat.$m2-pink-palette, 400);
 }
 
 .pink-A200 {
-    color: mat.get-color-from-palette(mat.$pink-palette, A200) !important;
+    color: mat.m2-get-color-from-palette(mat.$m2-pink-palette, A200) !important;
 }
 
 .teal-color-1 {
-    color: mat.get-color-from-palette(mat.$teal-palette, A700);
+    color: mat.m2-get-color-from-palette(mat.$m2-teal-palette, A700);
 }
 
 .cyan-color-1 {
-    color: mat.get-color-from-palette(mat.$cyan-palette, 600);
+    color: mat.m2-get-color-from-palette(mat.$m2-cyan-palette, 600);
 }
 
 .cyan-color-2 {
-    color: mat.get-color-from-palette(mat.$cyan-palette, 800) !important;
+    color: mat.m2-get-color-from-palette(mat.$m2-cyan-palette, 800) !important;
 }
 
 .deep-purple-500 {
-    color: mat.get-color-from-palette(mat.$deep-purple-palette, 500);
+    color: mat.m2-get-color-from-palette(mat.$m2-deep-purple-palette, 500);
 }
 
 .pink-bg {
-    background-color: mat.get-color-from-palette(mat.$pink-palette, 400);
+    background-color: mat.m2-get-color-from-palette(mat.$m2-pink-palette, 400);
 }
 
 /*.card-pink-bg .contrast-color {
@@ -84,36 +85,36 @@ $symbiocreation-ui-theme: mat.define-light-theme((
 }*/
 
 div.single-stat-summary span.label {
-    color: mat.get-color-from-palette(mat.$gray-palette, 800);
+    color: mat.m2-get-color-from-palette(mat.$m2-gray-palette, 800);
 }
 
 div.single-stat-summary span.value-1 {
-    color: mat.get-color-from-palette(mat.$teal-palette, A700);
+    color: mat.m2-get-color-from-palette(mat.$m2-teal-palette, A700);
 }
 
 div.single-stat-summary span.value-2 {
-    color: mat.get-color-from-palette(mat.$cyan-palette, 400);
+    color: mat.m2-get-color-from-palette(mat.$m2-cyan-palette, 400);
 }
 
 div.single-stat-summary span.value-3 {
-    color: mat.get-color-from-palette(mat.$deep-purple-palette, A200);
+    color: mat.m2-get-color-from-palette(mat.$m2-deep-purple-palette, A200);
 }
 
 // my-symbiocreations component
 
 div.single-stat-my-symbios-1 {
-    background-color: mat.get-color-from-palette(mat.$yellow-palette, A700);
+    background-color: mat.m2-get-color-from-palette(mat.$m2-yellow-palette, A700);
 }
 
 div.single-stat-my-symbios-1 span.label,
 div.single-stat-my-symbios-1 span.value {
-    color: mat.get-color-from-palette(mat.$yellow-palette, A700-contrast);
+    color: mat.m2-get-color-from-palette(mat.$m2-yellow-palette, A700-contrast);
 }
 
 div.single-stat-my-symbios-2,
 div.single-stat-my-symbios-3,
 div.single-stat-my-symbios-4 {
-    background-color: mat.get-color-from-palette(mat.$teal-palette, 200);
+    background-color: mat.m2-get-color-from-palette(mat.$m2-teal-palette, 200);
 }
 
 div.single-stat-my-symbios-2 span.label,
@@ -122,7 +123,7 @@ div.single-stat-my-symbios-3 span.label,
 div.single-stat-my-symbios-3 span.value,
 div.single-stat-my-symbios-4 span.label,
 div.single-stat-my-symbios-4 span.value {
-    color: mat.get-color-from-palette(mat.$teal-palette, '200-contrast');
+    color: mat.m2-get-color-from-palette(mat.$m2-teal-palette, '200-contrast');
 }
 
 span.symbio-stat-value {
@@ -130,19 +131,19 @@ span.symbio-stat-value {
     padding: 0 7px;
     border-width: 1px;
     border-radius: 5px;
-    background-color: mat.get-color-from-palette(mat.$yellow-palette, A700);
-    color: mat.get-color-from-palette(mat.$yellow-palette, A700-contrast);
+    background-color: mat.m2-get-color-from-palette(mat.$m2-yellow-palette, A700);
+    color: mat.m2-get-color-from-palette(mat.$m2-yellow-palette, A700-contrast);
 }
 
 // LINE CHART in admin stats overview
 path.line-1 {
     fill: none;
-    stroke: mat.get-color-from-palette(mat.$teal-palette, A400);
+    stroke: mat.m2-get-color-from-palette(mat.$m2-teal-palette, A400);
 }
 
 path.line-2 {
     fill: none;
-    stroke: mat.get-color-from-palette(mat.$cyan-palette, 500);
+    stroke: mat.m2-get-color-from-palette(mat.$m2-cyan-palette, 500);
 }
 
 .circle {
@@ -155,5 +156,5 @@ path.line-2 {
 
 // create-symbio component
 .form-register > .container-card {
-     border: 1px solid mat.get-color-from-palette($symbiocreation-ui-accent);
+     border: 1px solid mat.m2-get-color-from-palette($symbiocreation-ui-accent);
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, Renderer2, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { SidenavService } from '../services/sidenav.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Node } from '../models/forceGraphTypes';
@@ -21,9 +21,11 @@ import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
 @Component({
-  selector: 'app-idea-detail',
-  templateUrl: './idea-detail.component.html',
-  styleUrls: ['./idea-detail.component.scss']
+    selector: 'app-idea-detail',
+    templateUrl: './idea-detail.component.html',
+    styleUrls: ['./idea-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IdeaDetailComponent implements OnInit, AfterViewInit {
 

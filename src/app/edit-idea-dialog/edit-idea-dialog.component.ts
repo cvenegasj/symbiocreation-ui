@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Idea } from '../models/symbioTypes';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -12,9 +12,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-edit-idea-dialog',
-  templateUrl: './edit-idea-dialog.component.html',
-  styleUrls: ['./edit-idea-dialog.component.css']
+    selector: 'app-edit-idea-dialog',
+    templateUrl: './edit-idea-dialog.component.html',
+    styleUrls: ['./edit-idea-dialog.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EditIdeaDialogComponent implements OnInit {
 

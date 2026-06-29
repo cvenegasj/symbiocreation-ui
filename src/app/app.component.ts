@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, AfterViewChecked, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, AfterViewChecked, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { User } from './models/symbioTypes';
 import { AuthService } from './services/auth.service';
 import { SharedService } from './services/shared.service';
@@ -9,9 +9,11 @@ import { EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AppComponent implements AfterViewChecked, OnInit {
 
@@ -28,7 +30,7 @@ export class AppComponent implements AfterViewChecked, OnInit {
     public translate: TranslateService
   ) {
     this.translate.addLangs(['es', 'en']);
-    this.translate.setDefaultLang('es');
+    this.translate.setFallbackLang('es');
 
     const savedLang = localStorage.getItem('lang');
     if (savedLang && ['es', 'en'].includes(savedLang)) {

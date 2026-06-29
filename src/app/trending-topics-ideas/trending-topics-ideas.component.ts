@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
-  selector: 'app-trending-topics-ideas',
-  templateUrl: './trending-topics-ideas.component.html',
-  styleUrls: ['./trending-topics-ideas.component.css']
+    selector: 'app-trending-topics-ideas',
+    templateUrl: './trending-topics-ideas.component.html',
+    styleUrls: ['./trending-topics-ideas.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrendingTopicsIdeasComponent implements OnInit {
 

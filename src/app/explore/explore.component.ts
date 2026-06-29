@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
-import * as moment from 'moment';
+import moment from 'moment';
 import { SharedService } from '../services/shared.service';
 import { ImageService } from '../services/image.service';
 import { CloudinaryImage } from '@cloudinary/url-gen';
@@ -14,9 +14,11 @@ import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity';
 import { FocusOn } from '@cloudinary/url-gen/qualifiers/focusOn';
 
 @Component({
-  selector: 'app-explore',
-  templateUrl: './explore.component.html',
-  styleUrls: ['./explore.component.css']
+    selector: 'app-explore',
+    templateUrl: './explore.component.html',
+    styleUrls: ['./explore.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExploreComponent implements OnInit {
 

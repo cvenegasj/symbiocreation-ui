@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { OneDot, OneDotParticipant } from '../models/oneDotTypes';
 import { OneDotService } from '../services/onedot.service';
 import { UserService } from '../services/user.service';
@@ -10,9 +10,11 @@ import { concatMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 
 @Component({
-  selector: 'app-create-onedot',
-  templateUrl: './create-onedot.component.html',
-  styleUrls: ['./create-onedot.component.css']
+    selector: 'app-create-onedot',
+    templateUrl: './create-onedot.component.html',
+    styleUrls: ['./create-onedot.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CreateOnedotComponent implements OnInit {
 

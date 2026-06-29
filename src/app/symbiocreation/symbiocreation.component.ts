@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy  } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { SidenavService } from '../services/sidenav.service';
@@ -28,9 +28,11 @@ import { saveAs } from 'file-saver';
 import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
-  selector: 'app-symbiocreation',
-  templateUrl: './symbiocreation.component.html',
-  styleUrls: ['./symbiocreation.component.scss']
+    selector: 'app-symbiocreation',
+    templateUrl: './symbiocreation.component.html',
+    styleUrls: ['./symbiocreation.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SymbiocreationComponent implements OnInit, OnDestroy {
 

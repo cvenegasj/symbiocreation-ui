@@ -1,10 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-confirmation-dialog',
-  templateUrl: './confirmation-dialog.component.html',
-  styleUrls: ['./confirmation-dialog.component.css']
+    selector: 'app-confirmation-dialog',
+    templateUrl: './confirmation-dialog.component.html',
+    styleUrls: ['./confirmation-dialog.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ConfirmationDialogComponent implements OnInit {
 

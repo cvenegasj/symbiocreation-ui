@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { User } from '../models/symbioTypes';
 import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
-  selector: 'app-ranking-users-public',
-  templateUrl: './ranking-users-public.component.html',
-  styleUrls: ['./ranking-users-public.component.scss']
+    selector: 'app-ranking-users-public',
+    templateUrl: './ranking-users-public.component.html',
+    styleUrls: ['./ranking-users-public.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RankingUsersPublicComponent implements OnInit {
 

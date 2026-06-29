@@ -1,571 +1,581 @@
- <mat-sidenav-container autosize hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
-
-     <!-- Analytics fixed button -->
-    <!-- <div>
-        <button mat-mini-fab color="accent" class="btn-stats"
-                matTooltip="Ver Estadísticas de Simbiocreación"
-                matTooltipPosition="above"
-                (click)="sidenavAnalytics.open()">
-            <mat-icon>bar_chart</mat-icon>
-        </button>
-    </div> -->
-
-    <!--
-    MARK: Side Analitycs
-    -->
-    <!-- <mat-sidenav #sidenavAnalytics position="start" class="sidebar-analitycs">
-        <app-symbiocreations-stats [symbiocreationId]="symbiocreation?.id"></app-symbiocreations-stats>
-    </mat-sidenav> -->
-
-    <!--
-    MARK: Side Detail
-    -->
-    <mat-sidenav #sidenav position="end" class="sidebar-idea-detail" [ngClass]="{ 'detailFullScreen':sidenavService.isOpenInFullscreen, 'detailCustom' : !sidenavService.isOpenInFullscreen}">
-        <router-outlet></router-outlet>
-    </mat-sidenav>
-
-    <!--
-    MARK: Side Listas
-    -->
-    <mat-sidenav #sidenavGroups position="start" class="sidebar-groups" [(opened)]="isSidenavGroupsOpen">
-
-        <div class="header">
-            <img src="assets/images/logo_symbio_2024.png" alt="">
-            <span class="btn-close" (click)="sidenavGroups.close()"><mat-icon>close</mat-icon></span>
-        </div>
-
-        <div class="body">
-            <div class="title" *ngIf="GroupParticipantStat==1">{{ 'SYMBIO.GROUPS' | translate }}</div>
-            <div class="title" *ngIf="GroupParticipantStat==2">{{ 'SYMBIO.PARTICIPANTS' | translate }}</div>
-            <div class="title" *ngIf="GroupParticipantStat==3">{{ 'SYMBIO.USER_RANKING' | translate }}</div>
-            <div class="title" *ngIf="GroupParticipantStat==4">{{ 'SYMBIO.TRENDS' | translate }}</div>
-            <div class="title" *ngIf="GroupParticipantStat==5">{{ 'SYMBIO.MY_IDEAS' | translate }}</div>
-
-
-
-            <!-- Left panel: Groups -->
-            <div class="container-lista group" *ngIf="GroupParticipantStat == 1">
-
-                <mat-list style="max-width: 100%;">
-
-                    <ng-container *ngFor="let g of filteredGroups; index as i; last as last">
-                        <mat-list-item (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])" style="height: 65px;">
-
-                            <div fxLayout="row" style="width: 100%; display: flex; align-items: center;">
-                                <div style="width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; margin-right: 20px;">
-                                    <span class="bolder font-22 gray-500">{{ i + 1 }}</span>
-                                </div>
-
-                                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex>
-                                    <div>
-                                        <span class="bold font-16 cyan-color-2" (click)="openIdeaDetailSidenav(g)" style="cursor: pointer;">{{ g.name }}</span><br />
-                                        <span class="font-14 gray-700">{{g.children.length}} {{g.children.length === 1 ? ('SYMBIO.NODE' | translate) : ('SYMBIO.NODES' | translate)}}</span>
-                                    </div>
-
-                                    <div>
-                                        <button *ngIf="participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)"
-                                                mat-icon-button
-                                                [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
-                                                <mat-icon>more_vert</mat-icon>
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </mat-list-item>
-
-                        <mat-divider *ngIf="!last"></mat-divider>
-                    </ng-container>
-
-                </mat-list>
-
-            </div>
-
-
-
-            <!-- Left panel: Participants -->
-            <div class="container-lista participant" *ngIf="GroupParticipantStat == 2">
-
-                <mat-list style="max-width: 100%;">
-
-                    <ng-container *ngFor="let p of filteredParticipants; index as i; last as last">
-                        <mat-list-item (mouseenter)="onMouseEnterListItem(getNodesByUserId(p.u_id))" (mouseleave)="onMouseLeaveListItem(getNodesByUserId(p.u_id))" style="height: 55px;">
-
-                            <div fxLayout="row" style="width: 100%; display: flex; align-items: center;">
-                                <div style="width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; margin-right: 20px;">
-                                    <span class="bolder font-22 gray-500">{{ i + 1 }}</span>
-                                </div>
-
-                                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex>
-                                    <div>
-                                        <span *ngIf="p.user.firstName && p.user.lastName" class="bold font-16 cyan-color-2" (click)="preOpenIdeaDetailSidenav(p.u_id)" style="cursor: pointer;">
-                                            {{ p.user.firstName && p.user.lastName ? p.user.firstName + ' ' + p.user.lastName : p.user.name }}
-                                        </span><br />
-                                        <span *ngIf="p.u_id === participant?.u_id" class="gray-600 font-14">({{ 'SYMBIO.YOU' | translate }})</span>
-                                    </div>
-
-                                    <div>
-                                        <button mat-icon-button
-                                            [matMenuTriggerFor]="participantMenu"
-                                            [matMenuTriggerData]="{participant: p}">
-                                            <mat-icon>more_vert</mat-icon>
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </mat-list-item>
-
-                        <mat-divider *ngIf="!last"></mat-divider>
-                    </ng-container>
-
-                </mat-list>
-
-            </div>
-
-
-
-            <!-- Left panel: Ranking users -->
-            <div class="container-lista topUser" *ngIf="GroupParticipantStat == 3">
-
-                <mat-progress-spinner *ngIf="isLoadingUsersRanking"
-                        style="margin: 40px auto 0;"
-                        color="accent"
-                        diameter="50"
-                        mode="indeterminate">
-                </mat-progress-spinner>
-
-                <ng-container *ngIf="!isLoadingUsersRanking">
-                    <mat-list style="max-width: 100%;">
-
-                        <ng-container *ngFor="let ur of usersRanking; index as i; last as last">
-                            <mat-list-item lines="2">
-                                <span matListItemIcon class="bolder font-22 gray-500">{{ i + 1 }}</span>
-
-                                <span matListItemTitle class="bold font-16 cyan-color-2">{{ ur.user.name }}</span>
-
-                                <span class="font-14 gray-700">{{ 'SYMBIO.SCORE' | translate }}: {{ ur.score }}</span>
-                            </mat-list-item>
-
-                            <mat-divider *ngIf="!last"></mat-divider>
-                        </ng-container>
-
-                    </mat-list>
-                </ng-container>
-
-            </div>
-
-
-
-            <!-- Left panel: Trends -->
-            <div class="container-lista tendency" *ngIf="GroupParticipantStat == 4">
-
-                <mat-progress-spinner *ngIf="isLoadingTrends"
-                        style="margin: 40px auto 0;"
-                        color="accent"
-                        diameter="50"
-                        mode="indeterminate">
-                </mat-progress-spinner>
-
-                <ng-container *ngIf="!isLoadingTrends">
-                    <mat-list style="max-width: 100%;">
-
-                        <ng-container *ngFor="let trend of trends; index as i; last as last">
-                            <mat-list-item lines="3">
-                                <span matListItemIcon class="bolder font-22 gray-500">{{ i + 1 }}</span>
-
-                                <span matListItemTitle class="bold font-16 cyan-color-2">{{ trend.topic }}</span>
-
-                                <span class="font-14 gray-700">{{ trend.description }}</span>
-                            </mat-list-item>
-
-                            <mat-divider *ngIf="!last"></mat-divider>
-                        </ng-container>
-
-                    </mat-list>
-                </ng-container>
-
-            </div>
-
-
-
-            <!-- Left panel: Mis ideas -->
-            <div class="container-lista list-idea" *ngIf="GroupParticipantStat == 5">
-
-                <div *ngIf="participant">
-                    <div fxLayout="column">
-                        <div class="gray-900 bold" style="padding: 5px 10px; margin-right: 15px; width: 120px; text-align: left;">
-                            <!-- Mi(s) idea(s) -->
-                            <button mat-raised-button
-                                color="accent"
-                                (click)="createUserNode()">
-                                <mat-icon>add</mat-icon>
-                                {{ 'SYMBIO.NEW_IDEA' | translate }}
-                            </button>
-                            <!--<span *ngIf="roleOfLoggedIn === 'ambassador'" class="chip-role small ambassador">Embajador</span>-->
-                        </div>
-
-                        <div fxFlex style="padding: 5px 10px 0;">
-                            <div *ngFor="let lineage of myAncestries" class="item-ideas">
-
-                                <button *ngIf="!lineage[0].idea"
-                                    mat-flat-button
-                                    color="accent"
-                                    (click)="openIdeaDetailSidenav(lineage[0])"
-                                    (mouseenter)="onMouseEnterListItem([lineage[0]])"
-                                    (mouseleave)="onMouseLeaveListItem([lineage[0]])"
-                                    class="btn-idea-element"
-                                    >
-                                    <mat-icon>open_in_new</mat-icon>
-                                    <span class="italicized">({{ 'SYMBIO.EMPTY' | translate }})</span>
-                                </button>
-
-                                <button *ngIf="lineage[0].idea"
-                                    mat-flat-button
-                                    color="accent"
-                                    [matTooltip]="'SYMBIO.VIEW_DETAIL' | translate"
-                                    (click)="openIdeaDetailSidenav(lineage[0])"
-                                    (mouseenter)="onMouseEnterListItem([lineage[0]])"
-                                    (mouseleave)="onMouseLeaveListItem([lineage[0]])"
-                                    class="btn-idea-element"
-                                    >
-                                    <mat-icon>open_in_new</mat-icon>
-                                    <span class="ellipsed" style="display: inline-block; width: 130px;">{{lineage[0].idea?.title}}</span>
-                                </button>
-
-                                <ng-container *ngFor="let node of lineage | slice:1; index as i; last as last">
-                                    <span> &lt; </span>
-                                    <span class="chip-ancestry">
-                                        {{ 'SYMBIO.LEVEL' | translate }} {{i + 1}}: {{node.name}}
-                                    </span>
-                                </ng-container>
-
-                                <button mat-icon-button
-                                    class="btn-symbio-add-group"
-                                    color="primary"
-                                    [matTooltip]="'SYMBIO.SELECT_MY_GROUP' | translate"
-                                    style="margin-left: 5px;"
-                                    (click)="toggleGroupSelectorVisibility(lineage[0])">
-                                    <mat-icon>group_add</mat-icon>
-                                </button>
-
-                                <button *ngIf="lineage[0].role === 'ambassador'"
-                                    class="btn-symbio-add-group"
-                                    mat-icon-button
-                                    color="primary"
-                                    [matTooltip]="'SYMBIO.CREATE_NEXT_LEVEL' | translate"
-                                    style="margin-left: 5px;"
-                                    (click)="openNextLevelGroupDialog(lineage[lineage.length - 1])">
-                                    <mat-icon>upgrade</mat-icon>
-                                </button>
-
-                                <div [id]="lineage[0].id" hidden style="margin-top: 5px;">
-                                    <mat-form-field appearance="fill">
-                                        <mat-label>{{ 'SYMBIO.SELECT_GROUP' | translate }}</mat-label>
-                                        <!-- <mat-select [(value)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])"> -->
-                                        <mat-select [(ngModel)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])">
-                                            <mat-option disabled selected>{{ 'SYMBIO.CHOOSE_GROUP' | translate }}</mat-option>
-                                            <mat-option value="none">{{ 'SYMBIO.NO_GROUP' | translate }}</mat-option>
-                                            <mat-option *ngFor="let g of groups" [value]="g.id">{{g.name}}</mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-
-                                    <button mat-flat-button color="accent"
-                                        style="margin-left: 5px;background-color: #287987;color: #FFFFFF;"
-                                        (click)="openNewParentGroupDialog(lineage[0].id)">
-                                        <mat-icon>add</mat-icon>
-                                        {{ 'SYMBIO.CREATE_GROUP' | translate }}
-                                    </button>
-
-                                    <button mat-button
-                                        style="margin-left: 5px;"
-                                        (click)="toggleGroupSelectorVisibility(lineage[0])">
-                                        {{ 'COMMON.CANCEL' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<mat-sidenav-container autosize hasBackdrop="false" style="height: calc(100% - 64px)"> <!-- make this occupy total height - toolbar.height -->
+
+  <!-- Analytics fixed button -->
+  <!-- <div>
+  <button mat-mini-fab color="accent" class="btn-stats"
+    matTooltip="Ver Estadísticas de Simbiocreación"
+    matTooltipPosition="above"
+    (click)="sidenavAnalytics.open()">
+    <mat-icon>bar_chart</mat-icon>
+  </button>
+</div> -->
+
+<!--
+MARK: Side Analitycs
+-->
+<!-- <mat-sidenav #sidenavAnalytics position="start" class="sidebar-analitycs">
+<app-symbiocreations-stats [symbiocreationId]="symbiocreation?.id"></app-symbiocreations-stats>
+</mat-sidenav> -->
+
+<!--
+MARK: Side Detail
+-->
+<mat-sidenav #sidenav position="end" class="sidebar-idea-detail" [ngClass]="{ 'detailFullScreen':sidenavService.isOpenInFullscreen, 'detailCustom' : !sidenavService.isOpenInFullscreen}">
+  <router-outlet></router-outlet>
+</mat-sidenav>
+
+<!--
+MARK: Side Listas
+-->
+<mat-sidenav #sidenavGroups position="start" class="sidebar-groups" [(opened)]="isSidenavGroupsOpen">
+
+  <div class="header">
+    <img src="assets/images/logo_symbio_2024.png" alt="">
+    <span class="btn-close" (click)="sidenavGroups.close()"><mat-icon>close</mat-icon></span>
+  </div>
+
+  <div class="body">
+    @if (GroupParticipantStat==1) {
+      <div class="title">{{ 'SYMBIO.GROUPS' | translate }}</div>
+    }
+    @if (GroupParticipantStat==2) {
+      <div class="title">{{ 'SYMBIO.PARTICIPANTS' | translate }}</div>
+    }
+    @if (GroupParticipantStat==3) {
+      <div class="title">{{ 'SYMBIO.USER_RANKING' | translate }}</div>
+    }
+    @if (GroupParticipantStat==4) {
+      <div class="title">{{ 'SYMBIO.TRENDS' | translate }}</div>
+    }
+    @if (GroupParticipantStat==5) {
+      <div class="title">{{ 'SYMBIO.MY_IDEAS' | translate }}</div>
+    }
+
+
+
+    <!-- Left panel: Groups -->
+    @if (GroupParticipantStat == 1) {
+      <div class="container-lista group">
+        <mat-list style="max-width: 100%;">
+          @for (g of filteredGroups; track g; let i = $index; let last = $last) {
+            <mat-list-item (mouseenter)="onMouseEnterListItem([g])" (mouseleave)="onMouseLeaveListItem([g])" style="height: 65px;">
+              <div fxLayout="row" style="width: 100%; display: flex; align-items: center;">
+                <div style="width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; margin-right: 20px;">
+                  <span class="bolder font-22 gray-500">{{ i + 1 }}</span>
                 </div>
-
-            </div>
-
-        </div>
-
-        <mat-menu #groupMenu="matMenu">
-            <ng-template matMenuContent let-node="node">
-                <button mat-menu-item (click)="openIdeaDetailSidenav(node)">{{ 'SYMBIO.VIEW_IDEA' | translate }}</button>
-                <button
-                    mat-menu-item
-                    [matMenuTriggerFor]="groupsSubMenu"
-                    [matMenuTriggerData]="{node: node}">
-                    {{ 'SYMBIO.ASSIGN_GROUP' | translate }}
-                </button>
-                <button
-                    mat-menu-item
-                    (click)="openChangeNodeNameDialog(node.id)">
-                    {{ 'SYMBIO.CHANGE_NAME' | translate }}
-                </button>
-                <button
-                    mat-menu-item
-                    (click)="onNodeDeleted(node.id)">
-                    {{ 'COMMON.DELETE' | translate }}
-                </button>
-            </ng-template>
-        </mat-menu>
-
-        <mat-menu #groupsSubMenu="matMenu">
-            <ng-template matMenuContent let-node="node">
-                <!-- <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="onParentChanged([node.id, g.id])"></button> -->
-                <button mat-menu-item (click)="onParentChanged([node.id, 'none'])">
-                    <span>{{ 'SYMBIO.NO_GROUP' | translate }}</span>
-                </button>
-                <button mat-menu-item *ngFor="let group of filterGroups(groups, node)" (click)="onParentChanged([node.id, group.id])"> <!-- filter because a node cannot be its own parent! -->
-                    <span>{{group.name}}</span>
-                </button>
-            </ng-template>
-        </mat-menu>
-
-        <mat-menu #participantMenu="matMenu">
-            <ng-template matMenuContent let-p="participant">
-                <button mat-menu-item
-                    (click)="preOpenIdeaDetailSidenav(p.u_id)">
-                    {{ 'SYMBIO.VIEW_IDEA' | translate }}
-                </button>
-
-                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && !p.isModerator"
-                    mat-menu-item
-                    (click)="setParticipantIsModerator(p, true)">
-                    {{ 'SYMBIO.ASSIGN_MODERATOR' | translate }}
-                </button>
-
-                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id && p.isModerator"
-                    mat-menu-item
-                    (click)="setParticipantIsModerator(p, false)">
-                    {{ 'SYMBIO.REMOVE_MODERATOR' | translate }}
-                </button>
-
-                <button *ngIf="participant?.isModerator && p.u_id !== participant?.u_id"
-                    mat-menu-item
-                    (click)="deleteParticipant(p)">
-                    {{ 'SYMBIO.DELETE_PARTICIPANT' | translate }}
-                </button>
-            </ng-template>
-        </mat-menu>
-
-    </mat-sidenav>
-
-
-
-
-    <section fxLayout="row" style="height: 100%;">
-
-        <!--
-        MARK: Main area
-        -->
-        <!-- <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column" class="workspace-container" [style.max-width]="!isVisible ? '100%' : '77%'" [style.width]="!isVisible ? '100%' : '77%'"> -->
-        <!-- <div fxLayout="column" class="workspace-container" [style.max-width]="!isVisible ? '100%' : '77%'" [style.width]="!isVisible ? '100%' : '77%'"> -->
-        <div fxLayout="column" class="workspace-container" [style.max-width]="'100%'" [style.width]="'100%'">
-
-            <div class="mat-elevation-z3 workspace-header" style="padding: 9px; background-color: white; display: flex;justify-content: space-evenly;">
-                <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
-
-                    <mat-icon class="teal-color-1 workspace-icon-left" style="color:#287987;"
-                            [matTooltip]="symbiocreation?.visibility === 'public' ? ('SYMBIO.PUBLIC' | translate) : ('SYMBIO.PRIVATE' | translate)"
-                            matTooltipPosition="above">
-                            {{symbiocreation?.visibility === 'public' ? 'public' : 'lock'}}
-                    </mat-icon>
-
-                    <span class="workspace-name">{{symbiocreation?.name}}</span>
-
-                    <button class="workspace-icon-right"
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex>
+                  <div>
+                    <span class="bold font-16 cyan-color-2" (click)="openIdeaDetailSidenav(g)" style="cursor: pointer;">{{ g.name }}</span><br />
+                    <span class="font-14 gray-700">{{g.children.length}} {{g.children.length === 1 ? ('SYMBIO.NODE' | translate) : ('SYMBIO.NODES' | translate)}}</span>
+                  </div>
+                  <div>
+                    @if (participant?.isModerator || isAmbassadorOfAnyGroupBelow(g)) {
+                      <button
                         mat-icon-button
-                        [matTooltip]="'SYMBIO.VIEW_DETAILS' | translate"
-                        matTooltipPosition="above"
-                        (click)="openSymbioDetailDialog()">
-                        <mat-icon class="gray-600">info</mat-icon>
-                    </button>
-
-                    <span *ngIf="participant?.isModerator" style="margin-left: 5px;" class="chip-role moderator">{{ 'SYMBIO.MODERATOR' | translate }}</span>
-
-                    <button class=""
-                        *ngIf="participant || appUser?.role === 'SUPER_ADMIN'"
-                        mat-icon-button
-                        [matMenuTriggerFor]="mainMenu">
-                        <mat-icon class="gray-600">more_vert</mat-icon>
-                    </button>
-
-                    <mat-menu class="workspace-options" #mainMenu="matMenu">
-                        <button mat-menu-item
-                            (click)="leaveSymbiocreation()">
-                            <mat-icon class="gray-600">person_remove</mat-icon>
-                            {{ 'SYMBIO.LEAVE' | translate }}
-                        </button>
-                        <button mat-menu-item
-                            (click)="downloadParticipantsData()">
-                            <mat-icon class="gray-600">download</mat-icon>
-                            {{ 'SYMBIO.DOWNLOAD_PARTICIPANTS' | translate }}
-                        </button>
-                        <button mat-menu-item
-                            (click)="downloadAllData()">
-                            <mat-icon class="gray-600">download</mat-icon>
-                            {{ 'SYMBIO.DOWNLOAD_ALL' | translate }}
-                        </button>
-                    </mat-menu>
-                </h2>
+                        [matMenuTriggerFor]="groupMenu" [matMenuTriggerData]="{node: g}">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </mat-list-item>
+            @if (!last) {
+              <mat-divider></mat-divider>
+            }
+          }
+        </mat-list>
+      </div>
+    }
 
 
-                <div *ngIf="!participant" style="display: flex;align-items: center;">
-                    <!-- <p class="centered">Participa de esta simbiocreación!</p> -->
-                    <div style="text-align: center;">
-                        <button #btnParticipate mat-raised-button color="accent" (click)="joinSymbiocreation(btnParticipate)" class="bounce" style="background-color: #287987;color: #FFFFFF;">
-                            <span>{{ 'SYMBIO.JOIN' | translate }}</span>
-                        </button>
+
+    <!-- Left panel: Participants -->
+    @if (GroupParticipantStat == 2) {
+      <div class="container-lista participant">
+        <mat-list style="max-width: 100%;">
+          @for (p of filteredParticipants; track p; let i = $index; let last = $last) {
+            <mat-list-item (mouseenter)="onMouseEnterListItem(getNodesByUserId(p.u_id))" (mouseleave)="onMouseLeaveListItem(getNodesByUserId(p.u_id))" style="height: 55px;">
+              <div fxLayout="row" style="width: 100%; display: flex; align-items: center;">
+                <div style="width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; margin-right: 20px;">
+                  <span class="bolder font-22 gray-500">{{ i + 1 }}</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex>
+                  <div>
+                    @if (p.user.firstName && p.user.lastName) {
+                      <span class="bold font-16 cyan-color-2" (click)="preOpenIdeaDetailSidenav(p.u_id)" style="cursor: pointer;">
+                        {{ p.user.firstName && p.user.lastName ? p.user.firstName + ' ' + p.user.lastName : p.user.name }}
+                      </span>
+                      }<br />
+                      @if (p.u_id === participant?.u_id) {
+                        <span class="gray-600 font-14">({{ 'SYMBIO.YOU' | translate }})</span>
+                      }
                     </div>
-                </div>
-            </div>
-
-            <!--
-            MARK: Grafico Symbio
-            -->
-            <div fxFlex class="workspace-body">
-                <app-graph
-                    [data]="symbiocreation?.graph"
-                    [participant]="participant"
-                    [myAncestries]="myAncestries"
-                    [currentStrength]="sliderStrengthValue"
-                    [currentDistance]="sliderDistanceValue"
-                    [currentOrder]="sliderOrderValue"
-                    (parentChanged)="onParentChanged($event)"
-                    (nodeChangedName)="openChangeNodeNameDialog($event)"
-                    (nodeChangedRole)="onRoleChanged($event)"
-                    (nodeDeleted)="onNodeDeleted($event)"
-                    (dblClickNewIdea)="createUserNode()"
-                    >
-                </app-graph>
-            </div>
-        </div>
-
-        <!--
-        MARK: Btn flotantes
-        -->
-
-        <ng-container *ngIf="participant">
-            <button class="float-menu-group btn-new-idea" mat-icon-button color="primary" (click)="showFloatIdeaMenuBtn()" [matTooltip]="'SYMBIO.NEW_IDEA' | translate" matTooltipPosition="left">
-                <mat-icon style="color: white;">add</mat-icon>
-            </button>
-
-            <div class="animated-text" [ngClass]="{'show': showFloatIdeaMenu}">
-                {{ 'SYMBIO.ADD_NEW_IDEA_QUESTION' | translate }}
-                <span class="idea-btn-close" (click)="closeIdeaBtn()"><mat-icon>close</mat-icon></span>
-            </div>
-
-            <div class="animated-text-2" [ngClass]="{'show': showFloatIdeaMenu}">
-                <div class="idea-body">
-                    <div class="idea-txt">{{ 'SYMBIO.ADD_IDEA_DESCRIPTION' | translate }}</div>
-                    <div class="idea-btn-group">
-                        <button mat-flat-button class="idea-btn-cancel" (click)="closeIdeaBtn()">{{ 'COMMON.CANCEL' | translate }}</button>
-                        <button mat-flat-button class="idea-btn-confirm" (click)="createNewUserIdea()">{{ 'COMMON.CONFIRM' | translate }}</button>
+                    <div>
+                      <button mat-icon-button
+                        [matMenuTriggerFor]="participantMenu"
+                        [matMenuTriggerData]="{participant: p}">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
                     </div>
+                  </div>
                 </div>
-            </div>
-        </ng-container>
-
-        <!-- <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="toggleModalIdeas()" matTooltip="Ideas" matTooltipPosition="left"> -->
-        <ng-container *ngIf="participant">
-            <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="OpenGroupsSidenav(5)" [matTooltip]="'SYMBIO.MY_IDEAS' | translate" matTooltipPosition="left">
-                <mat-icon style="color: white;">lightbulb</mat-icon>
-            </button>
-        </ng-container>
-
-        <!-- <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="toggleModalGroups()" matTooltip="Grupos" matTooltipPosition="left"> -->
-        <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="showFloatGroupMenuBtn()" [matTooltip]="'SYMBIO.GROUPS' | translate" matTooltipPosition="left">
-            <mat-icon style="color: white;">group</mat-icon>
-        </button>
-
-        <div class="group-float-menu" [ngClass]="{'show': showFloatGroupMenu}">
-            {{ 'SYMBIO.SEARCHES' | translate }}
-            <span class="group-btn-close" (click)="closeGroupBtn()"><mat-icon>close</mat-icon></span>
+              </mat-list-item>
+              @if (!last) {
+                <mat-divider></mat-divider>
+              }
+            }
+          </mat-list>
         </div>
+      }
 
-        <div class="group-float-menu-2" [ngClass]="{'show': showFloatGroupMenu}">
-            <div class="group-body">
-                <div class="group-btn-group">
-                    <button mat-flat-button class="group-btn-grupos" (click)="OpenGroupsSidenav(1)">{{ 'SYMBIO.GROUPS' | translate }}</button>
-                    <button mat-flat-button class="group-btn-participantes" (click)="OpenGroupsSidenav(2)">{{ 'SYMBIO.PARTICIPANTS' | translate }}</button>
+
+
+      <!-- Left panel: Ranking users -->
+      @if (GroupParticipantStat == 3) {
+        <div class="container-lista topUser">
+          @if (isLoadingUsersRanking) {
+            <mat-progress-spinner
+              style="margin: 40px auto 0;"
+              color="accent"
+              diameter="50"
+              mode="indeterminate">
+            </mat-progress-spinner>
+          }
+          @if (!isLoadingUsersRanking) {
+            <mat-list style="max-width: 100%;">
+              @for (ur of usersRanking; track ur; let i = $index; let last = $last) {
+                <mat-list-item lines="2">
+                  <span matListItemIcon class="bolder font-22 gray-500">{{ i + 1 }}</span>
+                  <span matListItemTitle class="bold font-16 cyan-color-2">{{ ur.user.name }}</span>
+                  <span class="font-14 gray-700">{{ 'SYMBIO.SCORE' | translate }}: {{ ur.score }}</span>
+                </mat-list-item>
+                @if (!last) {
+                  <mat-divider></mat-divider>
+                }
+              }
+            </mat-list>
+          }
+        </div>
+      }
+
+
+
+      <!-- Left panel: Trends -->
+      @if (GroupParticipantStat == 4) {
+        <div class="container-lista tendency">
+          @if (isLoadingTrends) {
+            <mat-progress-spinner
+              style="margin: 40px auto 0;"
+              color="accent"
+              diameter="50"
+              mode="indeterminate">
+            </mat-progress-spinner>
+          }
+          @if (!isLoadingTrends) {
+            <mat-list style="max-width: 100%;">
+              @for (trend of trends; track trend; let i = $index; let last = $last) {
+                <mat-list-item lines="3">
+                  <span matListItemIcon class="bolder font-22 gray-500">{{ i + 1 }}</span>
+                  <span matListItemTitle class="bold font-16 cyan-color-2">{{ trend.topic }}</span>
+                  <span class="font-14 gray-700">{{ trend.description }}</span>
+                </mat-list-item>
+                @if (!last) {
+                  <mat-divider></mat-divider>
+                }
+              }
+            </mat-list>
+          }
+        </div>
+      }
+
+
+
+      <!-- Left panel: Mis ideas -->
+      @if (GroupParticipantStat == 5) {
+        <div class="container-lista list-idea">
+          @if (participant) {
+            <div>
+              <div fxLayout="column">
+                <div class="gray-900 bold" style="padding: 5px 10px; margin-right: 15px; width: 120px; text-align: left;">
+                  <!-- Mi(s) idea(s) -->
+                  <button mat-raised-button
+                    color="accent"
+                    (click)="createUserNode()">
+                    <mat-icon>add</mat-icon>
+                    {{ 'SYMBIO.NEW_IDEA' | translate }}
+                  </button>
+                  <!--<span *ngIf="roleOfLoggedIn === 'ambassador'" class="chip-role small ambassador">Embajador</span>-->
                 </div>
-            </div>
-        </div>
-
-
-        <button class="float-menu-group btn-stats" mat-icon-button color="primary" (click)="showFloatStatMenuBtn()" [matTooltip]="'SYMBIO.SYMBIO_STATS' | translate" matTooltipPosition="left">
-            <mat-icon style="color: white;">bar_chart</mat-icon>
-        </button>
-
-        <div class="stat-float-menu" [ngClass]="{'show': showFloatStatMenu}">
-            {{ 'SYMBIO.SYMBIO_STATS' | translate }}
-            <span class="stat-btn-close" (click)="closeStatBtn()"><mat-icon>close</mat-icon></span>
-        </div>
-
-        <div class="stat-float-menu-2" [ngClass]="{'show': showFloatStatMenu}">
-            <div class="stat-body">
-                <div class="stat-txt">{{ 'SYMBIO.PARTICIPANTS' | translate }}: <span class="number">{{totalUsers}}</span></div>
-                <div class="stat-txt">{{ 'SYMBIO.IDEAS' | translate }}: <span class="number">{{totalIdeas}}</span></div>
-                <div class="stat-btn-stat">
-                    <button mat-flat-button class="stat-btn-grupos" (click)="OpenGroupsSidenav(3)">{{ 'SYMBIO.USER_RANKING' | translate }}</button>
-                    <button mat-flat-button class="stat-btn-participantes" (click)="OpenGroupsSidenav(4)">{{ 'SYMBIO.TRENDS' | translate }}</button>
+                <div fxFlex style="padding: 5px 10px 0;">
+                  @for (lineage of myAncestries; track lineage) {
+                    <div class="item-ideas">
+                      @if (!lineage[0].idea) {
+                        <button
+                          mat-flat-button
+                          color="accent"
+                          (click)="openIdeaDetailSidenav(lineage[0])"
+                          (mouseenter)="onMouseEnterListItem([lineage[0]])"
+                          (mouseleave)="onMouseLeaveListItem([lineage[0]])"
+                          class="btn-idea-element"
+                          >
+                          <mat-icon>open_in_new</mat-icon>
+                          <span class="italicized">({{ 'SYMBIO.EMPTY' | translate }})</span>
+                        </button>
+                      }
+                      @if (lineage[0].idea) {
+                        <button
+                          mat-flat-button
+                          color="accent"
+                          [matTooltip]="'SYMBIO.VIEW_DETAIL' | translate"
+                          (click)="openIdeaDetailSidenav(lineage[0])"
+                          (mouseenter)="onMouseEnterListItem([lineage[0]])"
+                          (mouseleave)="onMouseLeaveListItem([lineage[0]])"
+                          class="btn-idea-element"
+                          >
+                          <mat-icon>open_in_new</mat-icon>
+                          <span class="ellipsed" style="display: inline-block; width: 130px;">{{lineage[0].idea?.title}}</span>
+                        </button>
+                      }
+                      @for (node of lineage | slice:1; track node; let i = $index; let last = $last) {
+                        <span> &lt; </span>
+                        <span class="chip-ancestry">
+                          {{ 'SYMBIO.LEVEL' | translate }} {{i + 1}}: {{node.name}}
+                        </span>
+                      }
+                      <button mat-icon-button
+                        class="btn-symbio-add-group"
+                        color="primary"
+                        [matTooltip]="'SYMBIO.SELECT_MY_GROUP' | translate"
+                        style="margin-left: 5px;"
+                        (click)="toggleGroupSelectorVisibility(lineage[0])">
+                        <mat-icon>group_add</mat-icon>
+                      </button>
+                      @if (lineage[0].role === 'ambassador') {
+                        <button
+                          class="btn-symbio-add-group"
+                          mat-icon-button
+                          color="primary"
+                          [matTooltip]="'SYMBIO.CREATE_NEXT_LEVEL' | translate"
+                          style="margin-left: 5px;"
+                          (click)="openNextLevelGroupDialog(lineage[lineage.length - 1])">
+                          <mat-icon>upgrade</mat-icon>
+                        </button>
+                      }
+                      <div [id]="lineage[0].id" hidden style="margin-top: 5px;">
+                        <mat-form-field appearance="fill">
+                          <mat-label>{{ 'SYMBIO.SELECT_GROUP' | translate }}</mat-label>
+                          <!-- <mat-select [(value)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])"> -->
+                          <mat-select [(ngModel)]="idGroupSelected" (selectionChange)="onMyGroupChanged(lineage[0])">
+                            <mat-option disabled selected>{{ 'SYMBIO.CHOOSE_GROUP' | translate }}</mat-option>
+                            <mat-option value="none">{{ 'SYMBIO.NO_GROUP' | translate }}</mat-option>
+                            @for (g of groups; track g) {
+                              <mat-option [value]="g.id">{{g.name}}</mat-option>
+                            }
+                          </mat-select>
+                        </mat-form-field>
+                        <button mat-flat-button color="accent"
+                          style="margin-left: 5px;background-color: #287987;color: #FFFFFF;"
+                          (click)="openNewParentGroupDialog(lineage[0].id)">
+                          <mat-icon>add</mat-icon>
+                          {{ 'SYMBIO.CREATE_GROUP' | translate }}
+                        </button>
+                        <button mat-button
+                          style="margin-left: 5px;"
+                          (click)="toggleGroupSelectorVisibility(lineage[0])">
+                          {{ 'COMMON.CANCEL' | translate }}
+                        </button>
+                      </div>
+                    </div>
+                  }
                 </div>
+              </div>
             </div>
+          }
         </div>
+      }
 
-        <!-- Boton antiguo -->
-        <button class="float-menu-group btn-options" mat-icon-button (click)="toggleModalOptions()" [matTooltip]="'SYMBIO.OPTIONS' | translate" matTooltipPosition="left">
-            <mat-icon style="color: white;">settings</mat-icon>
-        </button>
-
-    </section>
-
-
-
-    <!-- Modal lateral de opciones -->
-    <div class="modal modal-opciones" *ngIf="isModalOptionsOpen" (click)="closeModalOptions($event)">
-        <div class="modal-content" (click)="stopPropagation($event)">
-
-            <div style="display: flex;width:100%; align-items: center;">
-                <div style="font-size: 16px;font-weight: 500;">
-                    {{ 'SYMBIO.OPTIONS' | translate }}
-                </div>
-                <button class="" mat-icon-button (click)="closeModalOptions($event)" [title]="'COMMON.CLOSE' | translate">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
-
-
-            <div style="display: flex; flex-direction: row; align-items: center;">
-                <label style="display: inline-block; width: 90px; text-align: right;">{{ 'SYMBIO.STRENGTH' | translate }}</label>
-                <mat-slider [min]="1" [max]="2000" style="display: inline-block; flex: 1;">
-                    <input matSliderThumb [(ngModel)]="sliderStrengthValue" (input)="sliderStrengthChange()"/>
-                </mat-slider>
-            </div>
-
-            <div style="display: flex; flex-direction: row; align-items: center;">
-                <label style="display: inline-block; width: 90px; text-align: right;">{{ 'SYMBIO.DISTANCE' | translate }}</label>
-                <mat-slider [min]="20" [max]="100" style="display: inline-block; flex: 1;">
-                    <input matSliderThumb [(ngModel)]="sliderDistanceValue" (input)="sliderDistanceChange()"/>
-                </mat-slider>
-            </div>
-
-            <div style="display: flex; flex-direction: row; align-items: center;">
-                <label style="display: inline-block; width: 90px; text-align: right;">{{ 'SYMBIO.ORDER' | translate }}</label>
-                <mat-slider [min]="1" [max]="1000" style="display: inline-block; flex: 1;">
-                    <input matSliderThumb [(ngModel)]="sliderOrderValue" (input)="sliderOrderChange()"/>
-                </mat-slider>
-            </div>
-
-        </div>
     </div>
+
+    <mat-menu #groupMenu="matMenu">
+      <ng-template matMenuContent let-node="node">
+        <button mat-menu-item (click)="openIdeaDetailSidenav(node)">{{ 'SYMBIO.VIEW_IDEA' | translate }}</button>
+        <button
+          mat-menu-item
+          [matMenuTriggerFor]="groupsSubMenu"
+          [matMenuTriggerData]="{node: node}">
+          {{ 'SYMBIO.ASSIGN_GROUP' | translate }}
+        </button>
+        <button
+          mat-menu-item
+          (click)="openChangeNodeNameDialog(node.id)">
+          {{ 'SYMBIO.CHANGE_NAME' | translate }}
+        </button>
+        <button
+          mat-menu-item
+          (click)="onNodeDeleted(node.id)">
+          {{ 'COMMON.DELETE' | translate }}
+        </button>
+      </ng-template>
+    </mat-menu>
+
+    <mat-menu #groupsSubMenu="matMenu">
+      <ng-template matMenuContent let-node="node">
+        <!-- <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="onParentChanged([node.id, g.id])"></button> -->
+        <button mat-menu-item (click)="onParentChanged([node.id, 'none'])">
+          <span>{{ 'SYMBIO.NO_GROUP' | translate }}</span>
+        </button>
+        @for (group of filterGroups(groups, node); track group) {
+          <button mat-menu-item (click)="onParentChanged([node.id, group.id])"> <!-- filter because a node cannot be its own parent! -->
+            <span>{{group.name}}</span>
+          </button>
+        }
+      </ng-template>
+    </mat-menu>
+
+    <mat-menu #participantMenu="matMenu">
+      <ng-template matMenuContent let-p="participant">
+        <button mat-menu-item
+          (click)="preOpenIdeaDetailSidenav(p.u_id)">
+          {{ 'SYMBIO.VIEW_IDEA' | translate }}
+        </button>
+
+        @if (participant?.isModerator && p.u_id !== participant?.u_id && !p.isModerator) {
+          <button
+            mat-menu-item
+            (click)="setParticipantIsModerator(p, true)">
+            {{ 'SYMBIO.ASSIGN_MODERATOR' | translate }}
+          </button>
+        }
+
+        @if (participant?.isModerator && p.u_id !== participant?.u_id && p.isModerator) {
+          <button
+            mat-menu-item
+            (click)="setParticipantIsModerator(p, false)">
+            {{ 'SYMBIO.REMOVE_MODERATOR' | translate }}
+          </button>
+        }
+
+        @if (participant?.isModerator && p.u_id !== participant?.u_id) {
+          <button
+            mat-menu-item
+            (click)="deleteParticipant(p)">
+            {{ 'SYMBIO.DELETE_PARTICIPANT' | translate }}
+          </button>
+        }
+      </ng-template>
+    </mat-menu>
+
+  </mat-sidenav>
+
+
+
+
+  <section fxLayout="row" style="height: 100%;">
+
+    <!--
+    MARK: Main area
+    -->
+    <!-- <div fxFlex="77" fxFlex.lt-md="70" fxLayout="column" class="workspace-container" [style.max-width]="!isVisible ? '100%' : '77%'" [style.width]="!isVisible ? '100%' : '77%'"> -->
+    <!-- <div fxLayout="column" class="workspace-container" [style.max-width]="!isVisible ? '100%' : '77%'" [style.width]="!isVisible ? '100%' : '77%'"> -->
+    <div fxLayout="column" class="workspace-container" [style.max-width]="'100%'" [style.width]="'100%'">
+
+      <div class="mat-elevation-z3 workspace-header" style="padding: 9px; background-color: white; display: flex;justify-content: space-evenly;">
+        <h2 class="font-26 gray-900 bolder centered" style="margin-bottom: 0;">
+
+          <mat-icon class="teal-color-1 workspace-icon-left" style="color:#287987;"
+            [matTooltip]="symbiocreation?.visibility === 'public' ? ('SYMBIO.PUBLIC' | translate) : ('SYMBIO.PRIVATE' | translate)"
+            matTooltipPosition="above">
+            {{symbiocreation?.visibility === 'public' ? 'public' : 'lock'}}
+          </mat-icon>
+
+          <span class="workspace-name">{{symbiocreation?.name}}</span>
+
+          <button class="workspace-icon-right"
+            mat-icon-button
+            [matTooltip]="'SYMBIO.VIEW_DETAILS' | translate"
+            matTooltipPosition="above"
+            (click)="openSymbioDetailDialog()">
+            <mat-icon class="gray-600">info</mat-icon>
+          </button>
+
+          @if (participant?.isModerator) {
+            <span style="margin-left: 5px;" class="chip-role moderator">{{ 'SYMBIO.MODERATOR' | translate }}</span>
+          }
+
+          @if (participant || appUser?.role === 'SUPER_ADMIN') {
+            <button class=""
+              mat-icon-button
+              [matMenuTriggerFor]="mainMenu">
+              <mat-icon class="gray-600">more_vert</mat-icon>
+            </button>
+          }
+
+          <mat-menu class="workspace-options" #mainMenu="matMenu">
+            <button mat-menu-item
+              (click)="leaveSymbiocreation()">
+              <mat-icon class="gray-600">person_remove</mat-icon>
+              {{ 'SYMBIO.LEAVE' | translate }}
+            </button>
+            <button mat-menu-item
+              (click)="downloadParticipantsData()">
+              <mat-icon class="gray-600">download</mat-icon>
+              {{ 'SYMBIO.DOWNLOAD_PARTICIPANTS' | translate }}
+            </button>
+            <button mat-menu-item
+              (click)="downloadAllData()">
+              <mat-icon class="gray-600">download</mat-icon>
+              {{ 'SYMBIO.DOWNLOAD_ALL' | translate }}
+            </button>
+          </mat-menu>
+        </h2>
+
+
+        @if (!participant) {
+          <div style="display: flex;align-items: center;">
+            <!-- <p class="centered">Participa de esta simbiocreación!</p> -->
+            <div style="text-align: center;">
+              <button #btnParticipate mat-raised-button color="accent" (click)="joinSymbiocreation(btnParticipate)" class="bounce" style="background-color: #287987;color: #FFFFFF;">
+                <span>{{ 'SYMBIO.JOIN' | translate }}</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!--
+      MARK: Grafico Symbio
+      -->
+      <div fxFlex class="workspace-body">
+        <app-graph
+          [data]="$safeNavigationMigration(symbiocreation?.graph)"
+          [participant]="participant"
+          [myAncestries]="myAncestries"
+          [currentStrength]="sliderStrengthValue"
+          [currentDistance]="sliderDistanceValue"
+          [currentOrder]="sliderOrderValue"
+          (parentChanged)="onParentChanged($event)"
+          (nodeChangedName)="openChangeNodeNameDialog($event)"
+          (nodeChangedRole)="onRoleChanged($event)"
+          (nodeDeleted)="onNodeDeleted($event)"
+          (dblClickNewIdea)="createUserNode()"
+          >
+        </app-graph>
+      </div>
+    </div>
+
+    <!--
+    MARK: Btn flotantes
+    -->
+
+    @if (participant) {
+      <button class="float-menu-group btn-new-idea" mat-icon-button color="primary" (click)="showFloatIdeaMenuBtn()" [matTooltip]="'SYMBIO.NEW_IDEA' | translate" matTooltipPosition="left">
+        <mat-icon style="color: white;">add</mat-icon>
+      </button>
+      <div class="animated-text" [ngClass]="{'show': showFloatIdeaMenu}">
+        {{ 'SYMBIO.ADD_NEW_IDEA_QUESTION' | translate }}
+        <span class="idea-btn-close" (click)="closeIdeaBtn()"><mat-icon>close</mat-icon></span>
+      </div>
+      <div class="animated-text-2" [ngClass]="{'show': showFloatIdeaMenu}">
+        <div class="idea-body">
+          <div class="idea-txt">{{ 'SYMBIO.ADD_IDEA_DESCRIPTION' | translate }}</div>
+          <div class="idea-btn-group">
+            <button mat-flat-button class="idea-btn-cancel" (click)="closeIdeaBtn()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button class="idea-btn-confirm" (click)="createNewUserIdea()">{{ 'COMMON.CONFIRM' | translate }}</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="toggleModalIdeas()" matTooltip="Ideas" matTooltipPosition="left"> -->
+    @if (participant) {
+      <button class="float-menu-group btn-ideas" mat-icon-button color="primary" (click)="OpenGroupsSidenav(5)" [matTooltip]="'SYMBIO.MY_IDEAS' | translate" matTooltipPosition="left">
+        <mat-icon style="color: white;">lightbulb</mat-icon>
+      </button>
+    }
+
+    <!-- <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="toggleModalGroups()" matTooltip="Grupos" matTooltipPosition="left"> -->
+    <button class="float-menu-group btn-groups" mat-icon-button color="primary" (click)="showFloatGroupMenuBtn()" [matTooltip]="'SYMBIO.GROUPS' | translate" matTooltipPosition="left">
+      <mat-icon style="color: white;">group</mat-icon>
+    </button>
+
+    <div class="group-float-menu" [ngClass]="{'show': showFloatGroupMenu}">
+      {{ 'SYMBIO.SEARCHES' | translate }}
+      <span class="group-btn-close" (click)="closeGroupBtn()"><mat-icon>close</mat-icon></span>
+    </div>
+
+    <div class="group-float-menu-2" [ngClass]="{'show': showFloatGroupMenu}">
+      <div class="group-body">
+        <div class="group-btn-group">
+          <button mat-flat-button class="group-btn-grupos" (click)="OpenGroupsSidenav(1)">{{ 'SYMBIO.GROUPS' | translate }}</button>
+          <button mat-flat-button class="group-btn-participantes" (click)="OpenGroupsSidenav(2)">{{ 'SYMBIO.PARTICIPANTS' | translate }}</button>
+        </div>
+      </div>
+    </div>
+
+
+    <button class="float-menu-group btn-stats" mat-icon-button color="primary" (click)="showFloatStatMenuBtn()" [matTooltip]="'SYMBIO.SYMBIO_STATS' | translate" matTooltipPosition="left">
+      <mat-icon style="color: white;">bar_chart</mat-icon>
+    </button>
+
+    <div class="stat-float-menu" [ngClass]="{'show': showFloatStatMenu}">
+      {{ 'SYMBIO.SYMBIO_STATS' | translate }}
+      <span class="stat-btn-close" (click)="closeStatBtn()"><mat-icon>close</mat-icon></span>
+    </div>
+
+    <div class="stat-float-menu-2" [ngClass]="{'show': showFloatStatMenu}">
+      <div class="stat-body">
+        <div class="stat-txt">{{ 'SYMBIO.PARTICIPANTS' | translate }}: <span class="number">{{totalUsers}}</span></div>
+        <div class="stat-txt">{{ 'SYMBIO.IDEAS' | translate }}: <span class="number">{{totalIdeas}}</span></div>
+        <div class="stat-btn-stat">
+          <button mat-flat-button class="stat-btn-grupos" (click)="OpenGroupsSidenav(3)">{{ 'SYMBIO.USER_RANKING' | translate }}</button>
+          <button mat-flat-button class="stat-btn-participantes" (click)="OpenGroupsSidenav(4)">{{ 'SYMBIO.TRENDS' | translate }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boton antiguo -->
+    <button class="float-menu-group btn-options" mat-icon-button (click)="toggleModalOptions()" [matTooltip]="'SYMBIO.OPTIONS' | translate" matTooltipPosition="left">
+      <mat-icon style="color: white;">settings</mat-icon>
+    </button>
+
+  </section>
+
+
+
+  <!-- Modal lateral de opciones -->
+  @if (isModalOptionsOpen) {
+    <div class="modal modal-opciones" (click)="closeModalOptions($event)">
+      <div class="modal-content" (click)="stopPropagation($event)">
+        <div style="display: flex;width:100%; align-items: center;">
+          <div style="font-size: 16px;font-weight: 500;">
+            {{ 'SYMBIO.OPTIONS' | translate }}
+          </div>
+          <button class="" mat-icon-button (click)="closeModalOptions($event)" [title]="'COMMON.CLOSE' | translate">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center;">
+          <label style="display: inline-block; width: 90px; text-align: right;">{{ 'SYMBIO.STRENGTH' | translate }}</label>
+          <mat-slider [min]="1" [max]="2000" style="display: inline-block; flex: 1;">
+            <input matSliderThumb [(ngModel)]="sliderStrengthValue" (input)="sliderStrengthChange()"/>
+          </mat-slider>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center;">
+          <label style="display: inline-block; width: 90px; text-align: right;">{{ 'SYMBIO.DISTANCE' | translate }}</label>
+          <mat-slider [min]="20" [max]="100" style="display: inline-block; flex: 1;">
+            <input matSliderThumb [(ngModel)]="sliderDistanceValue" (input)="sliderDistanceChange()"/>
+          </mat-slider>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center;">
+          <label style="display: inline-block; width: 90px; text-align: right;">{{ 'SYMBIO.ORDER' | translate }}</label>
+          <mat-slider [min]="1" [max]="1000" style="display: inline-block; flex: 1;">
+            <input matSliderThumb [(ngModel)]="sliderOrderValue" (input)="sliderOrderChange()"/>
+          </mat-slider>
+        </div>
+      </div>
+    </div>
+  }
 
 </mat-sidenav-container>
 

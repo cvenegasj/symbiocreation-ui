@@ -1,13 +1,15 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { DimensionsType } from '../utils/types';
 import * as d3 from "d3";
 import { OneDot, OneDotParticipant } from '../models/oneDotTypes';
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-onedot-grid',
-  templateUrl: './onedot-grid.component.html',
-  styleUrls: ['./onedot-grid.component.css']
+    selector: 'app-onedot-grid',
+    templateUrl: './onedot-grid.component.html',
+    styleUrls: ['./onedot-grid.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class OnedotGridComponent implements OnInit, AfterViewInit, OnChanges {
 

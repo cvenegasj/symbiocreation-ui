@@ -1,14 +1,18 @@
 <div fxLayout.gt-md="row" style="height: 100%; padding: 30px 20px 20px;">
-    
-  <div fxFlex.gt-md="15" *ngIf="participant">
+
+  @if (participant) {
+    <div fxFlex.gt-md="15">
       <div class="onedot-color-picker" [ngStyle.gt-md]="{'width.px': 45, 'margin-top.px': 30}">
-        <span *ngFor="let colorCode of paletteColors; index as i" class="color" 
-          [ngStyle.gt-md]="{'display': 'block'}"
-          [style.background-color]="colorCode" (click)="colorSelected = i"
-          [class.selected]="i === colorSelected">
-        </span>
+        @for (colorCode of paletteColors; track colorCode; let i = $index) {
+          <span class="color"
+            [ngStyle.gt-md]="{'display': 'block'}"
+            [style.background-color]="colorCode" (click)="colorSelected = i"
+            [class.selected]="i === colorSelected">
+          </span>
+        }
       </div>
-  </div>
+    </div>
+  }
 
   <div #container fxFlex.gt-md="85" [ngStyle.lt-md]="{'height.%': 80}" style="height: 85%;">
   </div>

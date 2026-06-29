@@ -1,29 +1,31 @@
 <h1 mat-dialog-title>{{ 'IDEA.IDEA_OF' | translate }} {{data.name}}</h1>
 
 <mat-dialog-content>
-    <mat-form-field style="width: 100%;">
-      <mat-label>{{ 'IDEA.TITLE' | translate }}</mat-label>
-      <input matInput cdkFocusInitial required [(ngModel)]="idea.title" [placeholder]="'IDEA.TITLE_PLACEHOLDER' | translate">
-    </mat-form-field>
-
-    <mat-form-field style="width: 100%;">
-      <mat-label>{{ 'IDEA.DESCRIPTION' | translate }}</mat-label>
-      <textarea matInput required [(ngModel)]="idea.description" [placeholder]="'IDEA.DESCRIPTION_PLACEHOLDER' | translate" rows="9"></textarea>
-    </mat-form-field>
-
-    <mat-form-field style="width: 100%;">
-      <mat-chip-grid #externalUrlList class="mat-chip-list-stacked">
-          <mat-chip-row *ngFor="let url of idea.externalUrls" selected color="accent" (removed)="removeExternalUrl(url)">
-              {{url}}
-              <mat-icon matChipRemove>cancel</mat-icon>
-          </mat-chip-row>
-          <input style="flex: 1 0 40px;" [placeholder]="'IDEA.EXTERNAL_LINKS' | translate"
-                  [matChipInputFor]="externalUrlList"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  [matChipInputAddOnBlur]="true"
-                  (matChipInputTokenEnd)="addExternalUrl($event)">
-      </mat-chip-grid>
+  <mat-form-field style="width: 100%;">
+    <mat-label>{{ 'IDEA.TITLE' | translate }}</mat-label>
+    <input matInput cdkFocusInitial required [(ngModel)]="idea.title" [placeholder]="'IDEA.TITLE_PLACEHOLDER' | translate">
   </mat-form-field>
+
+  <mat-form-field style="width: 100%;">
+    <mat-label>{{ 'IDEA.DESCRIPTION' | translate }}</mat-label>
+    <textarea matInput required [(ngModel)]="idea.description" [placeholder]="'IDEA.DESCRIPTION_PLACEHOLDER' | translate" rows="9"></textarea>
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%;">
+    <mat-chip-grid #externalUrlList class="mat-chip-list-stacked">
+      @for (url of idea.externalUrls; track url) {
+        <mat-chip-row selected color="accent" (removed)="removeExternalUrl(url)">
+          {{url}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip-row>
+      }
+      <input style="flex: 1 0 40px;" [placeholder]="'IDEA.EXTERNAL_LINKS' | translate"
+        [matChipInputFor]="externalUrlList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        [matChipInputAddOnBlur]="true"
+        (matChipInputTokenEnd)="addExternalUrl($event)">
+      </mat-chip-grid>
+    </mat-form-field>
 
     <div class="centered" style="padding-bottom: 25px;">
       <button mat-raised-button color="accent" style="margin-right: 5px;" (click)="openCamera()">
@@ -36,39 +38,45 @@
         <span>{{ 'IDEA.ADD_IMAGE' | translate }}</span>
       </button>
       <input #imageInput
-              hidden
-              type="file"
-              accept="image/*"
-              (change)="processFile(imageInput)">
+        hidden
+        type="file"
+        accept="image/*"
+        (change)="processFile(imageInput)">
 
-      <button #generateImageBtn mat-raised-button color="accent" style="margin-right: 5px;" (click)="generateImageWithLlm(generateImageBtn)">
-        <mat-icon>camera_alt</mat-icon>
-        <span>{{ 'IDEA.GENERATE_AI_IMAGE' | translate }}</span>
-      </button>
-    </div>
+        <button #generateImageBtn mat-raised-button color="accent" style="margin-right: 5px;" (click)="generateImageWithLlm(generateImageBtn)">
+          <mat-icon>camera_alt</mat-icon>
+          <span>{{ 'IDEA.GENERATE_AI_IMAGE' | translate }}</span>
+        </button>
+      </div>
 
-    <div *ngIf="isLoadingImageGeneration">
-      <mat-progress-spinner
-              style="margin: 20px auto 40px;"
-              color="accent"
-              diameter="40"
-              mode="indeterminate">
-      </mat-progress-spinner>
-    </div>
+      @if (isLoadingImageGeneration) {
+        <div>
+          <mat-progress-spinner
+            style="margin: 20px auto 40px;"
+            color="accent"
+            diameter="40"
+            mode="indeterminate">
+          </mat-progress-spinner>
+        </div>
+      }
 
-    <div *ngFor="let cloudinaryImg of idea.cloudinaryImages; index as i" style="margin-top: 20px;">
-      <advanced-image [cldImg]="cloudinaryImg" width="60%" height="auto"></advanced-image>
-      <button mat-button color="warn" (click)="deletePublicId(i)">{{ 'COMMON.DELETE' | translate }}</button>
-    </div>
+      @for (cloudinaryImg of idea.cloudinaryImages; track cloudinaryImg; let i = $index) {
+        <div style="margin-top: 20px;">
+          <advanced-image [cldImg]="cloudinaryImg" width="60%" height="auto"></advanced-image>
+          <button mat-button color="warn" (click)="deletePublicId(i)">{{ 'COMMON.DELETE' | translate }}</button>
+        </div>
+      }
 
-    <div *ngFor="let img of selectedImgs" style="margin-top: 20px;">
-      <img [src]="img.src" style="width: 60%; height: auto;" /><br />
-      <button mat-button color="warn" (click)="deleteSelectedImg(img)">{{ 'COMMON.DELETE' | translate }}</button>
-    </div>
-</mat-dialog-content>
+      @for (img of selectedImgs; track img) {
+        <div style="margin-top: 20px;">
+          <img [src]="img.src" style="width: 60%; height: auto;" /><br />
+          <button mat-button color="warn" (click)="deleteSelectedImg(img)">{{ 'COMMON.DELETE' | translate }}</button>
+        </div>
+      }
+    </mat-dialog-content>
 
-<mat-dialog-actions>
-    <button mat-button mat-dialog-close>{{ 'COMMON.CANCEL' | translate }}</button>
-    <span fxFlex></span>
-    <button #okButton mat-flat-button color="primary" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description">{{ 'COMMON.OK' | translate }}</button>
-</mat-dialog-actions>
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close>{{ 'COMMON.CANCEL' | translate }}</button>
+      <span fxFlex></span>
+      <button #okButton mat-flat-button color="primary" (click)="onOkClick(okButton)" [disabled]="!idea.title || !idea.description">{{ 'COMMON.OK' | translate }}</button>
+    </mat-dialog-actions>

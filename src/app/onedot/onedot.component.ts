@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { User } from '../models/symbioTypes';
 import { OneDot, OneDotParticipant } from '../models/oneDotTypes';
@@ -15,9 +15,11 @@ import { OneDotService } from '../services/onedot.service';
 import { concatMap, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-onedot',
-  templateUrl: './onedot.component.html',
-  styleUrls: ['./onedot.component.css']
+    selector: 'app-onedot',
+    templateUrl: './onedot.component.html',
+    styleUrls: ['./onedot.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class OnedotComponent implements OnInit, OnDestroy {
 

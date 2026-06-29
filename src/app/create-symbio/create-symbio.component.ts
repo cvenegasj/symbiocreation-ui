@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { Location } from '@angular/common';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -15,13 +15,15 @@ import { AuthService } from '../services/auth.service';
 import { concatMap } from 'rxjs/operators';
 import { UserService } from '../services/user.service';
 
-import * as moment from 'moment-timezone';
+import moment from 'moment-timezone';
 import { TZone } from 'moment-timezone-picker';
 
 @Component({
-  selector: 'app-create-symbio',
-  templateUrl: './create-symbio.component.html',
-  styleUrls: ['./create-symbio.component.scss']
+    selector: 'app-create-symbio',
+    templateUrl: './create-symbio.component.html',
+    styleUrls: ['./create-symbio.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CreateSymbioComponent implements OnInit {
 

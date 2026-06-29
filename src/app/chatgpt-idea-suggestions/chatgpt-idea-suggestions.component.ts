@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { Idea, IdeaAI } from '../models/symbioTypes';
 import { Node } from '../models/forceGraphTypes';
@@ -7,9 +7,11 @@ import { AuthService } from '../services/auth.service';
 import { EditIdeaDialogComponent } from '../edit-idea-dialog/edit-idea-dialog.component';
 
 @Component({
-  selector: 'app-chatgpt-idea-suggestions',
-  templateUrl: './chatgpt-idea-suggestions.component.html',
-  styleUrl: './chatgpt-idea-suggestions.component.css'
+    selector: 'app-chatgpt-idea-suggestions',
+    templateUrl: './chatgpt-idea-suggestions.component.html',
+    styleUrl: './chatgpt-idea-suggestions.component.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ChatgptIdeaSuggestionsComponent implements OnInit {
 

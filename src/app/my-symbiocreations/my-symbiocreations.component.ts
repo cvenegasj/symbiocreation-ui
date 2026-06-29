@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Symbiocreation, User } from '../models/symbioTypes';
 import { SymbiocreationService } from '../services/symbiocreation.service';
 import { AuthService } from '../services/auth.service';
@@ -10,9 +10,11 @@ import { SharedService } from '../services/shared.service';
 import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
-  selector: 'app-my-symbiocreations',
-  templateUrl: './my-symbiocreations.component.html',
-  styleUrls: ['./my-symbiocreations.component.scss']
+    selector: 'app-my-symbiocreations',
+    templateUrl: './my-symbiocreations.component.html',
+    styleUrls: ['./my-symbiocreations.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MySymbiocreationsComponent implements OnInit {
 

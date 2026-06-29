@@ -54,3 +54,8 @@
 
 # 27/03/26
 ✔ Agregada librerias de traduccion @ngx-translate/core y @ngx-translate/http-loader
+
+# 28/06/26
+✔ Migración Angular 17 → 22 (Material, RxJS 7, TypeScript 6, zone.js 0.15)
+✔ Migración ngx-translate v15 → v18 (nueva API con provideTranslateService)
+✔ Optimización de rendimiento D3
