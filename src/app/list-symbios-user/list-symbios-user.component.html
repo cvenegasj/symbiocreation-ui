@@ -1,82 +1,85 @@
-<div *ngIf="symbiocreations?.length === 0" class="container-90 centered gray-600" style="margin-top: 15px;">
+@if (symbiocreations?.length === 0) {
+  <div class="container-90 centered gray-600" style="margin-top: 15px;">
     Aún no tienes simbiocreaciones.
-</div>
+  </div>
+}
 
 <!-- List view -->
 <div class="container-90">
-        
-    <mat-list *ngIf="symbiocreations?.length > 0">
-        <h3 matSubheader class="oculto-mobile font-14 gray-600">
+
+  @if (symbiocreations?.length > 0) {
+    <mat-list>
+      <h3 matSubheader class="oculto-mobile font-14 gray-600">
+        <span fxFlex></span>
+        <span fxFlex="15">{{ 'MY_SYMBIOS.NUMBER_OF_PARTICIPANTS' | translate }}</span>
+        <span fxFlex="15">{{ 'MY_SYMBIOS.LAST_MODIFIED' | translate }}</span>
+        <span fxFlex="40px"></span>
+      </h3>
+      @for (s of symbiocreations; track s; let i = $index; let last = $last) {
+        <mat-list-item style="height: 125px;">
+          <div matListItemTitle style="align-items: center;">
+            <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%;">
+              {{s.name}}
+            </a>
+            @if (isModeratorList[i]) {
+              <span class="chip-role small moderator" style="margin-left: 12px;">{{ 'MY_SYMBIOS.MODERATOR' | translate }}</span>
+            }
+            <mat-icon class="font-20 gray-600"
+              style="margin-left: 8px;"
+              [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'"
+              matTooltipPosition="above">
+              {{s.visibility === 'public' ? 'public' : 'lock'}}
+            </mat-icon>
+            <button mat-icon-button
+              [matTooltip]="'MY_SYMBIOS.VIEW_MORE_INFO' | translate" matTooltipPosition="above"
+              (click)="openSymbioDetailDialog(s, isModeratorList[i])">
+              <mat-icon class="font-20 gray-600">info</mat-icon>
+            </button>
             <span fxFlex></span>
-            <span fxFlex="15">{{ 'MY_SYMBIOS.NUMBER_OF_PARTICIPANTS' | translate }}</span>
-            <span fxFlex="15">{{ 'MY_SYMBIOS.LAST_MODIFIED' | translate }}</span>
-            <span fxFlex="40px"></span>
-        </h3>
-
-        <ng-container *ngFor="let s of symbiocreations; index as i; last as last">
-
-            <mat-list-item style="height: 125px;">
-            <div matListItemTitle style="align-items: center;">
-                    <a [routerLink]="['/symbiocreation/', s.id]" class="bold font-18 teal-700" style="max-width: 55%;">
-                        {{s.name}}
-                    </a>
-                    <span *ngIf="isModeratorList[i]" class="chip-role small moderator" style="margin-left: 12px;">{{ 'MY_SYMBIOS.MODERATOR' | translate }}</span>
-                    
-                    <mat-icon class="font-20 gray-600" 
-                        style="margin-left: 8px;" 
-                        [matTooltip]="s.visibility === 'public' ? 'Pública' : 'Privada'" 
-                        matTooltipPosition="above">
-                        {{s.visibility === 'public' ? 'public' : 'lock'}}
-                    </mat-icon>
-
-                    <button mat-icon-button
-                        [matTooltip]="'MY_SYMBIOS.VIEW_MORE_INFO' | translate" matTooltipPosition="above"
-                        (click)="openSymbioDetailDialog(s, isModeratorList[i])">
-                        <mat-icon class="font-20 gray-600">info</mat-icon>
-                    </button>
-        
-                    <span fxFlex></span>
-                    
-                    <span fxFlex="15" class="gray-500 font-14">{{s.participants.length}} {{s.nparticipants === 1 ? 'participante' : 'participantes'}} </span>
-                    <span fxFlex="15" class="gray-500 font-14">{{s.lastModified | date: 'd MMM y'}}</span>
-                    
-                    <button mat-icon-button [matMenuTriggerFor]="simbioMenu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-
-                    <mat-menu #simbioMenu="matMenu">
-                        <button mat-menu-item (click)="openSymbioDetailDialog(s, isModeratorList[i])">
-                            <mat-icon>info</mat-icon>
-                            <span>{{ 'MY_SYMBIOS.VIEW_MORE_INFO' | translate }}</span>
-                        </button>
-                        <button *ngIf="isModeratorList[i]" mat-menu-item (click)="changeNameSymbiocreation(s)">
-                            <mat-icon>text_fields</mat-icon>
-                            <span>{{ 'MY_SYMBIOS.CHANGE_NAME' | translate }}</span>
-                        </button>
-                        <button *ngIf="isModeratorList[i]" mat-menu-item (click)="editSymbiocreationInfo(s)">
-                            <mat-icon>edit</mat-icon>
-                            <span>{{ 'MY_SYMBIOS.EDIT_EVENT' | translate }}</span>
-                        </button>
-                        <button *ngIf="isModeratorList[i]" mat-menu-item (click)="deleteSymbiocreation(s.id)">
-                            <mat-icon>delete</mat-icon>
-                            <span>{{ 'COMMON.DELETE' | translate }}</span>
-                        </button>
-                    </mat-menu>
-            </div>
-
-
-            <div>
-                <mat-form-field fxFlex="33">
-                        <mat-label>{{ 'MY_SYMBIOS.SHARE_LINK' | translate }}</mat-label>
-                        <input matInput type="text" value="{{environment.localhost}}/symbiocreation/{{s.id}}" class="font-14" readonly>
-                        <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/symbiocreation/{{s.id}}">
-                            <mat-icon>content_copy</mat-icon>
-                        </button>
-                </mat-form-field>
-            </div>            
-            </mat-list-item>
-
-            <mat-divider *ngIf="!last"></mat-divider>
-        </ng-container>
-     </mat-list>
+            <span fxFlex="15" class="gray-500 font-14">{{s.participants.length}} {{s.nparticipants === 1 ? 'participante' : 'participantes'}} </span>
+            <span fxFlex="15" class="gray-500 font-14">{{s.lastModified | date: 'd MMM y'}}</span>
+            <button mat-icon-button [matMenuTriggerFor]="simbioMenu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #simbioMenu="matMenu">
+              <button mat-menu-item (click)="openSymbioDetailDialog(s, isModeratorList[i])">
+                <mat-icon>info</mat-icon>
+                <span>{{ 'MY_SYMBIOS.VIEW_MORE_INFO' | translate }}</span>
+              </button>
+              @if (isModeratorList[i]) {
+                <button mat-menu-item (click)="changeNameSymbiocreation(s)">
+                  <mat-icon>text_fields</mat-icon>
+                  <span>{{ 'MY_SYMBIOS.CHANGE_NAME' | translate }}</span>
+                </button>
+              }
+              @if (isModeratorList[i]) {
+                <button mat-menu-item (click)="editSymbiocreationInfo(s)">
+                  <mat-icon>edit</mat-icon>
+                  <span>{{ 'MY_SYMBIOS.EDIT_EVENT' | translate }}</span>
+                </button>
+              }
+              @if (isModeratorList[i]) {
+                <button mat-menu-item (click)="deleteSymbiocreation(s.id)">
+                  <mat-icon>delete</mat-icon>
+                  <span>{{ 'COMMON.DELETE' | translate }}</span>
+                </button>
+              }
+            </mat-menu>
+          </div>
+          <div>
+            <mat-form-field fxFlex="33">
+              <mat-label>{{ 'MY_SYMBIOS.SHARE_LINK' | translate }}</mat-label>
+              <input matInput type="text" value="{{environment.localhost}}/symbiocreation/{{s.id}}" class="font-14" readonly>
+              <button mat-icon-button matSuffix cdkCopyToClipboard="{{environment.localhost}}/symbiocreation/{{s.id}}">
+                <mat-icon>content_copy</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </mat-list-item>
+        @if (!last) {
+          <mat-divider></mat-divider>
+        }
+      }
+    </mat-list>
+  }
 </div>

@@ -1,50 +1,60 @@
 <div #container style="height: 100%;">
 
-    <mat-menu #nodeContextMenu="matMenu">
-        <ng-template matMenuContent let-node="node">
+  <mat-menu #nodeContextMenu="matMenu">
+    <ng-template matMenuContent let-node="node">
 
-            <button mat-menu-item
-                (click)="openIdeaDetailSidenav(node)">
-                {{ 'SYMBIO.VIEW_IDEA' | translate }}
-            </button>
+      <button mat-menu-item
+        (click)="openIdeaDetailSidenav(node)">
+        {{ 'SYMBIO.VIEW_IDEA' | translate }}
+      </button>
 
-            <button *ngIf="participant.isModerator || isAmbassadorOfAnyGroupBelow(node) || node.u_id === participant?.u_id"
-                mat-menu-item
-                [matMenuTriggerFor]="groupsSubMenu"
-                [matMenuTriggerData]="{node: node}">
-                {{ 'SYMBIO.ASSIGN_GROUP' | translate }}
-            </button>
+      @if (participant.isModerator || isAmbassadorOfAnyGroupBelow(node) || node.u_id === participant?.u_id) {
+        <button
+          mat-menu-item
+          [matMenuTriggerFor]="groupsSubMenu"
+          [matMenuTriggerData]="{node: node}">
+          {{ 'SYMBIO.ASSIGN_GROUP' | translate }}
+        </button>
+      }
 
-            <button *ngIf="!node.u_id && ( participant.isModerator || isAmbassadorOfAnyGroupBelow(node) )"
-                mat-menu-item
-                (click)="setNodeName(node)">
-                {{ 'SYMBIO.CHANGE_NAME' | translate }}
-            </button>
+      @if (!node.u_id && ( participant.isModerator || isAmbassadorOfAnyGroupBelow(node) )) {
+        <button
+          mat-menu-item
+          (click)="setNodeName(node)">
+          {{ 'SYMBIO.CHANGE_NAME' | translate }}
+        </button>
+      }
 
-            <button *ngIf="node.u_id && participant.isModerator && node.role !== 'ambassador'"
-                mat-menu-item
-                (click)="setNodeRole(node, 'ambassador')">
-                {{ 'SYMBIO.ASSIGN_AMBASSADOR' | translate }}
-            </button>
+      @if (node.u_id && participant.isModerator && node.role !== 'ambassador') {
+        <button
+          mat-menu-item
+          (click)="setNodeRole(node, 'ambassador')">
+          {{ 'SYMBIO.ASSIGN_AMBASSADOR' | translate }}
+        </button>
+      }
 
-            <button *ngIf="participant.isModerator || isAmbassadorOfAnyGroupBelow(node)"
-                mat-menu-item
-                (click)="deleteNode(node)">
-                {{ 'COMMON.DELETE' | translate }}
-            </button>
-        </ng-template>
-    </mat-menu>
+      @if (participant.isModerator || isAmbassadorOfAnyGroupBelow(node)) {
+        <button
+          mat-menu-item
+          (click)="deleteNode(node)">
+          {{ 'COMMON.DELETE' | translate }}
+        </button>
+      }
+    </ng-template>
+  </mat-menu>
 
-    <mat-menu #groupsSubMenu="matMenu">
-        <ng-template matMenuContent let-node="node">
-            <button mat-menu-item (click)="setNodeParent(node.id, 'none')">
-                <span>{{ 'SYMBIO.NO_GROUP' | translate }}</span>
-            </button>
-            <button mat-menu-item *ngFor="let g of filterGroups(groups, node)" (click)="setNodeParent(node.id, g.id)"> <!-- filter because a node cannot be its own parent! -->
-                <span>{{g.name}}</span>
-            </button>
-        </ng-template>
-    </mat-menu>
+  <mat-menu #groupsSubMenu="matMenu">
+    <ng-template matMenuContent let-node="node">
+      <button mat-menu-item (click)="setNodeParent(node.id, 'none')">
+        <span>{{ 'SYMBIO.NO_GROUP' | translate }}</span>
+      </button>
+      @for (g of filterGroups(groups, node); track g) {
+        <button mat-menu-item (click)="setNodeParent(node.id, g.id)"> <!-- filter because a node cannot be its own parent! -->
+          <span>{{g.name}}</span>
+        </button>
+      }
+    </ng-template>
+  </mat-menu>
 
-    <div #nodeMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="nodeContextMenu" [style.position]="'absolute'" [style.left.px]="menuX" [style.top.px]="menuY"></div>
+  <div #nodeMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="nodeContextMenu" [style.position]="'absolute'" [style.left.px]="menuX" [style.top.px]="menuY"></div>
 </div>

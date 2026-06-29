@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from '../services/analytics.service';
 
 @Component({
-  selector: 'app-stats-overview',
-  templateUrl: './stats-overview.component.html',
-  styleUrls: ['./stats-overview.component.css']
+    selector: 'app-stats-overview',
+    templateUrl: './stats-overview.component.html',
+    styleUrls: ['./stats-overview.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StatsOverviewComponent implements OnInit {
 

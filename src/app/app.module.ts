@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppMaterialModule } from './app-material.module';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { CloudinaryModule } from '@cloudinary/ng';
@@ -12,8 +12,8 @@ import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, provideMomentDate
 import { MomentTimezonePickerModule } from 'moment-timezone-picker';
 import { LinkyModule } from 'ngx-linky';
 
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslatePipe, TranslateDirective, provideTranslateService, provideTranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -53,70 +53,60 @@ import { ChatgptIdeaSuggestionsComponent } from './chatgpt-idea-suggestions/chat
 // import {CdkAccordionModule} from '@angular/cdk/accordion';
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    SymbiocreationComponent,
-    IdeaDetailComponent,
-    GraphComponent,
-    ExploreComponent,
-    ProfileComponent,
-    CreateSymbioComponent,
-    NewGroupDialogComponent,
-    EditIdeaDialogComponent,
-    EditGroupNameDialogComponent,
-    CameraCaptureDialogComponent,
-    ConfirmationDialogComponent,
-    SymbiocreationDetailComponent,
-    EditSymbiocreationDetailComponent,
-    GridSymbiosUserComponent,
-    ListSymbiosUserComponent,
-    IdeaSelectorDialogComponent,
-    NewIdeaConfirmationDialogComponent,
-    StatsOverviewComponent,
-    NavlistComponent,
-    MySymbiocreationsComponent,
-    LineChartGrowthHistoryComponent,
-    TopSymbiocreationsRankingComponent,
-    TopUsersRankingComponent,
-    TrendingTopicsIdeasComponent,
-    RankingUsersPublicComponent,
-    SymbiocreationsStatsComponent,
-    CreateOnedotComponent,
-    MyOnedotsComponent,
-    OnedotComponent,
-    OnedotGridComponent,
-    ChatgptIdeaSuggestionsComponent,
-    
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    AppMaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    ClipboardModule,
-    CloudinaryModule,
-    MatMomentDateModule,
-    MomentTimezonePickerModule,
-    LinkyModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'es',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/', '.json'),
-        deps: [HttpClient]
-      }
-    }),
-    // MatSidenavModule,
-    // MatGridListModule,
-    // CdkAccordionModule,
-  ],
-  providers: [
-    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {strict: true, useUtc: true}}, provideMomentDateAdapter()
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        DashboardComponent,
+        SymbiocreationComponent,
+        IdeaDetailComponent,
+        GraphComponent,
+        ExploreComponent,
+        ProfileComponent,
+        CreateSymbioComponent,
+        NewGroupDialogComponent,
+        EditIdeaDialogComponent,
+        EditGroupNameDialogComponent,
+        CameraCaptureDialogComponent,
+        ConfirmationDialogComponent,
+        SymbiocreationDetailComponent,
+        EditSymbiocreationDetailComponent,
+        GridSymbiosUserComponent,
+        ListSymbiosUserComponent,
+        IdeaSelectorDialogComponent,
+        NewIdeaConfirmationDialogComponent,
+        StatsOverviewComponent,
+        NavlistComponent,
+        MySymbiocreationsComponent,
+        LineChartGrowthHistoryComponent,
+        TopSymbiocreationsRankingComponent,
+        TopUsersRankingComponent,
+        TrendingTopicsIdeasComponent,
+        RankingUsersPublicComponent,
+        SymbiocreationsStatsComponent,
+        CreateOnedotComponent,
+        MyOnedotsComponent,
+        OnedotComponent,
+        OnedotGridComponent,
+        ChatgptIdeaSuggestionsComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        AppMaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ClipboardModule,
+        CloudinaryModule,
+        MatMomentDateModule,
+        MomentTimezonePickerModule,
+        LinkyModule,
+        TranslatePipe,
+        TranslateDirective], providers: [
+        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { strict: true, useUtc: true } }, provideMomentDateAdapter(),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
+        { provide: TRANSLATE_HTTP_LOADER_CONFIG, useValue: { resources: ['/assets/i18n/'] } },
+        provideTranslateService({
+            fallbackLang: 'es',
+            lang: 'es',
+            loader: provideTranslateLoader(TranslateHttpLoader)
+        })
+    ] })
 export class AppModule { }

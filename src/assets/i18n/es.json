@@ -147,6 +147,15 @@
     "CONFIRM": "Confirmar"
   },
   "SYMBIO": {
+    "EDIT_SYMBIOCREATION": "Editar simbiocreación",
+    "SYMBIOCREATION_NAME": "Nombre de la simbiocreación",
+    "IS_PRIVATE_EVENT": "Es un evento privado",
+    "PLACE": "Lugar",
+    "DATE": "Fecha",
+    "SET_START_TIME": "Establecer hora de inicio",
+    "TIME": "Hora",
+    "DESCRIPTION": "Descripción",
+    "INFO_URL": "Link con información del evento",
     "GROUPS": "Grupos",
     "PARTICIPANTS": "Participantes",
     "USER_RANKING": "Ranking de usuarios",

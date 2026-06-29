@@ -1,24 +1,25 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "es2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "ignoreDeprecations": "6.0",
+    "strict": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "strictInjectionParameters": true,
+    "strictTemplates": false
   }
 }

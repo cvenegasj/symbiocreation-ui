@@ -1,24 +1,23 @@
-<div *ngIf="auth.userProfile$ | async as profile" style="display: flex;align-items: center;justify-content: center;padding-top: 100px;">
-
+@if (auth.userProfile$ | async; as profile) {
+  <div style="display: flex;align-items: center;justify-content: center;padding-top: 100px;">
     <!-- <pre *ngIf="auth.userProfile$ | async as profile">
-        <code>{{ profile | json }}</code>
-    </pre> -->
-
-    <mat-card>
-        <mat-card-header>
-          <mat-card-title>{{ 'PROFILE.TITLE' | translate }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div style="text-align:center;">
-            <img [src]="profile.picture" alt="Profile Picture" style="border-radius: 50%; width: 150px; height: 150px;">
-          </div>
-          <p><strong>{{ 'PROFILE.NAME' | translate }}</strong> {{ profile.given_name }} {{ profile.family_name }}</p>
-          <p><strong>{{ 'PROFILE.NICKNAME' | translate }}</strong> {{ profile.nickname }}</p>
-          <p><strong>{{ 'PROFILE.FULL_NAME' | translate }}</strong> {{ profile.name }}</p>
-          <p><strong>{{ 'PROFILE.EMAIL' | translate }}</strong> {{ profile.email }}</p>
-          <p><strong>{{ 'PROFILE.EMAIL_VERIFIED' | translate }}</strong> {{ profile.email_verified ? ('PROFILE.YES' | translate) : ('PROFILE.NO' | translate) }}</p>
-          <p><strong>{{ 'PROFILE.LAST_UPDATE' | translate }}</strong> {{ profile.updated_at | date:'medium' }}</p>
-        </mat-card-content>
-      </mat-card>
-
+    <code>{{ profile | json }}</code>
+  </pre> -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ 'PROFILE.TITLE' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div style="text-align:center;">
+        <img [src]="profile.picture" alt="Profile Picture" style="border-radius: 50%; width: 150px; height: 150px;">
+      </div>
+      <p><strong>{{ 'PROFILE.NAME' | translate }}</strong> {{ profile.given_name }} {{ profile.family_name }}</p>
+      <p><strong>{{ 'PROFILE.NICKNAME' | translate }}</strong> {{ profile.nickname }}</p>
+      <p><strong>{{ 'PROFILE.FULL_NAME' | translate }}</strong> {{ profile.name }}</p>
+      <p><strong>{{ 'PROFILE.EMAIL' | translate }}</strong> {{ profile.email }}</p>
+      <p><strong>{{ 'PROFILE.EMAIL_VERIFIED' | translate }}</strong> {{ profile.email_verified ? ('PROFILE.YES' | translate) : ('PROFILE.NO' | translate) }}</p>
+      <p><strong>{{ 'PROFILE.LAST_UPDATE' | translate }}</strong> {{ profile.updated_at | date:'medium' }}</p>
+    </mat-card-content>
+  </mat-card>
 </div>
+}

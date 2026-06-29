@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges, SimpleChanges, HostListener, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SidenavService } from '../services/sidenav.service';
@@ -13,9 +13,11 @@ import { Queue } from '../utils/queue';
 import { Participant } from '../models/symbioTypes';
 
 @Component({
-  selector: 'app-graph',
-  templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.scss']
+    selector: 'app-graph',
+    templateUrl: './graph.component.html',
+    styleUrls: ['./graph.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
 
@@ -66,8 +68,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
     private sidenav: SidenavService,
     private auth: AuthService,
     private sharedService: SharedService,
-    private router: Router, 
+    private router: Router,
     private route: ActivatedRoute,
+    private ngZone: NgZone,
   ) {
     this.links = [];
     this.nodes = [];
@@ -209,17 +212,20 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   runSimulation() {
-    // get the maximum height of any node, which must belong to a root-level node
-    this.maxNodeHeight = 0;
-    for (let node of this.data) {
-      let temp = this.getNodeHeight(node);
-      if (temp > this.maxNodeHeight) this.maxNodeHeight = temp;
-    }
-
-    //const root = d3.hierarchy(this.data);
+    // === [OPTIMIZACIÓN 5] Pre-calcula alturas en O(n) con un solo DFS ===
+    const heightMap = this.preComputeHeights(this.data);
+    this.maxNodeHeight = heightMap.size > 0 ? Math.max(...heightMap.values()) : 0;
     this.links = this.getLinks(this.data);
-    //const nodes = root.descendants();
-    this.nodes = this.getNodes(this.data);
+    this.nodes = this.getNodesOptimized(this.data, heightMap);
+
+    // === [ORIGINAL - OPTIMIZACIÓN 5] Bloque original O(n²) — revertir si hay problemas ===
+    // this.maxNodeHeight = 0;
+    // for (let node of this.data) {
+    //   let temp = this.getNodeHeight(node);
+    //   if (temp > this.maxNodeHeight) this.maxNodeHeight = temp;
+    // }
+    // this.links = this.getLinks(this.data);
+    // this.nodes = this.getNodes(this.data);
     // console.log("this.nodes",this.nodes)
     //const links = d3.hierarchy(this.data).links();
     this.nodesMap = this.mapIdToNodes(this.nodes);
@@ -231,7 +237,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
       .force('center', d3.forceCenter(this.dimensions.width / 2, this.dimensions.height / 2))
       .force('attract', d3.forceRadial(this.dimensions.width / 3, this.dimensions.width / 2, this.dimensions.height / 2).strength(0.001))
       .force("collide", d3.forceCollide().radius((d:any) => d.r * 2 + this.currentDistance)) // Separación basada en el radio del nodo + currentDistance
-      .force('grid', this.forceCustom()); // Moves unlinked nodes to a corner of the canvas
+      .force('grid', this.forceCustom()) // Moves unlinked nodes to a corner of the canvas
+      // === [OPTIMIZACIÓN 3] Estabiliza la simulación más rápido (60 ticks vs ~300) ===
+      .alphaDecay(0.05);
+      // === [ORIGINAL - OPTIMIZACIÓN 3] Revertir: quitar .alphaDecay(0.05) para volver al default ===
       // .force('custom', this.circularArrangementForce())
 
     const linksWithAttributes = this.getLinksWithAttributes(this.links);
@@ -272,54 +281,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
 
 
     // Draw node circles
+    // === [OPTIMIZACIÓN 2] Sin filtro blur SVG — stroke más grueso como alternativa ===
     nodeEnter.insert("circle")
         .attr('id', d => 'id' + d.id) // useful for selecting by id on hover event
         .attr("fill", d => d.color)
         .attr("stroke", d => d.children ? this.getDarkerColor(d.color) : "#cccccc")
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", d => d.children ? 3 : 2)
         .attr('r', d => d.r * 3)
-        .attr("class", "circle")
-        .attr("filter", "url(#drop-shadow)");
-        
-
-    const filter = nodeEnter.append("filter")
-        .attr("id", "drop-shadow")
-        .attr("x", "-50%")  // Extiende el área del filtro hacia la izquierda
-        .attr("y", "-50%")  // Extiende el área del filtro hacia arriba
-        .attr("width", "200%")  // Aumenta el ancho del filtro
-        .attr("height", "200%");  // Aumenta la altura del filtro
-    
-    filter.append("feGaussianBlur")
-        .attr("in", "SourceAlpha")
-        .attr("stdDeviation", 5) // Desenfoque para la sombra
-        .attr("result", "blur");
-    
-    filter.append("feOffset")
-        .attr("in", "blur")
-        .attr("dx", 0)
-        .attr("dy", 0)
-        .attr("result", "offsetBlur");
-    
-    filter.append("feFlood")
-        .attr("flood-color", "#A7A7A7")  // Cambia el color de la sombra (gris claro)
-        .attr("result", "color");
-    
-    filter.append("feComposite")
-        .attr("in", "color")
-        .attr("in2", "offsetBlur")
-        .attr("operator", "in")
-        .attr("result", "shadow");
-    
-    filter.append("feComponentTransfer")
-        .append("feFuncA")
-        .attr("type", "linear")
-        .attr("slope", 0.5);  // Ajusta la opacidad de la sombra (0.5 es 50% opaco)
-    
-    filter.append("feMerge").selectAll("feMergeNode")
-        .data(["shadow", "SourceGraphic"])
-        .enter()
-        .append("feMergeNode")
-        .attr("in", d => d);
+        .attr("class", "circle");
 
     
     // node label for ambassadors
@@ -365,15 +334,36 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.nodeElements = nodeEnter.merge(this.nodeElements);
 
-    this.simulation.on('tick', () => {
-        this.linkElements
-          .attr("x1", d => (<Node>d.source).x)
-          .attr("y1", d => (<Node>d.source).y)
-          .attr("x2", d => (<Node>d.target).x)
-          .attr("y2", d => (<Node>d.target).y);
-        this.nodeElements
-          .attr("transform", d => `translate(${d.x} ${d.y})`);
+    // === [OPTIMIZACIÓN 1+4] runOutsideAngular + requestAnimationFrame throttle ===
+    let ticking = false;
+    this.ngZone.runOutsideAngular(() => {
+      this.simulation.on('tick', () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(() => {
+            this.linkElements
+              .attr("x1", d => (<Node>d.source).x)
+              .attr("y1", d => (<Node>d.source).y)
+              .attr("x2", d => (<Node>d.target).x)
+              .attr("y2", d => (<Node>d.target).y);
+            this.nodeElements
+              .attr("transform", d => `translate(${d.x} ${d.y})`);
+            ticking = false;
+          });
+        }
       });
+    });
+
+    // === [ORIGINAL - OPTIMIZACIÓN 1+4] Revertir: descomentar este bloque y comentar el de arriba ===
+    // this.simulation.on('tick', () => {
+    //     this.linkElements
+    //       .attr("x1", d => (<Node>d.source).x)
+    //       .attr("y1", d => (<Node>d.source).y)
+    //       .attr("x2", d => (<Node>d.target).x)
+    //       .attr("y2", d => (<Node>d.target).y);
+    //     this.nodeElements
+    //       .attr("transform", d => `translate(${d.x} ${d.y})`);
+    //   });
   }
 
   getBBox(selection) {
@@ -430,6 +420,23 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
     return nodes;
   }
 
+  // === [OPTIMIZACIÓN 5] Versión optimizada de getNodes que usa el mapa pre-calculado ===
+  getNodesOptimized(data: Node[], heightMap: Map<string, number>): Node[] {
+    let nodes: Node[] = [];
+    let that = this;
+    function recurse(node: Node) {
+      node.height = heightMap.get(node.id) || 0;
+      node.r = that.getGradientRadius(node.height, that.maxNodeHeight, 8, 30);
+      node.color = that.getGradientColor(node.height, that.maxNodeHeight, "#FFFFFF", "#FF4081");
+      if (node.children) node.children.forEach(recurse);
+      nodes.push(node);
+    }
+    for (let n of data) {
+      recurse(n);
+    }
+    return nodes;
+  }
+
   getLinks(data: Node[]): Link[] {
     let links: Link[] = [];
 
@@ -479,19 +486,14 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
 
   @HostListener('window:resize') windowResize() {
     this.updateDimensions();
-    this.wrapper
-        .attr("width", this.dimensions.width)
-        .attr("height", this.dimensions.height);
-
-    this.dimensions.width = window.innerWidth;
-    this.dimensions.height = window.innerHeight;
-
-    // console.log("windows.innerWidth", window.innerWidth)
-    // console.log("windows.innerHeight", window.innerHeight)
-
-    // this.paintTinyCirclesGrid()
-
-    this.runSimulation();
+    if (this.simulation) {
+      this.simulation.stop();
+    }
+    this.removeChart();
+    this.createChart();
+    if (this.data?.length) {
+      this.runSimulation();
+    }
   }
 
   updateDimensions() {
@@ -590,6 +592,27 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /************ Helper functions ************/
+
+  // === [OPTIMIZACIÓN 5] Pre-calcula todas las alturas en un solo DFS O(n) en vez de O(n²) ===
+  private preComputeHeights(data: Node[]): Map<string, number> {
+    const heightMap = new Map<string, number>();
+    function computeHeight(node: Node): number {
+      if (!node.children || node.children.length === 0) {
+        heightMap.set(node.id, 0);
+        return 0;
+      }
+      let h = 1;
+      for (const child of node.children) {
+        h += computeHeight(child);
+      }
+      heightMap.set(node.id, h);
+      return h;
+    }
+    for (const n of data) {
+      computeHeight(n);
+    }
+    return heightMap;
+  }
 
   // TODO: fix wrong implementation!!!!!!!!!!!!!!!
   // BFS

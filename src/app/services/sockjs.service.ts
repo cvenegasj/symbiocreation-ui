@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import * as Stomp from 'stompjs';
-import * as SockJS from 'sockjs-client';
+// @ts-ignore
+import Stomp from 'stompjs';
+// @ts-ignore
+import SockJS from 'sockjs-client';
 
 import { Symbiocreation } from '../models/symbioTypes';
 import { BehaviorSubject } from 'rxjs';

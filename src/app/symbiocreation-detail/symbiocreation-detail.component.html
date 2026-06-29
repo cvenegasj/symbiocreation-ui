@@ -1,304 +1,326 @@
 <h1 mat-dialog-title style="align-items: center; padding-top: 5px;">
-    <span class="bold font-18">{{data.symbio.name}}</span>
-    <mat-icon class="font-20 gray-600" style="margin-left: 8px;">
-        {{data.symbio.visibility === 'public' ? 'public' : 'lock'}}
-    </mat-icon>
+  <span class="bold font-18">{{data.symbio.name}}</span>
+  <mat-icon class="font-20 gray-600" style="margin-left: 8px;">
+    {{data.symbio.visibility === 'public' ? 'public' : 'lock'}}
+  </mat-icon>
 
-    <span fxFlex></span>
+  <span fxFlex></span>
 
-    <button *ngIf="data.isModerator" mat-icon-button [matTooltip]="'SYMBIO_DETAIL.EDIT_INFO' | translate" (click)="editSymbiocreationInfo(data.symbio)">
-        <mat-icon>edit</mat-icon>
+  @if (data.isModerator) {
+    <button mat-icon-button [matTooltip]="'SYMBIO_DETAIL.EDIT_INFO' | translate" (click)="editSymbiocreationInfo(data.symbio)">
+      <mat-icon>edit</mat-icon>
     </button>
+  }
 
-    <button mat-icon-button mat-dialog-close>
-        <mat-icon>close</mat-icon>
-    </button>
+  <button mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
 </h1>
 
 <mat-dialog-content>
 
-    <!-- Place -->
-    <div style="margin-top: 20px; display: flex; align-items: center;" [hidden]="!data.symbio.place">
-        <mat-icon color="primary">place</mat-icon>
-        <span class="gray-700 font-15" style="position: relative; margin-left: 5px;">{{data.symbio.place}}</span>
+  <!-- Place -->
+  <div style="margin-top: 20px; display: flex; align-items: center;" [hidden]="!data.symbio.place">
+    <mat-icon color="primary">place</mat-icon>
+    <span class="gray-700 font-15" style="position: relative; margin-left: 5px;">{{data.symbio.place}}</span>
 
-        <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editPlace = true;">
-            <mat-icon class="font-18 gray-700">edit</mat-icon>
+    <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editPlace = true;">
+      <mat-icon class="font-18 gray-700">edit</mat-icon>
+    </button>
+  </div>
+
+  @if (editPlace) {
+    <div fxLayout="row">
+      <mat-form-field fxFlex>
+        <mat-label>{{ 'SYMBIO_DETAIL.LOCATION' | translate }}</mat-label>
+        <input matInput [(ngModel)]="data.symbio.place">
+      </mat-form-field>
+      <div>
+        <button mat-flat-button (click)="editPlace = false;">
+          {{ 'COMMON.CANCEL' | translate }}
         </button>
-    </div>
-
-    <div *ngIf="editPlace" fxLayout="row">
-        <mat-form-field fxFlex>
-            <mat-label>{{ 'SYMBIO_DETAIL.LOCATION' | translate }}</mat-label>
-            <input matInput [(ngModel)]="data.symbio.place">
-        </mat-form-field>
-
-        <div>
-            <button mat-flat-button (click)="editPlace = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveGeneral()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
-        </div>
-    </div>
-
-
-    <!-- Date and time -->
-    <div style="margin-top: 20px;" *ngIf="data.symbio.dateTime" fxLayout="row">
-        <div style="display: flex; align-items: center;">
-            <mat-icon color="primary">event</mat-icon>
-            <span class="gray-700 font-15" style="position: relative; margin-left: 5px;">{{data.symbio.dateTime | date : 'd MMM, y' : 'UTC'}}</span>
-
-            <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editDate = true;">
-                <mat-icon class="font-18 gray-700">edit</mat-icon>
-            </button>
-        </div>
-
-        <div *ngIf="data.symbio.hasStartTime" style="margin-left: 35px; display: flex; align-items: center;">
-            <mat-icon color="primary">schedule</mat-icon>
-            <span class="gray-700 font-15" style="margin-right: 5px; position: relative; margin-left: 5px;">{{data.symbio.dateTime | date : 'shortTime' : 'UTC'}}</span>
-            <span class="gray-700 font-15">{{data.symbio.timeZone}}</span>
-
-            <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editTime = true;">
-                <mat-icon class="font-18 gray-700">edit</mat-icon>
-            </button>
-        </div>
-    </div>
-
-    <div *ngIf="editDate" fxLayout="row">
-        <mat-form-field appearance="fill">
-            <mat-label>{{ 'SYMBIO_DETAIL.DATE' | translate }}</mat-label>
-            <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate">
-
-            <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>
-        </mat-form-field>
-
-        <div>
-            <button mat-flat-button (click)="editDate = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveDate()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
-        </div>
-    </div>
-
-    <div *ngIf="editTime" fxLayout="row">
-        <mat-form-field appearance="fill">
-            <mat-label>{{ 'SYMBIO_DETAIL.TIME' | translate }}</mat-label>
-            <input matInput type="time" [(ngModel)]="eventTime">
-        </mat-form-field>
-
-        <div>
-            <button mat-flat-button (click)="editTime = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveTime()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
-        </div>
-    </div>
-
-
-    <!-- Description -->
-    <div style="margin-top: 20px;" *ngIf="data.symbio.description">
-        <p class="gray-700 font-15 justified" style="white-space: pre-wrap;">
-            {{data.symbio.description}}
-        </p>
-
-        <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editDesc = true;">
-            <mat-icon class="font-18 gray-700">edit</mat-icon>
+        <button mat-flat-button color="accent" (click)="saveGeneral()">
+          {{ 'COMMON.SAVE' | translate }}
         </button>
+      </div>
     </div>
-
-    <div *ngIf="editDesc">
-        <mat-form-field appearance="fill" style="width: 100%;">
-            <mat-label>{{ 'SYMBIO_DETAIL.DESCRIPTION' | translate }}</mat-label>
-            <textarea matInput [(ngModel)]="data.symbio.description" rows="8"></textarea>
-        </mat-form-field>
-
-        <div>
-            <button mat-flat-button (click)="editDesc = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveGeneral()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
-        </div>
-    </div>
+  }
 
 
-    <!-- Info URL -->
-    <div style="margin-top: 20px; display: flex; align-items: center;" *ngIf="data.symbio.infoUrl">
-        <mat-icon color="primary">link</mat-icon>
-        <span class="gray-700 font-15" style="position: relative; margin-left: 5px;">{{data.symbio.infoUrl}}</span>
-
-        <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editInfoUrl = true;">
-            <mat-icon class="font-18 gray-700">edit</mat-icon>
+  <!-- Date and time -->
+  @if (data.symbio.dateTime) {
+    <div style="margin-top: 20px;" fxLayout="row">
+      <div style="display: flex; align-items: center;">
+        <mat-icon color="primary">event</mat-icon>
+        <span class="gray-700 font-15" style="position: relative; margin-left: 5px;">{{data.symbio.dateTime | date : 'd MMM, y' : 'UTC'}}</span>
+        <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editDate = true;">
+          <mat-icon class="font-18 gray-700">edit</mat-icon>
         </button>
-    </div>
-
-    <div *ngIf="editInfoUrl" fxLayout="row">
-        <mat-form-field fxFlex>
-            <mat-label>{{ 'SYMBIO_DETAIL.EVENT_LINK' | translate }}</mat-label>
-            <input matInput type="url" [(ngModel)]="data.symbio.infoUrl">
-        </mat-form-field>
-
-        <div>
-            <button mat-flat-button (click)="editInfoUrl = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveGeneral()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
-        </div>
-    </div>
-
-
-    <!-- Tags -->
-    <div style="margin-top: 20px; display: flex; align-items: center;" *ngIf="data.symbio.tags?.length > 0">
-        <mat-icon color="primary">label</mat-icon>
-        <span style="position: relative; margin-left: 5px;">{{ 'SYMBIO_DETAIL.TAGS' | translate }}</span>
-
-        <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editTags = true;">
+      </div>
+      @if (data.symbio.hasStartTime) {
+        <div style="margin-left: 35px; display: flex; align-items: center;">
+          <mat-icon color="primary">schedule</mat-icon>
+          <span class="gray-700 font-15" style="margin-right: 5px; position: relative; margin-left: 5px;">{{data.symbio.dateTime | date : 'shortTime' : 'UTC'}}</span>
+          <span class="gray-700 font-15">{{data.symbio.timeZone}}</span>
+          <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editTime = true;">
             <mat-icon class="font-18 gray-700">edit</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (editDate) {
+    <div fxLayout="row">
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SYMBIO_DETAIL.DATE' | translate }}</mat-label>
+        <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate">
+        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+      </mat-form-field>
+      <div>
+        <button mat-flat-button (click)="editDate = false;">
+          {{ 'COMMON.CANCEL' | translate }}
         </button>
-
-        <div>
-            <!--<span *ngIf="data.symbio.tags?.length === 0 || !data.symbio.tags" class="gray-500 font-13">Ninguna</span>-->
-
-            <mat-chip-set aria-label="Tags">
-                <mat-chip *ngFor="let tag of data.symbio.tags" selected color="accent">
-                    {{tag}}
-                </mat-chip>
-            </mat-chip-set>
-        </div>
+        <button mat-flat-button color="accent" (click)="saveDate()">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
     </div>
+  }
 
-    <div *ngIf="editTags">
-        <mat-form-field style="width: 100%;">
-            <mat-chip-grid #tagList>
-                <mat-chip-row *ngFor="let tag of data.symbio.tags" selected color="accent" (removed)="removeTag(tag)">
-                    {{tag}}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                </mat-chip-row>
-                <input [placeholder]="'SYMBIO_DETAIL.TAGS' | translate"
-                        [matChipInputFor]="tagList"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        [matChipInputAddOnBlur]="true"
-                        (matChipInputTokenEnd)="addTag($event)">
-            </mat-chip-grid>
+  @if (editTime) {
+    <div fxLayout="row">
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'SYMBIO_DETAIL.TIME' | translate }}</mat-label>
+        <input matInput type="time" [(ngModel)]="eventTime">
+      </mat-form-field>
+      <div>
+        <button mat-flat-button (click)="editTime = false;">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button mat-flat-button color="accent" (click)="saveTime()">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+
+  <!-- Description -->
+  @if (data.symbio.description) {
+    <div style="margin-top: 20px;">
+      <p class="gray-700 font-15 justified" style="white-space: pre-wrap;">
+        {{data.symbio.description}}
+      </p>
+      <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editDesc = true;">
+        <mat-icon class="font-18 gray-700">edit</mat-icon>
+      </button>
+    </div>
+  }
+
+  @if (editDesc) {
+    <div>
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-label>{{ 'SYMBIO_DETAIL.DESCRIPTION' | translate }}</mat-label>
+        <textarea matInput [(ngModel)]="data.symbio.description" rows="8"></textarea>
+      </mat-form-field>
+      <div>
+        <button mat-flat-button (click)="editDesc = false;">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button mat-flat-button color="accent" (click)="saveGeneral()">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+
+  <!-- Info URL -->
+  @if (data.symbio.infoUrl) {
+    <div style="margin-top: 20px; display: flex; align-items: center;">
+      <mat-icon color="primary">link</mat-icon>
+      <span class="gray-700 font-15" style="position: relative; margin-left: 5px;">{{data.symbio.infoUrl}}</span>
+      <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editInfoUrl = true;">
+        <mat-icon class="font-18 gray-700">edit</mat-icon>
+      </button>
+    </div>
+  }
+
+  @if (editInfoUrl) {
+    <div fxLayout="row">
+      <mat-form-field fxFlex>
+        <mat-label>{{ 'SYMBIO_DETAIL.EVENT_LINK' | translate }}</mat-label>
+        <input matInput type="url" [(ngModel)]="data.symbio.infoUrl">
+      </mat-form-field>
+      <div>
+        <button mat-flat-button (click)="editInfoUrl = false;">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button mat-flat-button color="accent" (click)="saveGeneral()">
+          {{ 'COMMON.SAVE' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+
+  <!-- Tags -->
+  @if (data.symbio.tags?.length > 0) {
+    <div style="margin-top: 20px; display: flex; align-items: center;">
+      <mat-icon color="primary">label</mat-icon>
+      <span style="position: relative; margin-left: 5px;">{{ 'SYMBIO_DETAIL.TAGS' | translate }}</span>
+      <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editTags = true;">
+        <mat-icon class="font-18 gray-700">edit</mat-icon>
+      </button>
+      <div>
+        <!--<span *ngIf="data.symbio.tags?.length === 0 || !data.symbio.tags" class="gray-500 font-13">Ninguna</span>-->
+        <mat-chip-set aria-label="Tags">
+          @for (tag of data.symbio.tags; track tag) {
+            <mat-chip selected color="accent">
+              {{tag}}
+            </mat-chip>
+          }
+        </mat-chip-set>
+      </div>
+    </div>
+  }
+
+  @if (editTags) {
+    <div>
+      <mat-form-field style="width: 100%;">
+        <mat-chip-grid #tagList>
+          @for (tag of data.symbio.tags; track tag) {
+            <mat-chip-row selected color="accent" (removed)="removeTag(tag)">
+              {{tag}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip-row>
+          }
+          <input [placeholder]="'SYMBIO_DETAIL.TAGS' | translate"
+            [matChipInputFor]="tagList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true"
+            (matChipInputTokenEnd)="addTag($event)">
+          </mat-chip-grid>
         </mat-form-field>
-
         <div>
-            <button mat-flat-button (click)="editTags = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveGeneral()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
+          <button mat-flat-button (click)="editTags = false;">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button mat-flat-button color="accent" (click)="saveGeneral()">
+            {{ 'COMMON.SAVE' | translate }}
+          </button>
         </div>
-    </div>
+      </div>
+    }
 
 
     <!-- Extra URLs -->
-    <div style="margin-top: 20px; display: flex; align-items: center;" *ngIf="data.symbio.extraUrls?.length > 0">
+    @if (data.symbio.extraUrls?.length > 0) {
+      <div style="margin-top: 20px; display: flex; align-items: center;">
         <mat-icon color="primary">link</mat-icon>
         <span style="position: relative; margin-left: 5px;">{{ 'SYMBIO_DETAIL.EXTRA_URLS' | translate }}</span>
-
         <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editExtraUrls = true;">
-            <mat-icon class="font-18 gray-700">edit</mat-icon>
+          <mat-icon class="font-18 gray-700">edit</mat-icon>
         </button>
-
         <div>
-            <!--<span *ngIf="!data.symbio.extraUrls || data.symbio.extraUrls?.length === 0" class="gray-500 font-13">Ninguna</span>-->
-
-            <mat-chip-set aria-label="Extra URLs">
-                <mat-chip *ngFor="let url of data.symbio.extraUrls" selected color="accent">
-                    {{url}}
-                </mat-chip>
-            </mat-chip-set>
+          <!--<span *ngIf="!data.symbio.extraUrls || data.symbio.extraUrls?.length === 0" class="gray-500 font-13">Ninguna</span>-->
+          <mat-chip-set aria-label="Extra URLs">
+            @for (url of data.symbio.extraUrls; track url) {
+              <mat-chip selected color="accent">
+                {{url}}
+              </mat-chip>
+            }
+          </mat-chip-set>
         </div>
-    </div>
+      </div>
+    }
 
-    <div *ngIf="editExtraUrls">
+    @if (editExtraUrls) {
+      <div>
         <mat-form-field style="width: 100%;">
-            <mat-chip-grid #extraUrlsList>
-                <mat-chip-row *ngFor="let url of data.symbio.extraUrls" selected color="accent" (removed)="removeExtraUrl(url)">
-                    {{url}}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                </mat-chip-row>
-                <input [placeholder]="'SYMBIO_DETAIL.EXTRA_URLS' | translate"
-                        [matChipInputFor]="extraUrlsList"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        [matChipInputAddOnBlur]="true"
-                        (matChipInputTokenEnd)="addExtraUrl($event)">
+          <mat-chip-grid #extraUrlsList>
+            @for (url of data.symbio.extraUrls; track url) {
+              <mat-chip-row selected color="accent" (removed)="removeExtraUrl(url)">
+                {{url}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip-row>
+            }
+            <input [placeholder]="'SYMBIO_DETAIL.EXTRA_URLS' | translate"
+              [matChipInputFor]="extraUrlsList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="addExtraUrl($event)">
             </mat-chip-grid>
-        </mat-form-field>
-
-        <div>
+          </mat-form-field>
+          <div>
             <button mat-flat-button (click)="editExtraUrls = false;">
-                {{ 'COMMON.CANCEL' | translate }}
+              {{ 'COMMON.CANCEL' | translate }}
             </button>
             <button mat-flat-button color="accent" (click)="saveGeneral()">
-                {{ 'COMMON.SAVE' | translate }}
+              {{ 'COMMON.SAVE' | translate }}
             </button>
+          </div>
         </div>
-    </div>
+      }
 
 
-    <!-- ODS -->
-    <div style="margin-top: 20px; display: flex; align-items: center;" *ngIf="data.symbio.sdgs?.length > 0">
-        <mat-icon color="primary">outlined_flag</mat-icon>
-        <span style="position: relative; margin-left: 5px;">{{ 'SYMBIO_DETAIL.SDG' | translate }}</span>
-
-        <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editSDGs = true;">
+      <!-- ODS -->
+      @if (data.symbio.sdgs?.length > 0) {
+        <div style="margin-top: 20px; display: flex; align-items: center;">
+          <mat-icon color="primary">outlined_flag</mat-icon>
+          <span style="position: relative; margin-left: 5px;">{{ 'SYMBIO_DETAIL.SDG' | translate }}</span>
+          <button [hidden]="!data.isModerator" mat-icon-button [matTooltip]="'COMMON.EDIT' | translate" (click)="editSDGs = true;">
             <mat-icon class="font-18 gray-700">edit</mat-icon>
-        </button>
-
-        <div>
+          </button>
+          <div>
             <!--<span *ngIf="data.symbio.sdgs?.length === 0 || !data.symbio.sdgs" class="gray-500 font-13">Ninguna</span> -->
-
             <mat-chip-set aria-label="ODS">
-                <mat-chip *ngFor="let sdg of data.symbio.sdgs" selected color="accent">
-                    {{sdg}}
-                </mat-chip>
-            </mat-chip-set>
-        </div>
-    </div>
-
-    <div *ngIf="editSDGs">
-        <mat-form-field style="width: 100%;">
-            <mat-chip-grid #sdgList>
-                <mat-chip-row *ngFor="let sdg of data.symbio.sdgs" selected color="accent" (removed)="removeSDG(sdg)">
-                    {{sdg}}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                </mat-chip-row>
-                <input [placeholder]="'SYMBIO_DETAIL.SDG_FULL' | translate"
-                        #sdgInput
-                        [formControl]="sdgCtrl"
-                        [matAutocomplete]="auto"
-                        [matChipInputFor]="sdgList"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
-            </mat-chip-grid>
-
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
+              @for (sdg of data.symbio.sdgs; track sdg) {
+                <mat-chip selected color="accent">
                   {{sdg}}
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
-
-        <div>
-            <button mat-flat-button (click)="editSDGs = false;">
-                {{ 'COMMON.CANCEL' | translate }}
-            </button>
-            <button mat-flat-button color="accent" (click)="saveGeneral()">
-                {{ 'COMMON.SAVE' | translate }}
-            </button>
+                </mat-chip>
+              }
+            </mat-chip-set>
+          </div>
         </div>
-    </div>
+      }
 
-</mat-dialog-content>
+      @if (editSDGs) {
+        <div>
+          <mat-form-field style="width: 100%;">
+            <mat-chip-grid #sdgList>
+              @for (sdg of data.symbio.sdgs; track sdg) {
+                <mat-chip-row selected color="accent" (removed)="removeSDG(sdg)">
+                  {{sdg}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-row>
+              }
+              <input [placeholder]="'SYMBIO_DETAIL.SDG_FULL' | translate"
+                #sdgInput
+                [formControl]="sdgCtrl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="sdgList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+              </mat-chip-grid>
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                @for (sdg of filteredSDGs | async; track sdg) {
+                  <mat-option [value]="sdg">
+                    {{sdg}}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+            <div>
+              <button mat-flat-button (click)="editSDGs = false;">
+                {{ 'COMMON.CANCEL' | translate }}
+              </button>
+              <button mat-flat-button color="accent" (click)="saveGeneral()">
+                {{ 'COMMON.SAVE' | translate }}
+              </button>
+            </div>
+          </div>
+        }
+
+      </mat-dialog-content>

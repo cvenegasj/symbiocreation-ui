@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-camera-capture-dialog',
-  templateUrl: './camera-capture-dialog.component.html',
-  styleUrls: ['./camera-capture-dialog.component.css']
+    selector: 'app-camera-capture-dialog',
+    templateUrl: './camera-capture-dialog.component.html',
+    styleUrls: ['./camera-capture-dialog.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CameraCaptureDialogComponent implements OnInit, AfterViewInit {
 

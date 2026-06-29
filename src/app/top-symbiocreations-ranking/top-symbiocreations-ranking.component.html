@@ -1,16 +1,18 @@
 <mat-list>
-    <mat-list-item *ngFor="let item of symbiocreations; index as i; last as last">
+  @for (item of symbiocreations; track item; let i = $index; let last = $last) {
+    <mat-list-item>
       <div matLine>
         <a [routerLink]="['/symbiocreation/', item.symbiocreation.id]" class="bold font-20 teal-700" style="max-width: 90%; padding-left: 5px;">
-            {{ item.symbiocreation.name }}
+          {{ item.symbiocreation.name }}
         </a>
       </div>
-
       <div matLine style="padding-left: 5px;">
         <span class="font-13 gray-700">{{ item.symbiocreation.nparticipants }} {{ 'STATS.PARTICIPANTS' | translate }}</span>
         <span class="font-13 gray-700"> · {{ 'STATS.SCORE' | translate }}: {{ item.relevanceMetric }}</span>
       </div>
-
-      <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+      @if (!last) {
+        <mat-divider [inset]="true"></mat-divider>
+      }
     </mat-list-item>
+  }
 </mat-list>

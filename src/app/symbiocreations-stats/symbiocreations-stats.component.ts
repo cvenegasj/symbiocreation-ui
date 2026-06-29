@@ -1,12 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from '../services/analytics.service';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { SidenavService } from '../services/sidenav.service';
 
 @Component({
-  selector: 'app-symbiocreations-stats',
-  templateUrl: './symbiocreations-stats.component.html',
-  styleUrls: ['./symbiocreations-stats.component.css']
+    selector: 'app-symbiocreations-stats',
+    templateUrl: './symbiocreations-stats.component.html',
+    styleUrls: ['./symbiocreations-stats.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SymbiocreationsStatsComponent implements OnInit {
 

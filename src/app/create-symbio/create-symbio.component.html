@@ -1,139 +1,155 @@
 <div style="padding: 15px;" class="container-top">
 
-    <form #form="ngForm" (ngSubmit)="onSubmit()" class="container-60 form-register">
+  <form #form="ngForm" (ngSubmit)="onSubmit()" class="container-60 form-register">
 
-        <div class="container-card">
+    <div class="container-card">
 
-            <div class="container-80 container-title">
-                <div class="subtitle">{{ 'CREATE_SYMBIO.BREADCRUMB' | translate }}</div>
-                <h2 class="font-26 bolder gray-900 title" style="display: inline-block;">{{ 'CREATE_SYMBIO.TITLE' | translate }}</h2>
-            </div>
+      <div class="container-80 container-title">
+        <div class="subtitle">{{ 'CREATE_SYMBIO.BREADCRUMB' | translate }}</div>
+        <h2 class="font-26 bolder gray-900 title" style="display: inline-block;">{{ 'CREATE_SYMBIO.TITLE' | translate }}</h2>
+      </div>
 
-            <div fxLayout="row" class="row-name">
-                <mat-form-field style="padding-right: 20px;" class="form-name">
-                    <mat-label>{{ 'CREATE_SYMBIO.NAME_LABEL' | translate }}</mat-label>
-                    <input matInput cdkFocusInitial type="text" required [(ngModel)]="model.name" name="name">
-                </mat-form-field>
+      <div fxLayout="row" class="row-name">
+        <mat-form-field style="padding-right: 20px;" class="form-name">
+          <mat-label>{{ 'CREATE_SYMBIO.NAME_LABEL' | translate }}</mat-label>
+          <input matInput cdkFocusInitial type="text" required [(ngModel)]="model.name" name="name">
+        </mat-form-field>
 
-                <mat-checkbox fxFlex="20" [(ngModel)]="isPrivate" name="isPrivate" class="checkbox-privado">{{ 'CREATE_SYMBIO.PRIVATE' | translate }}</mat-checkbox>
-            </div>
+        <mat-checkbox fxFlex="20" [(ngModel)]="isPrivate" name="isPrivate" class="checkbox-privado">{{ 'CREATE_SYMBIO.PRIVATE' | translate }}</mat-checkbox>
+      </div>
 
-            <div class="row-place">
-                <mat-form-field class="form-place">
-                    <mat-label>{{ 'CREATE_SYMBIO.LOCATION' | translate }}</mat-label>
-                    <input matInput type="text" [(ngModel)]="model.place" name="place">
-                </mat-form-field>
-            </div>
+      <div class="row-place">
+        <mat-form-field class="form-place">
+          <mat-label>{{ 'CREATE_SYMBIO.LOCATION' | translate }}</mat-label>
+          <input matInput type="text" [(ngModel)]="model.place" name="place">
+        </mat-form-field>
+      </div>
 
-            <div fxLayout="row" class="row-fecha">
-                <mat-form-field appearance="fill" style="padding-right: 10px;" class="form-fecha">
-                    <mat-label>{{ 'CREATE_SYMBIO.DATE' | translate }}</mat-label>
-                    <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
+      <div fxLayout="row" class="row-fecha">
+        <mat-form-field appearance="fill" style="padding-right: 10px;" class="form-fecha">
+          <mat-label>{{ 'CREATE_SYMBIO.DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="datePicker" touchUi [(ngModel)]="eventDate" name="eventDate">
 
-                <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-                <mat-datepicker #datePicker></mat-datepicker>
+          <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="model.hasStartTime" name="hasStartTime" class="form-checkbox">{{ 'CREATE_SYMBIO.SET_START_TIME' | translate }}</mat-checkbox>
+      </div>
+
+      @if (model.hasStartTime) {
+        <div fxLayout="row">
+          <mat-form-field appearance="fill" style="padding-right: 10px;">
+            <mat-label>{{ 'CREATE_SYMBIO.TIME' | translate }}</mat-label>
+            <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
+          </mat-form-field>
+          <ng-moment-timezone-picker [(ngModel)]="eventTz" name="eventTz"
+            [customPlaceholderText]="'CREATE_SYMBIO.TIMEZONE_PLACEHOLDER' | translate"
+            [customNotFoundText]="'CREATE_SYMBIO.TIMEZONE_NOT_FOUND' | translate">
+          </ng-moment-timezone-picker>
+        </div>
+      }
+
+      <div>
+        <mat-form-field fxFlex appearance="fill">
+          <mat-label>{{ 'CREATE_SYMBIO.DESCRIPTION' | translate }}</mat-label>
+          <textarea matInput [(ngModel)]="model.description" name="description" rows="9"></textarea>
+        </mat-form-field>
+      </div>
+
+
+      <!-- More details of event -->
+      <div style="text-align: right;">
+        <button type="button" mat-button color="primary" (click)="detailsOpened = !detailsOpened" class="btn-detail">
+          {{detailsOpened ? ('CREATE_SYMBIO.LESS_DETAILS' | translate) : ('CREATE_SYMBIO.MORE_DETAILS' | translate)}} {{ 'CREATE_SYMBIO.DETAILS' | translate }}
+        </button>
+      </div>
+
+      @if (detailsOpened) {
+        <div>
+          <mat-form-field fxFlex>
+            <mat-label>{{ 'CREATE_SYMBIO.EVENT_LINK' | translate }}</mat-label>
+            <input matInput type="url" [(ngModel)]="model.infoUrl" name="infoUrl">
+          </mat-form-field>
+        </div>
+      }
+
+      @if (detailsOpened) {
+        <div>
+          <mat-form-field fxFlex>
+            <mat-chip-grid #tagList>
+              @for (tag of model.tags; track tag) {
+                <mat-chip-row selected color="accent" (removed)="removeTag(tag)">
+                  {{tag}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-row>
+              }
+              <input [placeholder]="'CREATE_SYMBIO.TAGS' | translate"
+                [matChipInputFor]="tagList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="addTag($event)">
+              </mat-chip-grid>
             </mat-form-field>
+          </div>
+        }
 
-                <mat-checkbox [(ngModel)]="model.hasStartTime" name="hasStartTime" class="form-checkbox">{{ 'CREATE_SYMBIO.SET_START_TIME' | translate }}</mat-checkbox>
+        @if (detailsOpened) {
+          <div>
+            <mat-form-field fxFlex>
+              <mat-chip-grid #extraUrlsList class="mat-chip-list-stacked">
+                @for (url of model.extraUrls; track url) {
+                  <mat-chip-row selected color="accent" (removed)="removeExtraUrl(url)">
+                    {{url}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip-row>
+                }
+                <input style="flex: 1 0 40px;" [placeholder]="'CREATE_SYMBIO.EXTRA_URLS' | translate"
+                  [matChipInputFor]="extraUrlsList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="addExtraUrl($event)">
+                </mat-chip-grid>
+              </mat-form-field>
             </div>
+          }
 
-            <div *ngIf="model.hasStartTime" fxLayout="row">
-                <mat-form-field appearance="fill" style="padding-right: 10px;">
-                    <mat-label>{{ 'CREATE_SYMBIO.TIME' | translate }}</mat-label>
-                    <input matInput type="time" [(ngModel)]="eventTime" name="eventTime">
-                </mat-form-field>
-
-                <ng-moment-timezone-picker [(ngModel)]="eventTz" name="eventTz"
-                                [customPlaceholderText]="'CREATE_SYMBIO.TIMEZONE_PLACEHOLDER' | translate"
-                                [customNotFoundText]="'CREATE_SYMBIO.TIMEZONE_NOT_FOUND' | translate">
-                </ng-moment-timezone-picker>
-            </div>
-
+          @if (detailsOpened) {
             <div>
-                <mat-form-field fxFlex appearance="fill">
-                    <mat-label>{{ 'CREATE_SYMBIO.DESCRIPTION' | translate }}</mat-label>
-                    <textarea matInput [(ngModel)]="model.description" name="description" rows="9"></textarea>
-                </mat-form-field>
-            </div>
-
-
-            <!-- More details of event -->
-            <div style="text-align: right;">
-                <button type="button" mat-button color="primary" (click)="detailsOpened = !detailsOpened" class="btn-detail">
-                    {{detailsOpened ? ('CREATE_SYMBIO.LESS_DETAILS' | translate) : ('CREATE_SYMBIO.MORE_DETAILS' | translate)}} {{ 'CREATE_SYMBIO.DETAILS' | translate }}
-                </button>
-            </div>
-
-            <div *ngIf="detailsOpened">
-                <mat-form-field fxFlex>
-                    <mat-label>{{ 'CREATE_SYMBIO.EVENT_LINK' | translate }}</mat-label>
-                    <input matInput type="url" [(ngModel)]="model.infoUrl" name="infoUrl">
-                </mat-form-field>
-            </div>
-
-        <div *ngIf="detailsOpened">
-            <mat-form-field fxFlex>
-                <mat-chip-grid #tagList>
-                    <mat-chip-row *ngFor="let tag of model.tags" selected color="accent" (removed)="removeTag(tag)">
-                        {{tag}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip-row>
-                    <input [placeholder]="'CREATE_SYMBIO.TAGS' | translate"
-                            [matChipInputFor]="tagList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                            [matChipInputAddOnBlur]="true"
-                            (matChipInputTokenEnd)="addTag($event)">
-                </mat-chip-grid>
-            </mat-form-field>
-        </div>
-
-        <div *ngIf="detailsOpened">
-            <mat-form-field fxFlex>
-                <mat-chip-grid #extraUrlsList class="mat-chip-list-stacked">
-                    <mat-chip-row *ngFor="let url of model.extraUrls" selected color="accent" (removed)="removeExtraUrl(url)">
-                        {{url}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip-row>
-                    <input style="flex: 1 0 40px;" [placeholder]="'CREATE_SYMBIO.EXTRA_URLS' | translate"
-                            [matChipInputFor]="extraUrlsList"
-                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                            [matChipInputAddOnBlur]="true"
-                            (matChipInputTokenEnd)="addExtraUrl($event)">
-                </mat-chip-grid>
-            </mat-form-field>
-        </div>
-
-        <div *ngIf="detailsOpened">
-            <mat-form-field fxFlex>
+              <mat-form-field fxFlex>
                 <mat-chip-grid #sdgList>
-                    <mat-chip-row *ngFor="let sdg of model.sdgs" selected color="accent" (removed)="removeSDG(sdg)">
-                        {{sdg}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip-row>
-                    <input [placeholder]="'CREATE_SYMBIO.SDG' | translate"
-                            #sdgInput
-                            [formControl]="sdgCtrl"
-                            [matAutocomplete]="auto"
-                            [matChipInputFor]="sdgList">
-                </mat-chip-grid>
-
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                    <mat-option *ngFor="let sdg of filteredSDGs | async" [value]="sdg">
+                  @for (sdg of model.sdgs; track sdg) {
+                    <mat-chip-row selected color="accent" (removed)="removeSDG(sdg)">
                       {{sdg}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-        </div>
+                      <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip-row>
+                  }
+                  <input [placeholder]="'CREATE_SYMBIO.SDG' | translate"
+                    #sdgInput
+                    [formControl]="sdgCtrl"
+                    [matAutocomplete]="auto"
+                    [matChipInputFor]="sdgList">
+                  </mat-chip-grid>
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                    @for (sdg of filteredSDGs | async; track sdg) {
+                      <mat-option [value]="sdg">
+                        {{sdg}}
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+            }
 
-        </div>
+          </div>
 
-        <div class="container-footer">
+          <div class="container-footer">
             <button mat-button type="button" (click)="location.back()" class="btn-cancel">{{ 'COMMON.CANCEL' | translate }}</button>
             <!-- <span fxFlex></span> -->
             <button mat-raised-button color="accent" type="submit" [disabled]="!form.valid" class="btn-create">
-                <span>{{ 'COMMON.CREATE' | translate }}</span>
+              <span>{{ 'COMMON.CREATE' | translate }}</span>
             </button>
-        </div>
-    </form>
+          </div>
+        </form>
 
-</div>
+      </div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { environment } from '../../environments/environment';
 import { OneDot } from '../models/oneDotTypes';
@@ -10,9 +10,11 @@ import { UserService } from '../services/user.service';
 import { OneDotService } from '../services/onedot.service';
 
 @Component({
-  selector: 'app-my-onedots',
-  templateUrl: './my-onedots.component.html',
-  styleUrls: ['./my-onedots.component.css']
+    selector: 'app-my-onedots',
+    templateUrl: './my-onedots.component.html',
+    styleUrls: ['./my-onedots.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MyOnedotsComponent implements OnInit {
 

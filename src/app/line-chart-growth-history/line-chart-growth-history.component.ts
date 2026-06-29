@@ -1,13 +1,15 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsService } from '../services/analytics.service';
 import { DimensionsType } from '../utils/types';
 
 import * as d3 from "d3";
 
 @Component({
-  selector: 'app-line-chart-growth-history',
-  templateUrl: './line-chart-growth-history.component.html',
-  styleUrls: ['./line-chart-growth-history.component.css']
+    selector: 'app-line-chart-growth-history',
+    templateUrl: './line-chart-growth-history.component.html',
+    styleUrls: ['./line-chart-growth-history.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LineChartGrowthHistoryComponent implements OnInit {
 

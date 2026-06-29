@@ -1,74 +1,76 @@
 <mat-toolbar color="accent">
-    <span class="ellipsed">{{ 'SYMBIO.SYMBIO_STATS' | translate }}</span>
+  <span class="ellipsed">{{ 'SYMBIO.SYMBIO_STATS' | translate }}</span>
 
-    <span fxFlex></span>
+  <span fxFlex></span>
 
-    <button mat-icon-button (click)="closeSidenavAnalytics()">
-        <mat-icon>close</mat-icon>
-    </button>
+  <button mat-icon-button (click)="closeSidenavAnalytics()">
+    <mat-icon>close</mat-icon>
+  </button>
 </mat-toolbar>
 
 <div style="padding: 35px 25px 25px;">
-    <div>
-        <p>
-            <span class="font-14 gray-700">{{ 'SYMBIO.PARTICIPANTS' | translate }}: </span>
-            <span class="bold font-17 symbio-stat-value" style="margin-left: 10px;">{{ totalUsers }}</span>
-        </p>
-        <p>
-            <span class="font-14 gray-700">{{ 'SYMBIO.IDEAS' | translate }}: </span>
-            <span class="bold font-17 symbio-stat-value" style="margin-left: 10px;">{{ totalIdeas }}</span>
-        </p>
-    </div>
+  <div>
+    <p>
+      <span class="font-14 gray-700">{{ 'SYMBIO.PARTICIPANTS' | translate }}: </span>
+      <span class="bold font-17 symbio-stat-value" style="margin-left: 10px;">{{ totalUsers }}</span>
+    </p>
+    <p>
+      <span class="font-14 gray-700">{{ 'SYMBIO.IDEAS' | translate }}: </span>
+      <span class="bold font-17 symbio-stat-value" style="margin-left: 10px;">{{ totalIdeas }}</span>
+    </p>
+  </div>
 
-    <mat-tab-group style="margin-top: 40px;">
-        <mat-tab [label]="'STATS.TOP_USERS' | translate">
+  <mat-tab-group style="margin-top: 40px;">
+    <mat-tab [label]="'STATS.TOP_USERS' | translate">
 
-            <mat-list>
-                <mat-list-item *ngFor="let item of usersRanking; index as i; last as last">
+      <mat-list>
+        @for (item of usersRanking; track item; let i = $index; let last = $last) {
+          <mat-list-item>
+            <div fxLayout="row">
+              <div class="centered" style="width: 30px; padding: 5px; margin-left: -20px;">
+                <span class="bold font-18 pink-A200">{{ i + 1 }}</span>
+              </div>
+              <div fxLayout="column">
+                <div class="ellipsed">
+                  <span class="bold font-15 cyan-color-1">
+                    {{ item.user.name || item.user.firstName + " " + item.user.lastName }}
+                  </span>
+                  <span class="font-12 gray-600" style="margin-left: 2px;">
+                    {{ item.user.email }}
+                  </span>
+                </div>
+                <div>
+                  <span class="bold font-12 gray-700">{{ 'SYMBIO.SCORE' | translate }}: {{ item.score }}</span>
+                </div>
+              </div>
+            </div>
+            @if (!last) {
+              <mat-divider [inset]="true"></mat-divider>
+            }
+          </mat-list-item>
+        }
+      </mat-list>
 
-                    <div fxLayout="row">
-                        <div class="centered" style="width: 30px; padding: 5px; margin-left: -20px;">
-                            <span class="bold font-18 pink-A200">{{ i + 1 }}</span>
-                        </div>
+    </mat-tab>
 
-                        <div fxLayout="column">
-                            <div class="ellipsed">
-                                <span class="bold font-15 cyan-color-1">
-                                    {{ item.user.name || item.user.firstName + " " + item.user.lastName }}
-                                </span>
-                                <span class="font-12 gray-600" style="margin-left: 2px;">
-                                    {{ item.user.email }}
-                                  </span>
-                            </div>
+    <mat-tab [label]="'SYMBIO.TRENDS' | translate">
 
-                            <div>
-                                <span class="bold font-12 gray-700">{{ 'SYMBIO.SCORE' | translate }}: {{ item.score }}</span>
-                            </div>
-                        </div>
-                    </div>
+      <mat-list>
+        @for (item of trends; track item; let last = $last) {
+          <mat-list-item>
+            <div matLine>
+              <span class="bold font-15 cyan-color-1" style="max-width: 90%;">
+                {{ item.term }}
+              </span>
+            </div>
+            @if (!last) {
+              <mat-divider [inset]="true"></mat-divider>
+            }
+          </mat-list-item>
+        }
+      </mat-list>
 
-                    <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
-
-                </mat-list-item>
-            </mat-list>
-
-        </mat-tab>
-
-        <mat-tab [label]="'SYMBIO.TRENDS' | translate">
-
-            <mat-list>
-                <mat-list-item *ngFor="let item of trends; last as last">
-                  <div matLine>
-                    <span class="bold font-15 cyan-color-1" style="max-width: 90%;">
-                      {{ item.term }}
-                    </span>
-                  </div>
-
-                  <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
-                </mat-list-item>
-            </mat-list>
-
-        </mat-tab>
-    </mat-tab-group>
+    </mat-tab>
+  </mat-tab-group>
 
 </div>

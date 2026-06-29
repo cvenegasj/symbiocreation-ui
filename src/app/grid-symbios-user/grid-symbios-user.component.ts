@@ -1,8 +1,8 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { Symbiocreation, Participant } from '../models/symbioTypes';
 import { MatDialog } from '@angular/material/dialog';
 import { SymbiocreationDetailComponent } from '../symbiocreation-detail/symbiocreation-detail.component';
-import * as moment from 'moment';
+import moment from 'moment';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { Router } from '@angular/router';
 import { SymbiocreationService } from '../services/symbiocreation.service';
@@ -15,9 +15,11 @@ import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
 @Component({
-  selector: 'app-grid-symbios-user',
-  templateUrl: './grid-symbios-user.component.html',
-  styleUrls: ['./grid-symbios-user.component.css']
+    selector: 'app-grid-symbios-user',
+    templateUrl: './grid-symbios-user.component.html',
+    styleUrls: ['./grid-symbios-user.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class GridSymbiosUserComponent implements OnChanges {
 

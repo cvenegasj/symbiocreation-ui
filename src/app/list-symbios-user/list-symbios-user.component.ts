@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Symbiocreation } from '../models/symbioTypes';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
@@ -10,9 +10,11 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-list-symbios-user',
-  templateUrl: './list-symbios-user.component.html',
-  styleUrls: ['./list-symbios-user.component.css']
+    selector: 'app-list-symbios-user',
+    templateUrl: './list-symbios-user.component.html',
+    styleUrls: ['./list-symbios-user.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ListSymbiosUserComponent {
 

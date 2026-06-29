@@ -1,148 +1,165 @@
 <mat-toolbar class="idea-toolbar">
 
-    <span fxFlex></span>
+  <span fxFlex></span>
 
-    <button *ngIf="sharedService.isIdeaEditable$ | async" mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
-        <mat-icon>more_vert</mat-icon>
+  @if (sharedService.isIdeaEditable$ | async) {
+    <button mat-icon-button [matMenuTriggerFor]="ideaSidenavMenu">
+      <mat-icon>more_vert</mat-icon>
     </button>
+  }
 
-    <mat-menu #ideaSidenavMenu="matMenu">
-        <button mat-menu-item (click)="openEditIdeaDialog()">
-            <span>{{ 'IDEA.EDIT_IDEA' | translate }}</span>
-        </button>
-    </mat-menu>
-
-    <button mat-icon-button
-        [matTooltip]="sidenavService.isOpenInFullscreen ? ('IDEA.CLOSE_FULLSCREEN' | translate) : ('IDEA.OPEN_FULLSCREEN' | translate)"
-        matTooltipPosition="above"
-        (click)="toggleFullscreen()">
-        <mat-icon>{{sidenavService.isOpenInFullscreen ? 'close_fullscreen' : 'open_in_full'}}</mat-icon>
+  <mat-menu #ideaSidenavMenu="matMenu">
+    <button mat-menu-item (click)="openEditIdeaDialog()">
+      <span>{{ 'IDEA.EDIT_IDEA' | translate }}</span>
     </button>
+  </mat-menu>
 
-    <button mat-icon-button (click)="closeIdeaDetail()">
-        <mat-icon>close</mat-icon>
-    </button>
+  <button mat-icon-button
+    [matTooltip]="sidenavService.isOpenInFullscreen ? ('IDEA.CLOSE_FULLSCREEN' | translate) : ('IDEA.OPEN_FULLSCREEN' | translate)"
+    matTooltipPosition="above"
+    (click)="toggleFullscreen()">
+    <mat-icon>{{sidenavService.isOpenInFullscreen ? 'close_fullscreen' : 'open_in_full'}}</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="closeIdeaDetail()">
+    <mat-icon>close</mat-icon>
+  </button>
 </mat-toolbar>
 
 <div class="ellipsed idea-name">{{ 'IDEA.IDEA_OF' | translate }} {{node?.name}}</div>
 
 <div class="idea-body" [style.padding]="sidenavService.isOpenInFullscreen ? '30px 35px' : '30px 15px'">
 
-    <div *ngIf="!node?.idea">
-        <p class="centered gray-700 font-15">
-            {{ 'IDEA.NO_IDEA_REGISTERED' | translate }}
-        </p>
-        <div class="centered" *ngIf="sharedService.isIdeaEditable$ | async">
-            <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">
-                {{ 'IDEA.REGISTER_IDEA' | translate }}
-            </button><br />
-
-            <button mat-button color="accent" (click)="showAiSuggestedIdeas = true;" style="margin-top: 5px;">
-                {{ 'IDEA.GENERATE_AI_IDEAS' | translate }}
-            </button>
+  @if (!node?.idea) {
+    <div>
+      <p class="centered gray-700 font-15">
+        {{ 'IDEA.NO_IDEA_REGISTERED' | translate }}
+      </p>
+      @if (sharedService.isIdeaEditable$ | async) {
+        <div class="centered">
+          <button mat-flat-button color="primary" (click)="openEditIdeaDialog()">
+            {{ 'IDEA.REGISTER_IDEA' | translate }}
+          </button><br />
+          <button mat-button color="accent" (click)="showAiSuggestedIdeas = true;" style="margin-top: 5px;">
+            {{ 'IDEA.GENERATE_AI_IDEAS' | translate }}
+          </button>
         </div>
+      }
     </div>
+  }
 
 
-    <!-- ChatGPT results -->
-    <app-chatgpt-idea-suggestions *ngIf="showAiSuggestedIdeas"
-        [symbiocreationId]="idSymbio"
-        [node]="node"
-        (changedIdea)="onIdeaChanged($event)">
+  <!-- ChatGPT results -->
+  @if (showAiSuggestedIdeas) {
+    <app-chatgpt-idea-suggestions
+      [symbiocreationId]="idSymbio"
+      [node]="node"
+      (changedIdea)="onIdeaChanged($event)">
     </app-chatgpt-idea-suggestions>
+  }
 
 
-    <!-- Idea -->
-    <div *ngIf="node?.idea">
-        <div>
-            <p class="centered gray-900 font-18 bold">{{node.idea.title}}</p>
-        </div>
-
-        <div style="margin-top: 30px;">
-            <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linky"></p>
-        </div>
-
-        <!-- Carrusel de imágenes -->
-        <div class="carousel-container" *ngIf="node.idea.imgPublicIds?.length > 0">
-            <button class="carousel-button prev" (click)="moveLeft()">&#10094;</button>
-
-            <div class="carousel">
-                <div class="carousel-track" #carouselTrack>
-                    <div class="carousel-item" *ngFor="let cloudinaryImg of node.idea.cloudinaryImages">
-                        <advanced-image [cldImg]="cloudinaryImg" width="100%" height="auto"></advanced-image>
-                    </div>
+  <!-- Idea -->
+  @if (node?.idea) {
+    <div>
+      <div>
+        <p class="centered gray-900 font-18 bold">{{node.idea.title}}</p>
+      </div>
+      <div style="margin-top: 30px;">
+        <p class="justified gray-700 font-15" style="white-space: pre-wrap;" [innerHTML]="node.idea.description | linky"></p>
+      </div>
+      <!-- Carrusel de imágenes -->
+      @if (node.idea.imgPublicIds?.length > 0) {
+        <div class="carousel-container">
+          <button class="carousel-button prev" (click)="moveLeft()">&#10094;</button>
+          <div class="carousel">
+            <div class="carousel-track" #carouselTrack>
+              @for (cloudinaryImg of node.idea.cloudinaryImages; track cloudinaryImg) {
+                <div class="carousel-item">
+                  <advanced-image [cldImg]="cloudinaryImg" width="100%" height="auto"></advanced-image>
                 </div>
+              }
             </div>
-
-            <button class="carousel-button next" (click)="moveRight()">&#10095;</button>
+          </div>
+          <button class="carousel-button next" (click)="moveRight()">&#10095;</button>
         </div>
-
+      }
     </div>
+  }
 
-    <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea?.externalUrls"></mat-divider>
+  @if (node?.idea?.externalUrls) {
+    <mat-divider style="margin: 15px auto 15px;"></mat-divider>
+  }
 
-    <div *ngIf="node?.idea?.externalUrls">
-        <span>{{ 'IDEA.EXTERNAL_LINKS' | translate }}</span>
-
-        <ul>
-            <li class="gray-700" *ngFor="let url of node.idea.externalUrls">
-                <span [innerHTML]="url | linky"></span>
-            </li>
-        </ul>
+  @if (node?.idea?.externalUrls) {
+    <div>
+      <span>{{ 'IDEA.EXTERNAL_LINKS' | translate }}</span>
+      <ul>
+        @for (url of node.idea.externalUrls; track url) {
+          <li class="gray-700">
+            <span [innerHTML]="url | linky"></span>
+          </li>
+        }
+      </ul>
     </div>
+  }
 
-    <!--
-    <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea"></mat-divider>
+  <!--
+  <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea"></mat-divider>
 
-    <div *ngIf="node?.idea">
-        <span>Rating</span>
+  <div *ngIf="node?.idea">
+    <span>Rating</span>
 
-        <div style="padding: 10px 30px;">
-            <span class="gray-700 font-15" style="margin-right: 7px;">{{rating}}</span>
-            <ngb-rating [max]="5" [(rate)]="rating" (rateChange)="onRateChange($event)" [readonly]="false"></ngb-rating>
-            <span class="gray-700 font-15" style="margin-left: 3px;">(26)</span>
+    <div style="padding: 10px 30px;">
+      <span class="gray-700 font-15" style="margin-right: 7px;">{{rating}}</span>
+      <ngb-rating [max]="5" [(rate)]="rating" (rateChange)="onRateChange($event)" [readonly]="false"></ngb-rating>
+      <span class="gray-700 font-15" style="margin-left: 3px;">(26)</span>
+    </div>
+  </div>
+  -->
+
+  @if (node?.idea) {
+    <mat-divider style="margin: 15px auto 15px;"></mat-divider>
+  }
+
+  @if (node?.idea) {
+    <div>
+      <span>{{node.idea.comments ? node.idea.comments.length : '0' }} {{ 'IDEA.COMMENTS' | translate }}</span>
+      <!-- Visible to logged-in users -->
+      @if (appUser) {
+        <div style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+          <div style="width: 50px; padding: 10px 15px;">
+            <advanced-image [cldImg]="appUser.cloudinaryImage" width="43px" height="auto"></advanced-image>
+          </div>
+          <div fxFlex>
+            <mat-form-field style="width: 100%;">
+              <textarea matInput [(ngModel)]="comment" rows="2" [placeholder]="'IDEA.WRITE_COMMENT' | translate" (click)="hiddenCommentButtons = false"></textarea>
+            </mat-form-field>
+            <div style="text-align: right;" [hidden]="hiddenCommentButtons">
+              <button mat-button (click)="cancelCommentPost()">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button mat-flat-button (click)="postComment()" color="primary" [disabled]="!comment.trim()">{{ 'COMMON.SAVE' | translate }}</button>
+            </div>
+          </div>
         </div>
-    </div>
-    -->
-
-    <mat-divider style="margin: 15px auto 15px;" *ngIf="node?.idea"></mat-divider>
-
-    <div *ngIf="node?.idea">
-        <span>{{node.idea.comments ? node.idea.comments.length : '0' }} {{ 'IDEA.COMMENTS' | translate }}</span>
-
-        <!-- Visible to logged-in users -->
-        <div *ngIf="appUser" style="margin-top: 20px; margin-bottom: 40px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
-            <div style="width: 50px; padding: 10px 15px;">
-                <advanced-image [cldImg]="appUser.cloudinaryImage" width="43px" height="auto"></advanced-image>
+      }
+      @for (comment of node.idea.comments; track comment) {
+        <div style="margin-top: 20px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
+          <div style="width: 50px; padding: 0 15px;">
+            <advanced-image [cldImg]="comment.author.cloudinaryImage" width="43px" height="auto"></advanced-image>
+          </div>
+          <div fxFlex>
+            <div>
+              <span class="bold">{{comment.author.firstName && comment.author.lastName ? comment.author.firstName + ' ' + comment.author.lastName : comment.author.name}}</span>
             </div>
-            <div fxFlex>
-                <mat-form-field style="width: 100%;">
-                    <textarea matInput [(ngModel)]="comment" rows="2" [placeholder]="'IDEA.WRITE_COMMENT' | translate" (click)="hiddenCommentButtons = false"></textarea>
-                </mat-form-field>
-
-                <div style="text-align: right;" [hidden]="hiddenCommentButtons">
-                    <button mat-button (click)="cancelCommentPost()">{{ 'COMMON.CANCEL' | translate }}</button>
-                    <button mat-flat-button (click)="postComment()" color="primary" [disabled]="!comment.trim()">{{ 'COMMON.SAVE' | translate }}</button>
-                </div>
+            <div>
+              <p>
+                {{comment.content}}
+              </p>
             </div>
+          </div>
         </div>
-
-        <div *ngFor="let comment of node.idea.comments" style="margin-top: 20px;" [style.padding]="sidenavService.isOpenInFullscreen ? '0 55px' : '0'" class="clearfix" fxLayout="row">
-            <div style="width: 50px; padding: 0 15px;">
-                <advanced-image [cldImg]="comment.author.cloudinaryImage" width="43px" height="auto"></advanced-image>
-            </div>
-            <div fxFlex>
-                <div>
-                    <span class="bold">{{comment.author.firstName && comment.author.lastName ? comment.author.firstName + ' ' + comment.author.lastName : comment.author.name}}</span>
-                </div>
-                <div>
-                    <p>
-                        {{comment.content}}
-                    </p>
-                </div>
-            </div>
-        </div>
-
+      }
     </div>
+  }
 
 </div>

@@ -1,5 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import * as moment from 'moment';
+import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import moment from 'moment';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Symbiocreation } from '../models/symbioTypes';
@@ -14,9 +14,11 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-edit-symbiocreation-detail',
-  templateUrl: './edit-symbiocreation-detail.component.html',
-  styleUrls: ['./edit-symbiocreation-detail.component.scss']
+    selector: 'app-edit-symbiocreation-detail',
+    templateUrl: './edit-symbiocreation-detail.component.html',
+    styleUrls: ['./edit-symbiocreation-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EditSymbiocreationDetailComponent implements OnInit {
 

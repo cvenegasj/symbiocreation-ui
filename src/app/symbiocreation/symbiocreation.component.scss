@@ -1,4 +1,7 @@
 .workspace-container{
+    height: 100%;
+    overflow: hidden;
+
     .workspace-header{
 
         &>h2{
@@ -24,7 +27,8 @@
 
     }
     .workspace-body{
-        
+        overflow: hidden;
+        min-height: 0;
     }
 }
 
